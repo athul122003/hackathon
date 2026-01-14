@@ -19,13 +19,13 @@ export function protectedRoute(
           title: "Login required",
           description: "Please sign in to continue.",
         }),
-      );
+      ) as unknown as NextApiResponse;
     }
 
     try {
       return await handler(req, user);
     } catch (err) {
-      return errorResponse(err);
+      return errorResponse(err) as unknown as NextApiResponse;
     }
   };
 }
@@ -46,13 +46,13 @@ export function roleRoute(
           title: "Access denied",
           description: "You don't have permission to access this.",
         }),
-      );
+      ) as unknown as NextApiResponse;
     }
 
     try {
       return await handler(req, user);
     } catch (err) {
-      return errorResponse(err);
+      return errorResponse(err) as unknown as NextApiResponse;
     }
   });
 }
