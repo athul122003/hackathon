@@ -1,110 +1,100 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { adminProtected, type RouteContext } from "~/auth/routes-wrapper";
 import db from "~/db";
 import { participants, teams } from "~/db/schema";
-import { requireAdmin } from "~/lib/auth/check-access";
 import { getCurrentActor } from "~/lib/mixpanel/getActor";
 import { trackAudit } from "~/lib/mixpanel/tracker";
 
-type RouteParams = {
-  params: Promise<{ teamId: string; memberId: string }>;
-};
+type MemberParams = { teamId: string; memberId: string };
 
-export async function PATCH(request: Request, { params }: RouteParams) {
-  try {
-    await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export const PATCH = adminProtected<MemberParams>(
+  async (request: Request, { params }: RouteContext<MemberParams>) => {
+    const { teamId, memberId } = await params;
+    const body = await request.json();
 
-  const { teamId, memberId } = await params;
-  const body = await request.json();
+    if (body.isLeader) {
+      await db
+        .update(participants)
+        .set({ isLeader: false })
+        .where(eq(participants.teamId, teamId));
+    }
 
-  if (body.isLeader) {
-    await db
+    const [updated] = await db
       .update(participants)
-      .set({ isLeader: false })
-      .where(eq(participants.teamId, teamId));
-  }
+      .set({ isLeader: body.isLeader })
+      .where(eq(participants.id, memberId))
+      .returning();
 
-  const [updated] = await db
-    .update(participants)
-    .set({ isLeader: body.isLeader })
-    .where(eq(participants.id, memberId))
-    .returning();
+    if (!updated) {
+      return NextResponse.json({ error: "Member not found" }, { status: 404 });
+    }
 
-  if (!updated) {
-    return NextResponse.json({ error: "Member not found" }, { status: 404 });
-  }
+    return NextResponse.json(updated);
+  },
+);
 
-  return NextResponse.json(updated);
-}
+export const DELETE = adminProtected<MemberParams>(
+  async (_request: Request, { params }: RouteContext<MemberParams>) => {
+    const actor = await getCurrentActor();
 
-export async function DELETE(_request: Request, { params }: RouteParams) {
-  try {
-    await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+    const { memberId } = await params;
 
-  const actor = await getCurrentActor();
+    const participant = await db.query.participants.findFirst({
+      where: eq(participants.id, memberId),
+    });
 
-  const { memberId } = await params;
+    if (!participant) {
+      return NextResponse.json({ error: "Member not found" }, { status: 404 });
+    }
 
-  const participant = await db.query.participants.findFirst({
-    where: eq(participants.id, memberId),
-  });
+    const teamDetails = await db.query.teams.findFirst({
+      where: eq(teams.id, participant.teamId ?? ""),
+    });
 
-  if (!participant) {
-    return NextResponse.json({ error: "Member not found" }, { status: 404 });
-  }
+    if (!teamDetails) {
+      return NextResponse.json({ error: "Team not found" }, { status: 404 });
+    }
 
-  const teamDetails = await db.query.teams.findFirst({
-    where: eq(teams.id, participant.teamId ?? ""),
-  });
+    const entity = {
+      id: teamDetails.id,
+      name: teamDetails.name,
+      type: "Team",
+    };
 
-  if (!teamDetails) {
-    return NextResponse.json({ error: "Team not found" }, { status: 404 });
-  }
+    const [updated] = await db
+      .update(participants)
+      .set({
+        teamId: null,
+        isLeader: false,
+      })
+      .where(eq(participants.id, memberId))
+      .returning();
 
-  const entity = {
-    id: teamDetails.id,
-    name: teamDetails.name,
-    type: "Team",
-  };
+    trackAudit({
+      actor,
+      action: "- Remove Member",
+      entity,
+      previousValue: {
+        id: participant.id,
+        teamId: participant.teamId,
+        teamName: teamDetails.name,
+        memberName: participant.name,
+        isLeader: participant.isLeader,
+      },
+      newValue: {
+        id: participant.id,
+        teamId: updated.teamId,
+        teamName: "",
+        memberName: updated.name,
+        isLeader: updated.isLeader,
+      },
+    });
 
-  const [updated] = await db
-    .update(participants)
-    .set({
-      teamId: null,
-      isLeader: false,
-    })
-    .where(eq(participants.id, memberId))
-    .returning();
+    if (!updated) {
+      return NextResponse.json({ error: "Member not found" }, { status: 404 });
+    }
 
-  trackAudit({
-    actor,
-    action: "- Remove Member",
-    entity,
-    previousValue: {
-      id: participant.id,
-      teamId: participant.teamId,
-      teamName: teamDetails.name,
-      memberName: participant.name,
-      isLeader: participant.isLeader,
-    },
-    newValue: {
-      id: participant.id,
-      teamId: updated.teamId,
-      teamName: "",
-      memberName: updated.name,
-      isLeader: updated.isLeader,
-    },
-  });
-
-  if (!updated) {
-    return NextResponse.json({ error: "Member not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(updated);
-}
+    return NextResponse.json(updated);
+  },
+);
