@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth, signOut } from "~/auth/dashboard-config";
-import { LiveClock } from "~/components/dashboard/live-clock";
 import { DashboardContent } from "~/components/dashboard/dashboard-content";
+import { LiveClock } from "~/components/dashboard/live-clock";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { isAdmin, hasPermission } from "~/lib/auth/check-access";
+import { hasPermission, isAdmin } from "~/lib/auth/check-access";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -31,7 +31,8 @@ export default async function DashboardPage() {
     // Team visibility
     canViewAllTeams:
       userIsAdmin || hasPermission(dashboardUser, "team:view_all"),
-    canViewTop60: userIsAdmin || hasPermission(dashboardUser, "team:view_top60"),
+    canViewTop60:
+      userIsAdmin || hasPermission(dashboardUser, "team:view_top60"),
     // Submissions
     canScoreSubmissions:
       userIsAdmin || hasPermission(dashboardUser, "submission:score"),
@@ -144,9 +145,9 @@ export default async function DashboardPage() {
                 {Array.from(
                   new Set(
                     dashboardUser.roles.flatMap((role) =>
-                      role.permissions.map((p) => p.key)
-                    )
-                  )
+                      role.permissions.map((p) => p.key),
+                    ),
+                  ),
                 ).map((key) => (
                   <div
                     key={key}

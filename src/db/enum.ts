@@ -72,5 +72,5 @@ export const teamProgressEnum = pgEnum("team_progress", [
   "WINNER",
   "RUNNER",
   "SECOND_RUNNER",
-  "TRACK"
+  "TRACK",
 ]);

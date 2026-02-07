@@ -39,7 +39,7 @@ export const teamRelations = relations(teams, ({ many, one }) => ({
   leader: one(participants, {
     fields: [teams.leaderId],
     references: [participants.id],
-  })
+  }),
 }));
 
 export const trackRelations = relations(tracks, ({ many }) => ({
