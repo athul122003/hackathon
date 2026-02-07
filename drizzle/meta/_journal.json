@@ -50,6 +50,13 @@
       "when": 1768715032438,
       "tag": "0006_volatile_leper_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1770458889712,
+      "tag": "0007_added ideaSubmission and tracks",
+      "breakpoints": true
     }
   ]
 }
