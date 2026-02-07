@@ -5,12 +5,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { DashboardTabs } from "~/components/dashboard/dashboard-tabs";
 import { OrganiserDashboard } from "~/components/dashboard/organiser";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardDescription, CardTitle } from "~/components/ui/card";
 
 type DashboardContentProps = {
   permissions: {
@@ -233,7 +228,6 @@ function MentorTab() {
 export function DashboardContent({ permissions }: DashboardContentProps) {
   const {
     isAdmin,
-    canManageSettings,
     canViewAllTeams,
     canScoreSubmissions,
     canRemarkSubmissions,

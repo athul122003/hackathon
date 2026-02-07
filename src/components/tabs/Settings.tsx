@@ -37,22 +37,22 @@ export function SettingsTab() {
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    fetchTracks();
-  }, []);
-
   async function fetchTracks() {
     try {
       const res = await fetch("/api/tracks");
       if (!res.ok) throw new Error("Failed to fetch tracks");
       const data = await res.json();
       setTracks(data);
-    } catch (error) {
+    } catch (_error) {
       toast.error("Error loading tracks");
     } finally {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    fetchTracks();
+  });
 
   async function handleAddTrack(e: React.FormEvent) {
     e.preventDefault();
@@ -75,8 +75,10 @@ export function SettingsTab() {
       setTracks([newTrack, ...tracks]);
       setNewTrackName("");
       toast.success("Track added successfully");
-    } catch (error: any) {
-      toast.error(error.message || "Failed to add track");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Failed to add track";
+      toast.error(message);
     } finally {
       setIsAdding(false);
     }
@@ -101,7 +103,7 @@ export function SettingsTab() {
       setTracks(tracks.filter((t) => t.id !== trackToDelete.id));
       toast.success("Track deleted successfully");
       setTrackToDelete(null);
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to delete track");
     } finally {
       setIsDeleting(false);
@@ -193,10 +195,14 @@ export function SettingsTab() {
               {/* will remove as soon as the testing of this thing is done */}
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">
+              <label
+                htmlFor="delete-confirmation"
+                className="text-sm font-medium"
+              >
                 Type Track ID to confirm:
               </label>
               <Input
+                id="delete-confirmation"
                 value={deleteConfirmation}
                 onChange={(e) => setDeleteConfirmation(e.target.value)}
                 placeholder={trackToDelete?.id}

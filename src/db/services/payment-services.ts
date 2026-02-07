@@ -112,11 +112,15 @@ export async function createOrder(data: CreateOrderInput) {
 export async function savePayment(data: VerifyAndSavePaymentInput) {
   const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = data;
 
-  const body = razorpayOrderId + "|" + razorpayPaymentId;
+  if (!env.RAZORPAY_SECRET) {
+    throw new AppError("RAZORPAY_SECRET is not configured", 500);
+  }
+
+  const body = `${razorpayOrderId}|${razorpayPaymentId}`;
   const isValid = verifyRazorpaySignature(
     body,
     razorpaySignature,
-    env.RAZORPAY_SECRET!,
+    env.RAZORPAY_SECRET,
   );
 
   if (!isValid) {
@@ -191,7 +195,7 @@ export async function webhookCapture(
   amount: number,
   paymentType: string,
   paymentName: string,
-  sessionUserId: number,
+  _sessionUserId: number,
   paymentSignature?: string,
   teamId?: string,
 ) {
@@ -217,7 +221,7 @@ export async function webhookCapture(
   }
 
   if (paymentInDb.paymentStatus === "Pending") {
-    const updatedPayment = await db
+    const _updatedPayment = await db
       .update(payment)
       .set({
         paymentStatus: "Paid",

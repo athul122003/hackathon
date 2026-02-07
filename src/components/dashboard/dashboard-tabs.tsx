@@ -49,7 +49,7 @@ export function DashboardTabs({
   useEffect(() => {
     setIsClient(true);
     setActiveTab(getInitialTab());
-  }, []);
+  });
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);

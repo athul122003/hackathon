@@ -1,4 +1,4 @@
-import { numeric, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { paymentStatusEnum } from "../enum";
 import { participants } from "./participant";
 import { teams } from "./team";

@@ -92,20 +92,14 @@ export function QuickboardTab() {
           <div className="h-4 w-64 animate-pulse rounded bg-muted" />
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="h-32 animate-pulse rounded-lg border bg-card"
-            />
-          ))}
+          <div className="h-32 animate-pulse rounded-lg border bg-card" />
+          <div className="h-32 animate-pulse rounded-lg border bg-card" />
+          <div className="h-32 animate-pulse rounded-lg border bg-card" />
+          <div className="h-32 animate-pulse rounded-lg border bg-card" />
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          {[...Array(2)].map((_, i) => (
-            <div
-              key={i}
-              className="h-32 animate-pulse rounded-lg border bg-card"
-            />
-          ))}
+          <div className="h-32 animate-pulse rounded-lg border bg-card" />
+          <div className="h-32 animate-pulse rounded-lg border bg-card" />
         </div>
         <div className="h-64 animate-pulse rounded-lg border bg-card" />
         <div className="h-64 animate-pulse rounded-lg border bg-card" />
@@ -179,8 +173,11 @@ export function QuickboardTab() {
                   </tr>
                 </thead>
                 <tbody>
-                  {statesStats.map((state, index) => (
-                    <tr key={index} className="border-b last:border-0">
+                  {statesStats.map((state) => (
+                    <tr
+                      key={state.state ?? "unknown"}
+                      className="border-b last:border-0"
+                    >
                       <td className="py-2 px-3">{state.state}</td>
                       <td className="py-2 px-3 text-right">
                         {state.totalTeams}
@@ -222,8 +219,11 @@ export function QuickboardTab() {
                   </tr>
                 </thead>
                 <tbody>
-                  {collegeRankings.map((college, index) => (
-                    <tr key={index} className="border-b last:border-0">
+                  {collegeRankings.map((college) => (
+                    <tr
+                      key={college.college ?? "unknown"}
+                      className="border-b last:border-0"
+                    >
                       <td className="py-2 px-3">{college.college}</td>
                       <td className="py-2 px-3 text-right">
                         {college.totalTeams}

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { paymentStatusEnum } from "~/db/enum";
 
 const createOrderSchema = z.object({
   amountInInr: z.number(),

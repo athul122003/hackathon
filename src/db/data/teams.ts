@@ -1,6 +1,5 @@
 import { parseBody } from "~/lib/validation/parse";
 import {
-  type CreateTeamInput,
   createTeamSchema,
   type UpdateTeamInput,
   updateTeamSchema,

@@ -1,14 +1,14 @@
 import { desc, eq } from "drizzle-orm";
 import { AppError } from "~/lib/errors/app-error";
 import db from "../index";
-import { ideaSubmission, teams } from "../schema";
+import { ideaSubmission } from "../schema";
 import { tracks } from "../schema/tracks";
 
 export async function createTrack({ name }: { name: string }) {
   try {
     const [track] = await db.insert(tracks).values({ name }).returning();
     return track;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating track:", error);
     throw new AppError("Failed to create track", 500);
   }
