@@ -3,7 +3,7 @@ import db from "~/db";
 import { participants, payment, teams } from "~/db/schema";
 import { env } from "~/env";
 import { AppError } from "~/lib/errors/app-error";
-import { razorPay } from "~/lib/razorpay/config";
+import { getRazorpayClient } from "~/lib/razorpay/config";
 import { verifyRazorpaySignature } from "~/lib/razorpay/verify";
 import type {
   CreateOrderInput,
@@ -72,7 +72,8 @@ export async function createOrder(data: CreateOrderInput) {
   const RECEIPT = `receipt_${data.teamId.substring(0, 5)}_${Date.now()}`;
 
   try {
-    const order = await razorPay.orders.create({
+    const razorpay = getRazorpayClient();
+    const order = await razorpay.orders.create({
       amount: TO_BE_PAID * 100, // ah 100 for paisa
       currency: CURRENCY,
       receipt: RECEIPT,
