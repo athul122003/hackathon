@@ -1,0 +1,361 @@
+"use client";
+
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
+import Image from "next/image";
+import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
+import * as THREE from "three";
+import { WaveTransitionMaterial } from "./shader/WaveTransitionMaterial";
+
+// Register the custom shader material
+extend({ WaveTransitionMaterial });
+
+// Track Data
+const tracks = [
+    {
+        id: "fintech",
+        title: "FinTech",
+        description: "Reimagine the future of finance. Build solutions for seamless payments, blockchain, and financial inclusion.",
+        image: "/images/tracks/FinTech.png"
+    },
+    {
+        id: "healthcare",
+        title: "Healthcare",
+        description: "Innovate for better health. Develop tech that improves patient care, diagnosis, and medical accessibility.",
+        image: "/images/tracks/Healthcare.png"
+    },
+    {
+        id: "logistics",
+        title: "Logistics",
+        description: "Optimize the world of movement. Create smart systems for supply chains, transportation, and delivery.",
+        image: "/images/tracks/Logistics.png"
+    },
+    {
+        id: "open-innovation",
+        title: "Open Innovation",
+        description: "Break the boundaries. Free-form innovation for solutions that don't fit into a box but solve real problems.",
+        image: "/images/tracks/OpenInnovation.png"
+    },
+    {
+        id: "sustainable-dev",
+        title: "Sustainable Dev",
+        description: "Code for the planet. Build eco-friendly solutions for energy, waste management, and conservation.",
+        image: "/images/tracks/SustainableDev.png"
+    }
+];
+
+// Preload textures
+const textureUrls = tracks.map(t => t.image);
+
+// --- Shader Scene Component ---
+function TrackImageShader({ activeIndex }: { activeIndex: number }) {
+    const { viewport } = useThree();
+    const materialRef = useRef<any>(null);
+
+    // Load all textures
+    const textures = useTexture(textureUrls);
+
+    // State for transition
+    const [currentTextureIndex, setCurrentTextureIndex] = useState(activeIndex);
+    const [prevTextureIndex, setPrevTextureIndex] = useState(activeIndex);
+    const progressRef = useRef(0);
+    const targetProgressRef = useRef(0);
+    const isTransitioningRef = useRef(false);
+
+    useEffect(() => {
+        if (activeIndex !== currentTextureIndex) {
+            setPrevTextureIndex(currentTextureIndex);
+            setCurrentTextureIndex(activeIndex);
+            progressRef.current = 0;
+            targetProgressRef.current = 1;
+            isTransitioningRef.current = true;
+        }
+    }, [activeIndex, currentTextureIndex]);
+
+    useFrame((state, delta) => {
+        if (materialRef.current) {
+            materialRef.current.uTime = state.clock.elapsedTime;
+
+            // Texture assignments
+            const tex1 = textures[prevTextureIndex];
+            const tex2 = textures[currentTextureIndex];
+
+            // Ensure textures are valid before assigning to avoid WebGL errors
+            if (tex1 && tex2) {
+                materialRef.current.tMap1 = tex1;
+                materialRef.current.tMap2 = tex2;
+
+                // Resolution uniforms need to be set from the texture images
+                if (tex1.image && tex2.image) {
+                    materialRef.current.uMediaRes1.set(tex1.image.widtg, tex1.image.height);
+                    materialRef.current.uMediaRes2.set(tex2.image.width, tex2.image.height);
+                }
+            }
+
+            materialRef.current.uPlaneRes.set(viewport.width, viewport.height);
+
+            // Animate progress
+            if (isTransitioningRef.current) {
+                // Smoothlerp
+                const speed = 2.0;
+                progressRef.current += (targetProgressRef.current - progressRef.current) * speed * delta;
+
+                // Snap to 1 when close
+                if (Math.abs(targetProgressRef.current - progressRef.current) < 0.01) {
+                    progressRef.current = targetProgressRef.current;
+                    isTransitioningRef.current = false;
+                    // After transition completion, visually we are at texture 2. 
+                    // Effectively prev becomes current for the next expected state, but logical state handles it.
+                }
+            } else {
+                // Ensure it stays at 0 or 1 based on state, usually 1 after transition
+                progressRef.current = 1;
+            }
+
+            materialRef.current.uTransitionProgress = progressRef.current;
+        }
+    });
+
+    return (
+        <mesh scale={[viewport.width, viewport.height, 1]}>
+            <planeGeometry args={[1, 1]} />
+            {/* @ts-ignore */}
+            <waveTransitionMaterial
+                ref={materialRef}
+                key={WaveTransitionMaterial.key}
+                transparent={true}
+            />
+        </mesh>
+    );
+}
+
+// --- Desktop 3D Card with Shader ---
+function TrackCard3D({ activeIndex }: { activeIndex: number }) {
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const mouseX = useSpring(x, { stiffness: 150, damping: 15 });
+    const mouseY = useSpring(y, { stiffness: 150, damping: 15 });
+
+    const rotateX = useTransform(mouseY, [-0.5, 0.5], ["15deg", "-15deg"]);
+    const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+    function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
+        const rect = event.currentTarget.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        const mouseXVal = event.clientX - rect.left;
+        const mouseYVal = event.clientY - rect.top;
+        const xPct = mouseXVal / width - 0.5;
+        const yPct = mouseYVal / height - 0.5;
+        x.set(xPct);
+        y.set(yPct);
+    }
+
+    function handleMouseLeave() {
+        x.set(0);
+        y.set(0);
+    }
+
+    // Get current track data
+    const track = tracks[activeIndex];
+
+    return (
+        <motion.div
+            className="perspective-1000 w-full max-w-md aspect-3/4 relative"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+                perspective: 1000
+            }}
+        >
+            <motion.div
+                className="w-full h-full relative rounded-2xl shadow-2xl overflow-hidden border border-cyan-500/30 bg-black/40 backdrop-blur-md"
+                style={{
+                    rotateX: rotateX,
+                    rotateY: rotateY,
+                    transformStyle: "preserve-3d",
+                }}
+            >
+                {/* Shader Layer */}
+                <div className="absolute inset-0 z-0">
+                    <Canvas>
+                        <TrackImageShader activeIndex={activeIndex} />
+                    </Canvas>
+
+                    {/* Dark Gradient Overlay for text readability */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none" />
+                </div>
+
+                {/* Content Layer with Depth */}
+                <motion.div
+                    key={track.id} // Animate content on change
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="absolute bottom-0 left-0 w-full p-8 z-10 flex flex-col gap-2 pointer-events-none"
+                    style={{ transform: "translateZ(50px)" }}
+                >
+                    <h3 className="text-3xl font-bold text-cyan-400 drop-shadow-lg">{track.title}</h3>
+                    <p className="text-cyan-100/90 text-sm leading-relaxed drop-shadow-md">
+                        {track.description}
+                    </p>
+                </motion.div>
+
+                {/* Border Glow */}
+                <div className="absolute inset-0 border-2 border-cyan-500/20 rounded-2xl pointer-events-none" style={{ transform: "translateZ(20px)" }} />
+            </motion.div>
+        </motion.div>
+    );
+}
+
+// --- Mobile Swipe Stack ---
+function MobileTrackStack() {
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const handleDragEnd = (event: any, info: any) => {
+        if (info.offset.x > 100) {
+            // Swipe Right (Previous)
+            setActiveIndex((prev) => (prev - 1 + tracks.length) % tracks.length);
+        } else if (info.offset.x < -100) {
+            // Swipe Left (Next)
+            setActiveIndex((prev) => (prev + 1) % tracks.length);
+        }
+    };
+
+    const activeTrack = tracks[activeIndex];
+
+    return (
+        <div className="flex flex-col items-center justify-center p-4 w-full h-[60vh] relative">
+            <div className="relative w-full max-w-xs aspect-3/4">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeIndex}
+                        className="absolute inset-0 w-full h-full bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-2xl overflow-hidden shadow-2xl"
+                        drag="x"
+                        dragConstraints={{ left: 0, right: 0 }}
+                        onDragEnd={handleDragEnd}
+                        initial={{ opacity: 0, x: 50, scale: 0.9 }}
+                        animate={{ opacity: 1, x: 0, scale: 1, rotate: 0 }}
+                        exit={{ opacity: 0, x: -50, scale: 0.9, rotate: -5 }}
+                        transition={{ duration: 0.3 }}
+                        whileDrag={{ scale: 1.05, cursor: "grabbing" }}
+                    >
+                        <Image
+                            src={activeTrack.image}
+                            alt={activeTrack.title}
+                            fill
+                            className="object-cover opacity-20"
+                            draggable={false}
+                        />
+                        <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent" />
+
+                        <div className="absolute bottom-0 left-0 w-full p-6">
+                            <h3 className="text-2xl font-bold text-cyan-400 mb-2">{activeTrack.title}</h3>
+                            <p className="text-sm text-cyan-100/80">{activeTrack.description}</p>
+                            <div className="mt-4 flex gap-1 justify-center">
+                                {tracks.map((_, i) => (
+                                    <div
+                                        key={i}
+                                        className={`h-1 rounded-full transition-all duration-300 ${i === activeIndex ? "w-6 bg-cyan-400" : "w-1 bg-cyan-800"}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Swipe Hint */}
+                        <div className="absolute top-4 right-4 bg-black/50 backdrop-blur rounded-full px-3 py-1 text-xs text-cyan-400 border border-cyan-500/30">
+                            Swipe &harr;
+                        </div>
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+        </div>
+    );
+}
+
+// --- Main Component ---
+export default function TracksSection() {
+    const [activeTab, setActiveTab] = useState(0);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Preload textures on mount
+    useEffect(() => {
+        useTexture.preload(textureUrls);
+    }, []);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    return (
+        <section className="relative min-h-screen w-full py-20 px-4 flex flex-col items-center justify-center overflow-hidden">
+
+            {/* Background Elements */}
+            <div className="absolute top-1/4 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="container mx-auto max-w-6xl z-10">
+                <motion.h2
+                    className="text-4xl md:text-6xl font-black text-center mb-16 text-transparent bg-clip-text bg-linear-to-b from-cyan-200 to-cyan-600 drop-shadow-[0_0_15px_rgba(6,182,212,0.5)]"
+                    initial={{ opacity: 0, y: -20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                >
+                    Tracks
+                </motion.h2>
+
+                {isMobile ? (
+                    <MobileTrackStack />
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center h-[600px]">
+                        {/* Left Side: Spectrum Tabs */}
+                        <div className="md:col-span-5 flex flex-col gap-4 relative">
+                            {tracks.map((track, index) => {
+                                const isActive = activeTab === index;
+                                return (
+                                    <motion.button
+                                        key={track.id}
+                                        onClick={() => setActiveTab(index)}
+                                        className={`relative group text-left px-8 py-4 rounded-r-xl transition-all duration-300 border-l-4 overflow-hidden ${isActive
+                                                ? "border-cyan-400 bg-cyan-900/20"
+                                                : "border-transparent hover:border-cyan-800 hover:bg-white/5"
+                                            }`}
+                                        whileHover={{ x: 10 }}
+                                        animate={{
+                                            scale: isActive ? 1.05 : 1,
+                                            opacity: isActive ? 1 : 0.6
+                                        }}
+                                    >
+                                        <div className={`absolute inset-0 bg-linear-to-r from-cyan-500/10 to-transparent transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-0'}`} />
+
+                                        <span className={`relative z-10 text-xl md:text-2xl font-bold tracking-wide ${isActive ? "text-cyan-300" : "text-gray-400 group-hover:text-cyan-100"
+                                            }`}>
+                                            {track.title}
+                                        </span>
+                                    </motion.button>
+                                );
+                            })}
+                        </div>
+
+                        {/* Right Side: 3D Display used to have AnimatePresence, now manages state internally */}
+                        <div className="md:col-span-7 flex justify-center items-center perspective-1000">
+                            <motion.div
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="w-full flex justify-center"
+                            >
+                                <TrackCard3D activeIndex={activeTab} />
+                            </motion.div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </section>
+    );
+}

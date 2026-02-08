@@ -8,6 +8,7 @@ import { TransitionMaterial } from "./shader/TransitionMaterial";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Footer from "./Footer";
+import TracksSection from "./Tracks";
 
 // Register the custom shader material
 extend({ TransitionMaterial });
@@ -205,6 +206,9 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
                     </div>
                 </div>
             </motion.section>
+
+            {/* TRACKS SECTION */}
+            <TracksSection />
 
             {/* DEEP SEA (PRIZE POOL) */}
             <motion.section
