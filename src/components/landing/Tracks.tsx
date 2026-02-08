@@ -16,31 +16,26 @@ const tracks = [
     {
         id: "fintech",
         title: "FinTech",
-        description: "Reimagine the future of finance. Build solutions for seamless payments, blockchain, and financial inclusion.",
         image: "/images/tracks/FinTech.png"
     },
     {
         id: "healthcare",
         title: "Healthcare",
-        description: "Innovate for better health. Develop tech that improves patient care, diagnosis, and medical accessibility.",
         image: "/images/tracks/Healthcare.png"
     },
     {
         id: "logistics",
         title: "Logistics",
-        description: "Optimize the world of movement. Create smart systems for supply chains, transportation, and delivery.",
         image: "/images/tracks/Logistics.png"
     },
     {
         id: "open-innovation",
         title: "Open Innovation",
-        description: "Break the boundaries. Free-form innovation for solutions that don't fit into a box but solve real problems.",
         image: "/images/tracks/OpenInnovation.png"
     },
     {
         id: "sustainable-dev",
         title: "Sustainable Dev",
-        description: "Code for the planet. Build eco-friendly solutions for energy, waste management, and conservation.",
         image: "/images/tracks/SustainableDev.png"
     }
 ];
@@ -88,7 +83,7 @@ function TrackImageShader({ activeIndex }: { activeIndex: number }) {
 
                 // Resolution uniforms need to be set from the texture images
                 if (tex1.image && tex2.image) {
-                    materialRef.current.uMediaRes1.set(tex1.image.widtg, tex1.image.height);
+                    materialRef.current.uMediaRes1.set(tex1.image.width, tex1.image.height);
                     materialRef.current.uMediaRes2.set(tex2.image.width, tex2.image.height);
                 }
             }
@@ -163,7 +158,7 @@ function TrackCard3D({ activeIndex }: { activeIndex: number }) {
 
     return (
         <motion.div
-            className="perspective-1000 w-full max-w-md aspect-3/4 relative"
+            className="perspective-1000 w-full max-w-md aspect-square relative"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             style={{
@@ -185,24 +180,10 @@ function TrackCard3D({ activeIndex }: { activeIndex: number }) {
                     </Canvas>
 
                     {/* Dark Gradient Overlay for text readability */}
-                    <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-black/10 to-transparent pointer-events-none" />
                 </div>
 
-                {/* Content Layer with Depth */}
-                <motion.div
-                    key={track.id} // Animate content on change
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="absolute bottom-0 left-0 w-full p-8 z-10 flex flex-col gap-2 pointer-events-none"
-                    style={{ transform: "translateZ(50px)" }}
-                >
-                    <h3 className="text-3xl font-bold text-cyan-400 drop-shadow-lg">{track.title}</h3>
-                    <p className="text-cyan-100/90 text-sm leading-relaxed drop-shadow-md">
-                        {track.description}
-                    </p>
-                </motion.div>
-
+        
                 {/* Border Glow */}
                 <div className="absolute inset-0 border-2 border-cyan-500/20 rounded-2xl pointer-events-none" style={{ transform: "translateZ(20px)" }} />
             </motion.div>
@@ -228,7 +209,7 @@ function MobileTrackStack() {
 
     return (
         <div className="flex flex-col items-center justify-center p-4 w-full h-[60vh] relative">
-            <div className="relative w-full max-w-xs aspect-3/4">
+            <div className="relative w-full max-w-xs aspect-square">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={activeIndex}
@@ -246,14 +227,13 @@ function MobileTrackStack() {
                             src={activeTrack.image}
                             alt={activeTrack.title}
                             fill
-                            className="object-cover opacity-20"
+                            className="object-cover opacity-80"
                             draggable={false}
                         />
                         <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent" />
 
                         <div className="absolute bottom-0 left-0 w-full p-6">
                             <h3 className="text-2xl font-bold text-cyan-400 mb-2">{activeTrack.title}</h3>
-                            <p className="text-sm text-cyan-100/80">{activeTrack.description}</p>
                             <div className="mt-4 flex gap-1 justify-center">
                                 {tracks.map((_, i) => (
                                     <div
@@ -322,8 +302,8 @@ export default function TracksSection() {
                                         key={track.id}
                                         onClick={() => setActiveTab(index)}
                                         className={`relative group text-left px-8 py-4 rounded-r-xl transition-all duration-300 border-l-4 overflow-hidden ${isActive
-                                                ? "border-cyan-400 bg-cyan-900/20"
-                                                : "border-transparent hover:border-cyan-800 hover:bg-white/5"
+                                            ? "border-cyan-400 bg-cyan-900/20"
+                                            : "border-transparent hover:border-cyan-800 hover:bg-white/5"
                                             }`}
                                         whileHover={{ x: 10 }}
                                         animate={{
