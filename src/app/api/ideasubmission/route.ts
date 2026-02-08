@@ -1,22 +1,22 @@
-import { useSession } from "next-auth/react";
-import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { registrationRequiredRoute } from "~/auth/route-handlers";
 import { submitIdea } from "~/db/services/idea-services";
 import { AppError } from "~/lib/errors/app-error";
+import { errorResponse } from "~/lib/response/error";
+import { successResponse } from "~/lib/response/success";
 
-export async function POST(req: Request) {
-    const { teamId, pdfUrl, trackId } = await req.json();
-    const session = useSession();
-    if (!session.data?.user?.id) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    try {
-        const result = await submitIdea({ teamId, pdfUrl, trackId, userId: session.data.user.id });
-        return NextResponse.json({ success: true, result });
-    }
-    catch (e) {
-        if (e instanceof AppError) {
-            return NextResponse.json({ error: e.message }, { status: 400 });
+export async function POST(req: NextRequest, context: { params: Promise<Record<string, string>> }) {
+    return registrationRequiredRoute(async (_req, _ctx, user) => {
+        const { teamId, pdfUrl, trackId } = await req.json();
+        try {
+            const result = await submitIdea({ teamId, pdfUrl, trackId, userId: user.id });
+            return successResponse({ result })
         }
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-    }
+        catch (e) {
+            if (e instanceof AppError) {
+                return errorResponse(e)
+            }
+            return errorResponse(new AppError("INTERNAL_ERROR", 500, { title: "Internal server error", description: "Failed to submit idea. Please try again later." }))
+        }
+    })(req, context);
 }

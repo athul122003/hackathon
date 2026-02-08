@@ -27,3 +27,24 @@ export async function submitIdea({ teamId, pdfUrl, trackId, userId }: { teamId: 
         throw new AppError("Failed to submit idea", 500);
     }
 }
+
+export async function getIdeaSubmission(teamId: string) {
+    try {
+        const ideaSubmissionData = await db.query.ideaSubmission.findFirst({
+            where: (submission, { eq }) => eq(submission.teamId, teamId),
+            with: {
+                track: true,
+            },
+        });
+        const submission = ideaSubmissionData ? {
+            pdfUrl: ideaSubmissionData.pptUrl,
+            trackId: ideaSubmissionData.trackId,
+            trackName: ideaSubmissionData.track?.name ?? "Unknown Track",
+        } : null;
+        return submission;
+    }
+    catch (error) {
+        console.error("Error fetching idea submission:", error);
+        throw new AppError("Failed to fetch idea submission", 500);
+    }
+}

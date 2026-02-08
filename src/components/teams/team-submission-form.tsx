@@ -1,10 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Loader2, Send, Trash2, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { uploadFileToCloudinary, validatePdfFile } from "~/components/cloudinary-upload";
-import PdfPreview from "~/components/pdf";
+
+const PdfPreview = dynamic(() => import("~/components/pdf"), {
+    ssr: false,
+    loading: () => <div className="flex items-center justify-center h-[200px] w-[300px] bg-slate-800 rounded-lg"><Loader2 className="h-6 w-6 animate-spin text-slate-400" /></div>,
+});
 import {
     AlertDialog,
     AlertDialogAction,
@@ -37,6 +42,7 @@ interface TeamSubmissionFormProps {
     submission?: {
         pdfUrl: string;
         trackId: string;
+        trackName: string;
     } | null;
 }
 
@@ -178,14 +184,12 @@ export function TeamSubmissionForm({ teamId, submission }: TeamSubmissionFormPro
     };
 
     if (submission) {
-        const trackName = tracks.find((t) => t.id === submission.trackId)?.name;
-
         return (
             <Card>
                 <CardHeader>
                     <CardTitle>Submitted Idea</CardTitle>
                     <CardDescription>
-                        Your team has submitted an idea for the <span className="font-semibold text-primary">{trackName || "..."}</span> track.
+                        Your team has submitted an idea for the <span className="font-semibold text-primary">{submission.trackName}</span> track.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center py-6">

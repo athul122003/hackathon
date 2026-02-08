@@ -294,6 +294,9 @@ export async function getFormStatus(teamId: string) {
   }
   const siteSettingsData = await db.query.siteSettings.findFirst();
   if (siteSettingsData?.resultsOut) {
+    if (!teamRes.ideaSubmission) {
+      return "IDEA_NOT_SUBMITTED";
+    }
     if (teamRes.notSelected) {
       return "NOT_SELECTED";
     }
