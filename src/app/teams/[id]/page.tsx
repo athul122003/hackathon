@@ -6,6 +6,7 @@ import { ConfirmTeamButton } from "~/components/teams/confirm-team-button";
 import { DeleteTeamButton } from "~/components/teams/delete-team-button";
 import { LeaveTeamButton } from "~/components/teams/leave-team-button";
 import { TeamIdDisplay } from "~/components/teams/team-id-display";
+import { TeamSubmissionForm } from "~/components/teams/team-submission-form";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -17,6 +18,11 @@ import {
 import * as userData from "~/db/data/participant";
 import * as teamData from "~/db/data/teams";
 
+async function getTeamDetails(id: string) {
+  const res = await fetch(`api/teams/${id}/details`)
+  return res.json()
+}
+
 export default async function TeamDetailsPage({
   params,
 }: {
@@ -24,6 +30,7 @@ export default async function TeamDetailsPage({
 }) {
   const { id } = await params;
   const session = await auth();
+  const teamDetail = await getTeamDetails(id);
 
   if (!session?.user?.email) {
     redirect("/");
@@ -155,21 +162,14 @@ export default async function TeamDetailsPage({
             )}
 
             {team.isCompleted && (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="p-4 bg-muted rounded-lg">
                   <p className="text-sm font-medium">
                     This team has been confirmed. Members cannot leave the team.
                   </p>
                 </div>
-                {user.isLeader && (
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      As the team leader, you can delete the team. This will
-                      remove all members and cannot be undone.
-                    </p>
-                    <DeleteTeamButton teamId={team.id} teamName={team.name} />
-                  </div>
-                )}
+
+                <TeamSubmissionForm teamId={team.id} />
               </div>
             )}
           </CardContent>

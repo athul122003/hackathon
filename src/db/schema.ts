@@ -7,3 +7,4 @@ export * from "./schema/rbac";
 export * from "./schema/team";
 export * from "./schema/team-progress";
 export * from "./schema/tracks";
+export * from "./schema/site-settings";

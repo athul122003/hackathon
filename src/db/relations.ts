@@ -53,6 +53,10 @@ export const teamRelations = relations(teams, ({ many, one }) => ({
     fields: [teams.id],
     references: [selected.teamId],
   }),
+  ideaSubmission: one(ideaSubmission, {
+    fields: [teams.id],
+    references: [ideaSubmission.teamId],
+  })
 }));
 
 export const notSelectedRelations = relations(notSelected, ({ one }) => ({
