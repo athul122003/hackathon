@@ -7,8 +7,8 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { participants } from "./participant";
 import { paymentStatusEnum } from "../enum";
+import { participants } from "./participant";
 
 export const events = pgTable(
   "event",

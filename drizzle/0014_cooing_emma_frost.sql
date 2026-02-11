@@ -1,37 +1,34 @@
-CREATE TABLE "event_account" (
-	"userId" text NOT NULL,
-	"type" text NOT NULL,
-	"provider" text NOT NULL,
-	"providerAccountId" text NOT NULL,
-	"refresh_token" text,
-	"access_token" text,
-	"expires_at" integer,
-	"token_type" text,
-	"scope" text,
-	"id_token" text,
-	"session_state" text
-);
---> statement-breakpoint
-CREATE TABLE "event_session" (
-	"sessionToken" text PRIMARY KEY NOT NULL,
-	"userId" text NOT NULL,
-	"expires" timestamp NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "event_user" (
+CREATE TABLE "event_participant" (
 	"id" text PRIMARY KEY NOT NULL,
-	"name" text,
-	"email" text,
-	"emailVerified" timestamp,
-	"image" text,
-	CONSTRAINT "event_user_email_unique" UNIQUE("email")
+	"event_id" text NOT NULL,
+	"participant_id" text NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "event_verification_token" (
-	"identifier" text NOT NULL,
-	"token" text NOT NULL,
-	"expires" timestamp NOT NULL
+CREATE TABLE "event_teams" (
+	"id" text PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"payment_status" "payment_status" DEFAULT 'Pending',
+	"leader_id" text NOT NULL,
+	"attended" boolean DEFAULT false NOT NULL,
+	"is_complete" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "event_account" ADD CONSTRAINT "event_account_userId_event_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."event_user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "event_session" ADD CONSTRAINT "event_session_userId_event_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."event_user"("id") ON DELETE cascade ON UPDATE no action;
+CREATE TABLE "event" (
+	"id" text PRIMARY KEY NOT NULL,
+	"title" text NOT NULL,
+	"description" text NOT NULL,
+	"date" text NOT NULL,
+	"image" text NOT NULL,
+	"team_size" integer DEFAULT 1 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+ALTER TABLE "event_participant" ADD CONSTRAINT "event_participant_event_id_event_id_fk" FOREIGN KEY ("event_id") REFERENCES "public"."event"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "event_participant" ADD CONSTRAINT "event_participant_participant_id_participant_id_fk" FOREIGN KEY ("participant_id") REFERENCES "public"."participant"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "event_teams" ADD CONSTRAINT "event_teams_leader_id_participant_id_fk" FOREIGN KEY ("leader_id") REFERENCES "public"."participant"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "event_date_idx" ON "event" USING btree ("date");--> statement-breakpoint
+CREATE INDEX "event_team_size_idx" ON "event" USING btree ("team_size");

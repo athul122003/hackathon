@@ -1,5 +1,7 @@
 export * from "./schema/auth";
 export * from "./schema/dashboard-auth";
+export * from "./schema/event";
+export * from "./schema/event-auth";
 export * from "./schema/ideaSubmission";
 export * from "./schema/participant";
 export * from "./schema/payment";
@@ -8,5 +10,3 @@ export * from "./schema/site-settings";
 export * from "./schema/team";
 export * from "./schema/team-progress";
 export * from "./schema/tracks";
-export * from "./schema/event-auth";
-export * from "./schema/event";
