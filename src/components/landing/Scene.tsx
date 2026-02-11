@@ -10,13 +10,13 @@ import {
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+import type { Session } from "next-auth";
 import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Footer from "./Footer";
 import { Navbar } from "./Navbar";
 import { TransitionMaterial } from "./shader/TransitionMaterial";
 import TracksSection from "./Tracks";
-import { type Session } from "next-auth";
 
 // Register the custom shader material
 extend({ TransitionMaterial });
@@ -329,7 +329,7 @@ export default function Scene({ session }: { session: Session | null }) {
       {loaded && (
         <div className="absolute inset-0 pointer-events-none z-40">
           {/* The Navbar component itself handles pointer-events-auto for buttons */}
-          <Navbar isUnderwater={isUnderwater} session={session}/>
+          <Navbar isUnderwater={isUnderwater} session={session} />
         </div>
       )}
 
