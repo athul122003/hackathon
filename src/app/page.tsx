@@ -1,7 +1,5 @@
-import Link from "next/link";
 import { auth } from "~/auth/config";
 import Scene from "~/components/landing/Scene";
-import { Button } from "~/components/ui/button";
 
 export default async function Home() {
   const session = await auth();
@@ -9,10 +7,10 @@ export default async function Home() {
   return (
     <main className="relative h-screen w-full overflow-hidden bg-black">
       {/* 3D Scene Background & Scroll Content */}
-      <Scene />
+      <Scene session={session} />
 
       {/* Fixed UI Overlay (Navbar/Auth) */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-end p-6 bg-linear-to-b from-black/50 to-transparent pointer-events-none">
+      {/* <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-end p-6 bg-linear-to-b from-black/50 to-transparent pointer-events-none">
         <div className="pointer-events-auto">
           {session?.user ? (
             <Button
@@ -31,7 +29,7 @@ export default async function Home() {
             </Button>
           )}
         </div>
-      </div>
+      </div> */}
     </main>
   );
 }
