@@ -1,4 +1,4 @@
-import { AdapterAccountType } from "@auth/core/adapters";
+import type { AdapterAccountType } from "@auth/core/adapters";
 import {
   integer,
   pgTable,

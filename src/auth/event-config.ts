@@ -1,16 +1,16 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { eq } from "drizzle-orm";
+import NextAuth, { type DefaultSession } from "next-auth";
 import Google from "next-auth/providers/google";
-import NextAuth, { DefaultSession } from "next-auth";
 import db from "~/db";
-import { env } from "~/env";
+import { query } from "~/db/data";
 import {
-  eventSessions,
   eventAccounts,
+  eventSessions,
   eventUsers,
   eventVerificationTokens,
 } from "~/db/schema/event-auth";
-import { query } from "~/db/data";
-import { eq } from "drizzle-orm";
+import { env } from "~/env";
 
 // Separate key for eventUsers
 declare module "next-auth" {

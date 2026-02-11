@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { and, eq, count } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { hashPassword } from "~/lib/auth/password";
 import db from "./index";
 import {
