@@ -13,37 +13,49 @@ export function TeamIdDisplay({ teamId }: { teamId: string }) {
       await navigator.clipboard.writeText(teamId);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      toast.success("Team ID copied to clipboard");
     } catch (error) {
       toast.error("Failed to copy", {
-        description:
-          error instanceof Error
-            ? error.message
-            : "Something went wrong. Please try again.",
+        description: "Please try copying manually.",
       });
     }
   }
 
   return (
-    <div className="mt-2 p-3 bg-muted rounded-lg">
-      <p className="text-sm font-medium text-muted-foreground mb-2">
+    // Changed bg-zinc-900/90 -> bg-black/40 for that "Smoked Glass" look
+    <div className="bg-transparent border border-white/20 rounded-lg p-5 shadow-2xl backdrop-blur-xl max-w-md transition-all hover:bg-black/10">
+      <p className="text-xs text-white/70 mb-1.5 font-medium">
         Team ID (share this to invite members):
       </p>
-      <div className="flex items-center gap-2">
-        <p className="text-lg font-mono font-bold flex-1">{teamId}</p>
+      
+      <div className="flex items-center gap-3">
+        {/* ID: Monospace, Bold, White */}
+        <code className="text-sm md:text-base font-mono font-bold text-white tracking-wide flex-1 truncate drop-shadow-sm">
+          {teamId}
+        </code>
+
+        {/* Copy Button: Glassy Outline */}
         <Button
           onClick={copyToClipboard}
           size="sm"
           variant="outline"
-          className="shrink-0"
+          className="
+            h-8 px-3 shrink-0
+            bg-white/10 hover:bg-white/20
+            border-white/20 hover:border-white/40
+            text-white 
+            backdrop-blur-sm
+            transition-all
+          "
         >
           {copied ? (
             <>
-              <Check className="h-4 w-4 mr-1" />
-              Copied
+              <Check className="h-3.5 w-3.5 mr-1.5 text-green-400" />
+              <span className="text-green-400 font-medium">Copied</span>
             </>
           ) : (
             <>
-              <Copy className="h-4 w-4 mr-1" />
+              <Copy className="h-3.5 w-3.5 mr-1.5" />
               Copy
             </>
           )}
