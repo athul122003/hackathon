@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Github, Lock } from "lucide-react";
+import { Github } from "lucide-react";
 import type { UseFormReturn } from "react-hook-form";
 import {
   FormControl,
@@ -44,23 +44,8 @@ export function GithubStep({ form, initialGithubUsername }: GithubStepProps) {
             </div>
 
             <FormControl>
-              {/* LAYOUT CONTAINER: 
-                  Mobile: Flex Column (Vertical Stack)
-                  Desktop (md): Block/Relative (Horizontal Overlay)
-              */}
-              <div className="relative w-full max-w-xl mx-auto group flex flex-col items-center md:block">
-                {/* 1. LOCK ICON */}
-                <div
-                  className="
-                  text-white/40 group-hover:text-white/60 transition-colors z-10
-                  mb-2 md:mb-0
-                  md:absolute md:left-2 md:top-1/2 md:-translate-y-1/2
-                "
-                >
-                  <Lock className="w-5 h-5 md:w-6 md:h-6" />
-                </div>
-
-                {/* 2. INPUT FIELD */}
+              <div className="relative w-full max-w-xl mx-auto">
+                {/* INPUT FIELD (Plain & Simple) */}
                 <Input
                   readOnly
                   title={field.value ?? initialGithubUsername ?? ""}
@@ -69,37 +54,24 @@ export function GithubStep({ form, initialGithubUsername }: GithubStepProps) {
                     bg-transparent 
                     border-0 border-b-2 border-white/20 
                     border-dashed
-                    rounded-none 
+                    rounded-4xl
                     
                     /* TEXT STYLING */
                     text-center font-mono text-white/90 
-                    /* Mobile: Smaller text, no side padding */
                     text-xl px-0
-                    /* Desktop: Large text, padding for icons */
-                    md:text-4xl md:pl-10 md:pr-32
+                    md:text-4xl 
                     
+                    /* INTERACTION */
                     cursor-not-allowed
                     focus-visible:ring-0 focus-visible:border-white/40
                     focus-visible:outline-none 
                     py-4
                     transition-all duration-300
                     overflow-hidden text-ellipsis
+                    placeholder:text-white/20
                   "
                   value={field.value ?? initialGithubUsername ?? ""}
                 />
-
-                {/* 3. VERIFIED BADGE */}
-                <div
-                  className="
-                  z-10
-                  mt-4 md:mt-0
-                  md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2
-                "
-                >
-                  <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-green-400 bg-green-950/30 border border-green-500/30 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                    <CheckCircle2 className="w-3 h-3" /> Verified
-                  </span>
-                </div>
               </div>
             </FormControl>
           </FormItem>

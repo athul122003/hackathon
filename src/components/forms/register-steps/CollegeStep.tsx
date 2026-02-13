@@ -68,11 +68,13 @@ export function CollegeStep({
         render={({ field }) => (
           <FormItem className="w-full max-w-2xl space-y-8">
             {/* Header Section */}
-            <div className="text-center space-y-2">
-              <FormLabel className="text-3xl md:text-5xl font-bold text-white drop-shadow-sm leading-tight">
-                Select your college
+            <div className="flex flex-col items-center justify-center text-center space-y-2">
+              <FormLabel className="text-3xl md:text-5xl font-bold text-white drop-shadow-sm leading-tight text-center">
+                Select your College
               </FormLabel>
-              <p className="text-white/60 text-lg">Search by name or state</p>
+              <p className="text-white/60 text-lg">
+                Type to search, click to select
+              </p>
             </div>
 
             {/* Search Input */}

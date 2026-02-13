@@ -52,8 +52,8 @@ export function StateStep({ form, onNext }: StateStepProps) {
         render={({ field }) => (
           <FormItem className="w-full max-w-lg space-y-8">
             {/* Header Section */}
-            <div className="text-center space-y-2">
-              <FormLabel className="text-3xl md:text-5xl font-bold text-white drop-shadow-sm leading-tight">
+            <div className="flex flex-col items-center justify-center text-center space-y-2">
+              <FormLabel className="text-3xl md:text-5xl font-bold text-white drop-shadow-sm leading-tight text-center">
                 Select your state
               </FormLabel>
               <p className="text-white/60 text-lg">

@@ -48,13 +48,14 @@ export function CourseStep({ form, onNext }: CourseStepProps) {
                     // Staggered animation for list items
                     style={{ animationDelay: `${index * 50}ms` }}
                     className={cn(
-                      "group flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 p-5 text-left transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:scale-[1.02] active:scale-[0.98] animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards",
+                      // FIXED: Removed 'hover:scale-[1.02]' to prevent overflow
+                      "group flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 p-5 text-left transition-all duration-300 hover:bg-white/20 hover:border-white/30 active:scale-[0.98] animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards",
                       field.value === course &&
-                        "bg-white/20 border-white/50 ring-1 ring-white/50",
+                        "bg-white/20 border-white/50 ring-1 ring-white/50 shadow-lg sticky top-0 z-10 backdrop-blur-md",
                     )}
                   >
-                    {/* Course Name */}
-                    <span className="text-xl font-medium text-white group-hover:translate-x-1 transition-transform duration-300">
+                    {/* Course Name - Added group-hover:pl-2 for the internal movement effect */}
+                    <span className="text-xl font-medium text-white group-hover:pl-2 transition-all duration-300">
                       {course}
                     </span>
 
@@ -64,7 +65,7 @@ export function CourseStep({ form, onNext }: CourseStepProps) {
                         <Check className="h-5 w-5 text-white animate-in zoom-in" />
                       )}
 
-                      {/* Keyboard shortcut hint (Optional visual flair) */}
+                      {/* Keyboard shortcut hint */}
                       <span className="hidden group-hover:block text-xs font-bold uppercase tracking-widest text-white/50 bg-white/10 px-2 py-1 rounded">
                         Select
                       </span>
