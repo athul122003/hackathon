@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -129,6 +130,16 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
           <div
             className="h-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)] transition-all duration-700 ease-in-out"
             style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+
+        <div className="absolute inset-0 w-full h-full z-0 opacity-20 pointer-events-none mix-blend-multiply">
+          <Image
+            src="/images/palm-tree.png"
+            alt="Palm trees"
+            fill
+            className="object-cover object-bottom"
+            priority
           />
         </div>
 

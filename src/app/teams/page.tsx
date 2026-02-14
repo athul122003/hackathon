@@ -1,5 +1,6 @@
 import { Home } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { auth } from "~/auth/config";
 import SignOut from "~/components/auth/authButtons/signOut";
@@ -26,7 +27,17 @@ export default async function TeamsPage() {
   return (
     // MAIN CONTAINER
     // Changed: Added 'py-12' (top/bottom padding) and 'gap-8' to prevent edge crowding
-    <div className="relative flex min-h-screen flex-col items-center justify-center p-6 py-12 md:p-12 overflow-hidden bg-gradient-to-b from-[#10569c] via-[#61b2e4] to-[#eef7fb] text-white">
+    <div className="relative flex min-h-screen flex-col items-center justify-center p-6 py-12 md:p-12 overflow-hidden bg-linear-to-b from-[#10569c] via-[#61b2e4] to-[#eef7fb] text-white">
+      <div className="absolute inset-0 w-full h-full z-0 opacity-20 pointer-events-none mix-blend-multiply">
+        <Image
+          src="/images/palm-tree.png"
+          alt="Palm trees"
+          fill
+          className="object-cover object-bottom"
+          priority
+        />
+      </div>
+
       {/* --- DECORATIVE LAYERS (The Beach) --- */}
       <div className="absolute -bottom-[5%] left-[-20%] w-[140%] h-[25vh] md:h-[35vh] bg-[#fffac2]/40 rounded-[100%] blur-3xl z-0 pointer-events-none transition-all" />
       <div className="absolute -bottom-[12%] left-[-10%] w-[120%] h-[20vh] md:h-[30vh] bg-[#fbf6db] rounded-[50%] shadow-[0_-10px_50px_rgba(240,230,180,0.8)] z-0 pointer-events-none transition-all" />
