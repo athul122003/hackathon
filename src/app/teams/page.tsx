@@ -1,12 +1,11 @@
 import { Home } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { auth } from "~/auth/config";
 import SignOut from "~/components/auth/authButtons/signOut";
+import { TeamPageLayout } from "~/components/teams/TeamPageLayout";
 import { TeamForm } from "~/components/teams/team-form";
 import { Button } from "~/components/ui/button";
-import { TeamPageLayout } from "~/components/teams/TeamPageLayout";
 import * as userData from "~/db/data/participant";
 
 export default async function TeamsPage() {
@@ -28,7 +27,6 @@ export default async function TeamsPage() {
   return (
     // MAIN CONTAINER
     <TeamPageLayout>
-
       {/* --- CONTENT CONTAINER --- */}
       <div className="relative z-10 w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-700 flex flex-col gap-8">
         {/* RESPONSIVE HEADER SECTION */}

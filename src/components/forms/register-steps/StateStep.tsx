@@ -32,8 +32,8 @@ export function StateStep({ form, onNext }: StateStepProps) {
     // A. Filter by search term first
     const options = search
       ? stateEnum.enumValues.filter((state) =>
-        state.toLowerCase().includes(search.toLowerCase()),
-      )
+          state.toLowerCase().includes(search.toLowerCase()),
+        )
       : stateEnum.enumValues;
 
     // B. Sort: Move selected item to the top
@@ -103,7 +103,7 @@ export function StateStep({ form, onNext }: StateStepProps) {
                       "group flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 text-left transition-all hover:bg-white/20 hover:border-white/30 active:scale-[0.98]",
                       // Highlight style if selected
                       field.value === state &&
-                      "bg-white/20 border-white/50 ring-1 ring-white/50 sticky top-0 z-10 backdrop-blur-md shadow-lg",
+                        "bg-white/20 border-white/50 ring-1 ring-white/50 sticky top-0 z-10 backdrop-blur-md shadow-lg",
                     )}
                   >
                     {/* State Name */}

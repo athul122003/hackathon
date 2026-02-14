@@ -208,10 +208,8 @@
 .dashboard-theme input,
 .dashboard-theme textarea,
 .dashboard-theme select {
-  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif !important;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
-
-
 
 @layer base {
   * {

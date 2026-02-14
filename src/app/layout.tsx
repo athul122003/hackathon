@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Pirata_One, Crimson_Text } from "next/font/google";
+import { Crimson_Text, Pirata_One, Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import { ToasterWrapper } from "~/components/providers/toaster-wrapper";
 import { GlobalLoader } from "~/components/ui/global-loader";
@@ -37,7 +37,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${jakarta.variable} ${pirata.variable} ${crimson.variable} antialiased dark`}>
+      <body
+        className={`${jakarta.variable} ${pirata.variable} ${crimson.variable} antialiased dark`}
+      >
         <DayNightProvider>
           <GlobalLoader />
           {children}

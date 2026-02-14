@@ -8,11 +8,10 @@ import {
 } from "@react-three/drei";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import type { Session } from "next-auth";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { useDayNight } from "~/components/providers/useDayNight"
 import * as THREE from "three";
+import { useDayNight } from "~/components/providers/useDayNight";
 import Footer from "./Footer";
 import { Navbar } from "./Navbar";
 import { TransitionMaterial } from "./shader/TransitionMaterial";
@@ -29,11 +28,7 @@ useTexture.preload([
   "/images/underwater.png",
 ]);
 
-function Background({
-  isNight,
-}: {
-  isNight: boolean;
-}) {
+function Background({ isNight }: { isNight: boolean }) {
   const { viewport } = useThree();
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<any>(null);
@@ -52,23 +47,30 @@ function Background({
     if (meshRef.current) {
       // Fade out sway between scroll 0.1 (start of transition) and 0.3 (deep in water)
       // smoothstep returns 0->1 between min/max, so 1 - smoothstep gives 1->0
-      const swayFactor = 1 - THREE.MathUtils.smoothstep(scroll.offset, 0.1, 0.3);
+      const swayFactor =
+        1 - THREE.MathUtils.smoothstep(scroll.offset, 0.1, 0.3);
 
       if (swayFactor > 0.001) {
         // Roll (z-axis) - faster rocking
-        meshRef.current.rotation.z = (Math.sin(time * 0.8) * 0.015 + Math.sin(time * 2.3) * 0.005) * swayFactor;
+        meshRef.current.rotation.z =
+          (Math.sin(time * 0.8) * 0.015 + Math.sin(time * 2.3) * 0.005) *
+          swayFactor;
 
         // Pitch (x-axis) - gentle forward/back movement
-        meshRef.current.rotation.x = (Math.sin(time * 0.6) * 0.01 + Math.sin(time * 1.5) * 0.003) * swayFactor;
+        meshRef.current.rotation.x =
+          (Math.sin(time * 0.6) * 0.01 + Math.sin(time * 1.5) * 0.003) *
+          swayFactor;
 
         // Yaw (y-axis) - very subtle turning to feel alive
-        meshRef.current.rotation.y = (Math.sin(time * 0.4) * 0.005) * swayFactor;
+        meshRef.current.rotation.y = Math.sin(time * 0.4) * 0.005 * swayFactor;
 
         // Heave (y-axis position) - realistic bobbing on waves
-        meshRef.current.position.y = (Math.sin(time * 1.2) * 0.03 + Math.sin(time * 2.5) * 0.01) * swayFactor;
+        meshRef.current.position.y =
+          (Math.sin(time * 1.2) * 0.03 + Math.sin(time * 2.5) * 0.01) *
+          swayFactor;
 
         // Sway (x-axis position) - drifting
-        meshRef.current.position.x = (Math.sin(time * 0.7) * 0.01) * swayFactor;
+        meshRef.current.position.x = Math.sin(time * 0.7) * 0.01 * swayFactor;
       } else {
         // Reset to neutral when scrolled down
         meshRef.current.rotation.set(0, 0, 0);
@@ -82,13 +84,21 @@ function Background({
       materialRef.current.uTransitionProgress = progress;
       materialRef.current.uHoverProgress = state.pointer.x * 0.5 + 0.5;
 
-      const currentSunImg = (isNight ? night.image : morning.image) as HTMLImageElement;
+      const currentSunImg = (
+        isNight ? night.image : morning.image
+      ) as HTMLImageElement;
 
       const waterImg = underwater.image as HTMLImageElement;
       if (currentSunImg && waterImg) {
         // Use the scaled viewport for resolution to keep aspect ratio consistent
-        materialRef.current.uPlaneRes.set(viewport.width * 1.1, viewport.height * 1.1);
-        materialRef.current.uMediaRes1.set(currentSunImg.width, currentSunImg.height);
+        materialRef.current.uPlaneRes.set(
+          viewport.width * 1.1,
+          viewport.height * 1.1,
+        );
+        materialRef.current.uMediaRes1.set(
+          currentSunImg.width,
+          currentSunImg.height,
+        );
         materialRef.current.uMediaRes2.set(waterImg.width, waterImg.height);
       }
 
@@ -102,14 +112,17 @@ function Background({
       materialRef.current.uIsNight = THREE.MathUtils.lerp(
         materialRef.current.uIsNight,
         isNight ? 1.0 : 0.0,
-        0.05
+        0.05,
       );
     }
   });
 
   return (
     // Scaled up to cover edges when rotating
-    <mesh ref={meshRef} scale={[viewport.width * 1.1, viewport.height * 1.1, 1]}>
+    <mesh
+      ref={meshRef}
+      scale={[viewport.width * 1.1, viewport.height * 1.1, 1]}
+    >
       <planeGeometry args={[1, 1]} />
       {/* @ts-ignore */}
       <transitionMaterial
@@ -143,7 +156,10 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
       const newPages = Math.max(3, height / vh);
 
       // Only update if height changed significantly (> 10px) to prevent loops
-      if (Math.abs(height - lastHeight.current) > 10 || !hasCalculated.current) {
+      if (
+        Math.abs(height - lastHeight.current) > 10 ||
+        !hasCalculated.current
+      ) {
         lastHeight.current = height;
         setPages(newPages);
         hasCalculated.current = true;
@@ -178,8 +194,8 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
       const widthChanged =
         Math.abs(
           window.innerWidth -
-          initialViewportHeight.current *
-          (window.innerWidth / window.innerHeight),
+            initialViewportHeight.current *
+              (window.innerWidth / window.innerHeight),
         ) > 100;
 
       if (widthChanged && ref.current) {
@@ -196,7 +212,7 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
       observer.disconnect();
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [setPages]);
 
   // Prevent default scroll behavior when focusing on elements
   useEffect(() => {
@@ -229,9 +245,7 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
       <div className="flex-1 relative">
         <div className="absolute bottom-0 left-0 w-full h-[40vh] bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none z-0" />
         {/* HERITAGE SECTION (SUNNY) */}
-        <section
-          className="h-screen flex flex-col items-center justify-center relative p-8 text-center bg-linear-to-b from-black/20 via-transparent to-transparent"
-        >
+        <section className="h-screen flex flex-col items-center justify-center relative p-8 text-center bg-linear-to-b from-black/20 via-transparent to-transparent">
           <img
             src="/logo.png"
             alt="HF Logo"
@@ -326,8 +340,6 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 1.5 }}
           >
-
-
             <div className="relative z-10 flex flex-col items-center text-center w-full pt-16 pb-8">
               <motion.h2
                 className="text-5xl md:text-7xl font-pirate font-black text-center mb-16 text-transparent bg-clip-text bg-linear-to-b from-yellow-200 to-yellow-600 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)] tracking-wide"
@@ -369,7 +381,6 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
                   IN PRIZES
                 </span>
               </motion.div>
-
 
               {/* <Link href="/timeline" passHref>
               <button
@@ -466,10 +477,7 @@ export default function Scene({ session }: { session: Session | null }) {
     >
       <div className="absolute inset-0 pointer-events-none z-40">
         {/* The Navbar component itself handles pointer-events-auto for buttons */}
-        <Navbar
-          isUnderwater={isUnderwater}
-          session={session}
-        />
+        <Navbar isUnderwater={isUnderwater} session={session} />
       </div>
 
       <Canvas
@@ -481,9 +489,7 @@ export default function Scene({ session }: { session: Session | null }) {
         <Suspense fallback={null}>
           <ScrollControls key={pages} pages={pages} damping={0.2}>
             <ScrollSync setUnderwater={setIsUnderwater} />
-            <Background
-              isNight={isNight}
-            />
+            <Background isNight={isNight} />
             {/* Scroll content */}
             <Scroll
               html

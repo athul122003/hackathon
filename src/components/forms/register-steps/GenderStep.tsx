@@ -50,7 +50,7 @@ export function GenderStep({ form, onNext }: GenderStepProps) {
                     className={cn(
                       "group flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 p-5 text-left transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:scale-[1.02] active:scale-[0.98] animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards",
                       field.value === gender &&
-                      "bg-white/20 border-white/50 ring-1 ring-white/50",
+                        "bg-white/20 border-white/50 ring-1 ring-white/50",
                     )}
                   >
                     {/* Gender Label */}
