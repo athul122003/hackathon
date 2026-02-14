@@ -41,6 +41,7 @@ export async function getAllEvents(): Promise<GetAllEventsResponse> {
         deadline: true,
         type: true,
         status: true,
+        audience: true,
         minTeamSize: true,
         maxTeamSize: true,
         maxTeams: true,

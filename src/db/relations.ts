@@ -37,6 +37,7 @@ export const userRelations = relations(participants, ({ one, many }) => ({
 
 export const collegeRelations = relations(colleges, ({ many }) => ({
   users: many(participants),
+  eventUsers: many(eventUsers),
 }));
 
 export const teamRelations = relations(teams, ({ many, one }) => ({
@@ -165,7 +166,11 @@ export const eventTeamRelations = relations(eventTeams, ({ many, one }) => ({
   members: many(eventParticipants),
 }));
 
-export const eventUserRelations = relations(eventUsers, ({ many }) => ({
+export const eventUserRelations = relations(eventUsers, ({ many, one }) => ({
+  college: one(colleges, {
+    fields: [eventUsers.collegeId],
+    references: [colleges.id],
+  }),
   participants: many(eventParticipants),
   accounts: many(eventAccounts),
   sessions: many(eventSessions),

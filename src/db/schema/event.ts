@@ -7,7 +7,7 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { eventStatusEnum, eventTypeEnum, paymentStatusEnum } from "../enum";
+import { eventAudienceEnum, eventStatusEnum, eventTypeEnum, paymentStatusEnum } from "../enum";
 import { eventUsers } from "./event-auth";
 
 export const events = pgTable(
@@ -24,6 +24,7 @@ export const events = pgTable(
     image: text("image").notNull(),
     type: eventTypeEnum("event_type").notNull().default("Solo"),
     status: eventStatusEnum("event_status").notNull().default("Draft"),
+    audience: eventAudienceEnum("event_audience").notNull().default("Both"),
     maxTeams: integer("max_teams").notNull().default(0),
     minTeamSize: integer("min_team_size").notNull().default(1),
     maxTeamSize: integer("max_team_size").notNull().default(1),

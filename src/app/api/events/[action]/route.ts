@@ -1,7 +1,5 @@
 import { and, eq } from "drizzle-orm";
 import { type NextRequest, NextResponse } from "next/server";
-import { Session } from "next-auth";
-import { title } from "process";
 import { auth as dashboardAuth } from "~/auth/dashboard-config";
 import db from "~/db";
 import { query } from "~/db/data";
