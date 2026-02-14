@@ -16,6 +16,7 @@ import * as THREE from "three";
 import Footer from "./Footer";
 import { Navbar } from "./Navbar";
 import { TransitionMaterial } from "./shader/TransitionMaterial";
+import Timeline from "./Timeline";
 import TracksSection from "./Tracks";
 
 // Register the custom shader material
@@ -77,7 +78,7 @@ function Background({
 
     if (materialRef.current) {
       materialRef.current.uTime = time * 0.6;
-      const progress = scroll.range(0.1, 0.25);
+      const progress = scroll.range(0.05, 0.14);
       materialRef.current.uTransitionProgress = progress;
       materialRef.current.uHoverProgress = state.pointer.x * 0.5 + 0.5;
 
@@ -126,46 +127,54 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const initialViewportHeight = useRef<number>(0);
   const hasCalculated = useRef(false);
-  const [contentHeight, setContentHeight] = useState<number>(0);
+  const lastHeight = useRef<number>(0);
 
   useEffect(() => {
     const calculatePages = () => {
-      if (ref.current && !hasCalculated.current) {
-        // Lock to initial viewport height on first calculation
-        if (initialViewportHeight.current === 0) {
-          initialViewportHeight.current = window.innerHeight;
-        }
+      if (!ref.current) return;
 
-        const { height } = ref.current.getBoundingClientRect();
-        // Always use the locked initial viewport height
-        const newPages = Math.max(3, height / initialViewportHeight.current);
+      // Lock to initial viewport height on first calculation
+      if (initialViewportHeight.current === 0) {
+        initialViewportHeight.current = window.innerHeight;
+      }
+
+      const { height } = ref.current.getBoundingClientRect();
+      const vh = initialViewportHeight.current;
+      const newPages = Math.max(3, height / vh);
+
+      // Only update if height changed significantly (> 10px) to prevent loops
+      if (Math.abs(height - lastHeight.current) > 10 || !hasCalculated.current) {
+        lastHeight.current = height;
         setPages(newPages);
-
-        // Set minimum content height to ensure footer stays at bottom
-        const minHeight = newPages * initialViewportHeight.current;
-        setContentHeight(Math.max(minHeight, height));
-
         hasCalculated.current = true;
       }
     };
 
+    // Defer measurement to let layout & animations settle
+    let rafId: number;
+    const deferredCalculate = () => {
+      rafId = requestAnimationFrame(() => {
+        // Wait one more frame to ensure framer-motion initial renders have settled
+        rafId = requestAnimationFrame(() => {
+          calculatePages();
+        });
+      });
+    };
+
     const observer = new ResizeObserver(() => {
-      // Only calculate once on initial mount
       if (!hasCalculated.current) {
-        calculatePages();
+        deferredCalculate();
       }
     });
 
     if (ref.current) {
       observer.observe(ref.current);
-      calculatePages();
+      deferredCalculate();
     }
 
     // Only listen to actual window resize (orientation change, desktop resize)
     // Ignore mobile browser chrome changes
     const handleResize = () => {
-      // Only recalculate on significant width changes (orientation/desktop resize)
-      // This ignores mobile browser chrome height changes
       const widthChanged =
         Math.abs(
           window.innerWidth -
@@ -176,17 +185,18 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
       if (widthChanged && ref.current) {
         hasCalculated.current = false;
         initialViewportHeight.current = window.innerHeight;
-        calculatePages();
+        deferredCalculate();
       }
     };
 
     window.addEventListener("resize", handleResize);
 
     return () => {
+      cancelAnimationFrame(rafId);
       observer.disconnect();
       window.removeEventListener("resize", handleResize);
     };
-  }, [setPages]);
+  }, []);
 
   // Prevent default scroll behavior when focusing on elements
   useEffect(() => {
@@ -213,18 +223,14 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
   return (
     <div
       ref={ref}
-      className="w-full text-white no-scrollbar pointer-events-auto flex flex-col"
-      style={{ minHeight: contentHeight > 0 ? `${contentHeight}px` : "100vh" }}
+      className="w-full min-h-full text-white no-scrollbar pointer-events-auto flex flex-col"
     >
       {/* Main content wrapper */}
-      <div className="flex-1">
+      <div className="flex-1 relative">
+        <div className="absolute bottom-0 left-0 w-full h-[40vh] bg-linear-to-t from-black via-black/40 to-transparent pointer-events-none z-0" />
         {/* HERITAGE SECTION (SUNNY) */}
-        <motion.section
+        <section
           className="h-screen flex flex-col items-center justify-center relative p-8 text-center bg-linear-to-b from-black/20 via-transparent to-transparent"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          viewport={{ once: true }}
         >
           <img
             src="/logo.png"
@@ -242,86 +248,130 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
               Scroll to Dive
             </p>
           </div>
-        </motion.section>
+        </section>
 
         {/* SPACER FOR TRANSITION */}
         <section className="h-[10vh]"></section>
+        <div className="relative">
+          <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/20 to-black/50 pointer-events-none z-0" />
 
-        {/* UNDERWATER SECTION (SPONSORS) */}
-        <motion.section
-          className="flex flex-col items-center justify-start pt-12 relative px-4"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          viewport={{ margin: "-100px" }}
-        >
-          <div className="w-full max-w-6xl">
-            <motion.h2
-              className="text-5xl md:text-7xl font-pirate font-bold text-center mb-16 drop-shadow-[0_0_15px_rgba(0,200,255,0.8)] text-cyan-200 tracking-wide"
-              initial={{ scale: 0.9, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-            >
-              Our Sponsors
-            </motion.h2>
+          {/* UNDERWATER SECTION (SPONSORS) */}
+          <motion.section
+            className="flex flex-col items-center justify-start pt-12 relative px-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            viewport={{ margin: "-100px" }}
+          >
+            <div className="w-full max-w-6xl">
+              <motion.h2
+                className="text-5xl md:text-7xl font-pirate font-bold text-center mb-16 drop-shadow-[0_0_15px_rgba(0,200,255,0.8)] text-cyan-200 tracking-wide"
+                initial={{ scale: 0.9, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.8 }}
+              >
+                Our Sponsors
+              </motion.h2>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <motion.div
-                  key={i}
-                  className="group relative aspect-video bg-black/30 backdrop-blur-sm border border-cyan-500/30 rounded-xl flex items-center justify-center hover:bg-cyan-900/40 transition-all duration-500 overflow-hidden"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <span className="text-cyan-400 font-mono text-lg group-hover:scale-110 transition-transform">
-                    Sponsor {i}
-                  </span>
-                  <div className="absolute inset-0 bg-linear-to-t from-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                </motion.div>
-              ))}
+              <motion.div
+                className="flex flex-col items-center mb-12"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <div className="group relative w-72 md:w-96 aspect-video bg-white/70 backdrop-blur-sm border-2 border-cyan-400/50 rounded-2xl flex items-center justify-center hover:border-cyan-300 transition-all duration-500 overflow-hidden shadow-[0_0_25px_rgba(0,200,255,0.2)] hover:shadow-[0_0_40px_rgba(0,200,255,0.4)]">
+                  <img
+                    src="/logos/nitte.png"
+                    alt="NITTE"
+                    className="w-3/4 h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <span className="mt-3 text-sm font-mono font-semibold tracking-[0.3em] uppercase text-cyan-300/80">
+                  Executive Sponsor
+                </span>
+              </motion.div>
+
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="group relative aspect-video bg-black/30 backdrop-blur-sm border border-cyan-500/30 rounded-xl flex items-center justify-center hover:bg-cyan-900/40 transition-all duration-500 overflow-hidden"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <span className="text-cyan-400 font-mono text-lg group-hover:scale-110 transition-transform">
+                      Sponsor {i}
+                    </span>
+                    <div className="absolute inset-0 bg-linear-to-t from-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
-        </motion.section>
+          </motion.section>
 
-        {/* TRACKS SECTION */}
-        <TracksSection />
+          {/* TRACKS SECTION */}
+          <TracksSection />
 
-        {/* DEEP SEA (PRIZE POOL) */}
-        <motion.section
-          className="min-h-[80vh] flex flex-col items-center justify-center relative px-4 py-20 pt-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
-        >
-          {/* Darkening overlay */}
-          <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/30 to-black/70 pointer-events-none -z-10" />
+          {/* TIMELINE SECTION */}
+          <Timeline />
 
-          <div className="relative z-10 flex flex-col items-center text-center w-full pb-16">
-            <motion.h2
-              className="text-5xl md:text-7xl font-pirate font-black text-center mb-30 text-transparent bg-clip-text bg-linear-to-b from-yellow-200 to-yellow-600 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)] tracking-wide"
-              initial={{ opacity: 0, y: -20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              Prize Pool
-            </motion.h2>
+          {/* DEEP SEA (PRIZE POOL) */}
+          <motion.section
+            className="flex flex-col items-center justify-center relative px-4 py-8"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1.5 }}
+          >
 
-            <motion.div
-              className="relative mb-30 flex w-full justify-center"
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              transition={{ type: "spring", bounce: 0.5, duration: 1.5 }}
-            >
-              <img
-                src="/treasure.webp"
-                alt="Treasure"
-                className="w-[90%] h-[90%] md:w-2/3 md:h-2/3 drop-shadow-2xl relative z-10 animate-[float_4s_ease-in-out_infinite]"
-              />
-            </motion.div>
 
-            <Link href="/timeline" passHref>
+            <div className="relative z-10 flex flex-col items-center text-center w-full pt-16 pb-8">
+              <motion.h2
+                className="text-5xl md:text-7xl font-pirate font-black text-center mb-16 text-transparent bg-clip-text bg-linear-to-b from-yellow-200 to-yellow-600 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)] tracking-wide"
+                initial={{ opacity: 0, y: -20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                Prize Pool
+              </motion.h2>
+
+              {/* ─── MASSIVE AMOUNT ─── */}
+              <motion.div
+                className="relative mb-20 flex flex-col items-center"
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", bounce: 0.4, duration: 1.2 }}
+              >
+                {/* Animated glow rings */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 rounded-full border border-yellow-500/10 animate-[ping_4s_ease-in-out_infinite]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-72 md:h-72 rounded-full border border-yellow-500/20 animate-[ping_3s_ease-in-out_infinite_0.5s]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-[28rem] md:h-[28rem] rounded-full bg-yellow-500/5 blur-3xl" />
+
+                {/* The number */}
+                <span className="text-sm md:text-lg font-mono font-bold tracking-[0.5em] text-yellow-400/60 uppercase mb-2">
+                  Worth Over
+                </span>
+                <span
+                  className="text-8xl md:text-[12rem] font-black font-sans leading-none tracking-tight"
+                  style={{
+                    color: "#eab308",
+                    textShadow:
+                      "0 0 40px rgba(234,179,8,0.5), 0 0 80px rgba(234,179,8,0.3), 0 0 120px rgba(234,179,8,0.15)",
+                  }}
+                >
+                  ₹3L
+                  <span className="text-yellow-400/70">+</span>
+                </span>
+                <span className="text-lg md:text-2xl font-pirate text-yellow-300/50 tracking-[0.3em] mt-2">
+                  IN PRIZES
+                </span>
+              </motion.div>
+
+
+              {/* <Link href="/timeline" passHref>
               <button
                 type="button"
                 className="group relative px-10 py-4 bg-cyan-600 hover:bg-cyan-500 text-white rounded-full font-pirate font-bold text-2xl transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] overflow-hidden focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black tracking-wide"
@@ -333,12 +383,13 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
                 <span className="relative z-10">Explore Timeline</span>
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               </button>
-            </Link>
-          </div>
-        </motion.section>
-      </div>
-      <div className="mt-auto w-full">
-        <Footer />
+            </Link> */}
+            </div>
+          </motion.section>
+        </div>
+        <div className="mt-auto w-full">
+          <Footer />
+        </div>
       </div>
     </div>
   );
@@ -422,6 +473,7 @@ export default function Scene({ session }: { session: Session | null }) {
       </div>
 
       <Canvas
+        className="canvas1"
         gl={{ antialias: true, alpha: false }}
         dpr={[1, 1.5]}
         color="black"
@@ -437,7 +489,7 @@ export default function Scene({ session }: { session: Session | null }) {
               html
               style={{
                 width: "100vw",
-                height: "120vh",
+                height: "100vh",
               }}
             >
               <LandingContent setPages={setPages} />
@@ -469,7 +521,7 @@ export default function Scene({ session }: { session: Session | null }) {
         }
         
         /* Ensure the canvas container uses fixed dimensions */
-        canvas {
+        .canvas1 {
           position: fixed !important;
           top: 0;
           left: 0;

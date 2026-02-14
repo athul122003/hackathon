@@ -302,7 +302,7 @@ function AuthButton({
 
   // Base button styles
   const buttonClass = cn(
-    "group relative px-6 py-2 font-pirate text-lg font-bold transition-all duration-500",
+    "group relative px-6 py-2 font-pirate text-lg font-bold transition-all duration-500 cursor-pointer",
     isUnderwater
       ? "text-cyan-100 hover:text-white"
       : "text-amber-100 hover:text-white",

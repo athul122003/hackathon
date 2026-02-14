@@ -239,7 +239,7 @@ function MobileTrackStack() {
   const activeTrack = tracks[activeIndex];
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 w-full h-[60vh] relative">
+    <div className="flex flex-col items-center justify-center p-4 w-full h-[45vh] relative">
       <div className="relative w-full max-w-xs aspect-square">
         <AnimatePresence mode="wait">
           <motion.div
@@ -306,7 +306,7 @@ export default function TracksSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen w-full pt-32 py-10 px-4 flex flex-col items-center justify-center overflow-hidden">
+    <section className="relative w-full py-32 px-4 flex flex-col items-center justify-center overflow-hidden">
       {/* Background Elements */}
       <div className="absolute top-1/4 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
