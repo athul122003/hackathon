@@ -7,11 +7,11 @@ import {
   useTexture,
 } from "@react-three/drei";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
-import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import type { Session } from "next-auth";
 import { Suspense, useEffect, useRef, useState } from "react";
+import { useDayNight } from "~/components/providers/useDayNight"
 import * as THREE from "three";
 import Footer from "./Footer";
 import { Navbar } from "./Navbar";
@@ -22,165 +22,97 @@ import TracksSection from "./Tracks";
 extend({ TransitionMaterial });
 
 // Preload textures to avoid pop-in
-useTexture.preload(["/sunny.jpeg", "/images/underwater.png"]);
+useTexture.preload([
+  "/images/morning.webp",
+  "/images/night.webp",
+  "/images/underwater.png",
+]);
 
 function Background({
-  loaded,
-  loadingProgress,
+  isNight,
 }: {
-  loaded: boolean;
-  loadingProgress: number;
+  isNight: boolean;
 }) {
   const { viewport } = useThree();
+  const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<any>(null);
   const scroll = useScroll();
-  const [sunny, underwater] = useTexture([
-    "/sunny.jpeg",
+  const [morning, night, underwater] = useTexture([
+    "/images/morning.webp",
+    "/images/night.webp",
     "/images/underwater.png",
-  ]) as [THREE.Texture, THREE.Texture];
+  ]) as [THREE.Texture, THREE.Texture, THREE.Texture];
 
   useFrame((state) => {
-    if (materialRef.current) {
-      // Slow down time to avoid frantic repetition
-      materialRef.current.uTime = state.clock.elapsedTime * 0.6;
+    const time = state.clock.elapsedTime;
 
+    // Boat sway effect
+    // Boat sway effect
+    if (meshRef.current) {
+      // Fade out sway between scroll 0.1 (start of transition) and 0.3 (deep in water)
+      // smoothstep returns 0->1 between min/max, so 1 - smoothstep gives 1->0
+      const swayFactor = 1 - THREE.MathUtils.smoothstep(scroll.offset, 0.1, 0.3);
+
+      if (swayFactor > 0.001) {
+        // Roll (z-axis) - faster rocking
+        meshRef.current.rotation.z = (Math.sin(time * 0.8) * 0.015 + Math.sin(time * 2.3) * 0.005) * swayFactor;
+
+        // Pitch (x-axis) - gentle forward/back movement
+        meshRef.current.rotation.x = (Math.sin(time * 0.6) * 0.01 + Math.sin(time * 1.5) * 0.003) * swayFactor;
+
+        // Yaw (y-axis) - very subtle turning to feel alive
+        meshRef.current.rotation.y = (Math.sin(time * 0.4) * 0.005) * swayFactor;
+
+        // Heave (y-axis position) - realistic bobbing on waves
+        meshRef.current.position.y = (Math.sin(time * 1.2) * 0.03 + Math.sin(time * 2.5) * 0.01) * swayFactor;
+
+        // Sway (x-axis position) - drifting
+        meshRef.current.position.x = (Math.sin(time * 0.7) * 0.01) * swayFactor;
+      } else {
+        // Reset to neutral when scrolled down
+        meshRef.current.rotation.set(0, 0, 0);
+        meshRef.current.position.set(0, 0, 0);
+      }
+    }
+
+    if (materialRef.current) {
+      materialRef.current.uTime = time * 0.6;
       const progress = scroll.range(0.1, 0.25);
       materialRef.current.uTransitionProgress = progress;
-
-      // Interaction
       materialRef.current.uHoverProgress = state.pointer.x * 0.5 + 0.5;
 
-      // Resolution uniforms
-      const sunImg = sunny.image as HTMLImageElement;
+      const currentSunImg = (isNight ? night.image : morning.image) as HTMLImageElement;
+
       const waterImg = underwater.image as HTMLImageElement;
-      if (sunImg && waterImg) {
-        materialRef.current.uPlaneRes.set(viewport.width, viewport.height);
-        materialRef.current.uMediaRes1.set(sunImg.width, sunImg.height);
+      if (currentSunImg && waterImg) {
+        // Use the scaled viewport for resolution to keep aspect ratio consistent
+        materialRef.current.uPlaneRes.set(viewport.width * 1.1, viewport.height * 1.1);
+        materialRef.current.uMediaRes1.set(currentSunImg.width, currentSunImg.height);
         materialRef.current.uMediaRes2.set(waterImg.width, waterImg.height);
       }
 
-      // Nausea Effect Logic
-      if (loaded) {
-        materialRef.current.uNausea = THREE.MathUtils.lerp(
-          materialRef.current.uNausea,
-          0,
-          0.02,
-        );
-      } else {
-        const targetNausea = loadingProgress / 100;
-        materialRef.current.uNausea = THREE.MathUtils.lerp(
-          materialRef.current.uNausea,
-          targetNausea,
-          0.1,
-        );
-      }
+      // Nausea Effect Logic - always calming down now since loading is handled globally
+      materialRef.current.uNausea = THREE.MathUtils.lerp(
+        materialRef.current.uNausea,
+        0,
+        0.02,
+      );
     }
   });
 
   return (
-    <mesh scale={[viewport.width, viewport.height, 1]}>
+    // Scaled up to cover edges when rotating
+    <mesh ref={meshRef} scale={[viewport.width * 1.1, viewport.height * 1.1, 1]}>
       <planeGeometry args={[1, 1]} />
       {/* @ts-ignore */}
       <transitionMaterial
         ref={materialRef}
-        tMap1={sunny}
+        tMap1={isNight ? night : morning}
         tMap2={underwater}
         transparent={true}
         opacity={1}
       />
     </mesh>
-  );
-}
-
-function LoadingScreen({ progress }: { progress: number }) {
-  return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950 text-amber-500 overflow-hidden"
-      initial={{ opacity: 1 }}
-      exit={{
-        backgroundColor: "#000000",
-        opacity: 0,
-        transition: {
-          backgroundColor: { duration: 0.5, ease: "easeInOut" },
-          opacity: { duration: 0.8, delay: 0.5, ease: "easeInOut" },
-        },
-      }}
-    >
-      {/* 1. BACKGROUND: Subtle Radial Gradient for depth (Deep Sea Vibe) */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-neutral-900 via-neutral-950 to-black opacity-80" />
-
-      {/* 2. CENTER: Big Cinematic Text to fill the void */}
-      <div className="relative z-10 flex flex-col items-center space-y-4">
-        <motion.img
-          src="/logos/Logo@4x-8.png"
-          alt="HF Logo"
-          className="w-64 md:w-120 h-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1, duration: 1, ease: "easeIn" }}
-          exit={{ opacity: 0, transition: { duration: 0.3 } }}
-        />
-      </div>
-
-      {/* 3. TOP RIGHT: The Logo (Watermark style) */}
-      <motion.div
-        className="absolute top-8 right-8 z-20 md:top-12 md:right-12"
-        exit={{ opacity: 0, transition: { duration: 0.3 } }}
-      >
-        <div className="relative w-16 h-16 md:w-20 md:h-20 opacity-90 hover:opacity-100 transition-opacity">
-          <Image
-            src="/logos/glowingLogo.png"
-            alt="Logo"
-            fill
-            className="object-contain drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]"
-          />
-        </div>
-      </motion.div>
-
-      {/* 4. BOTTOM RIGHT: The Wheel Spinner & Progress */}
-      <motion.div
-        className="absolute bottom-8 right-8 z-20 flex items-center gap-4 md:bottom-12 md:right-12"
-        exit={{ opacity: 0, transition: { duration: 0.3 } }}
-      >
-        {/* Percentage Text */}
-        <div className="text-right">
-          <span className="block text-2xl font-bold font-mono tabular-nums leading-none">
-            {Math.round(progress)}%
-          </span>
-          <span className="text-[10px] text-amber-500/60 font-mono tracking-widest uppercase">
-            Loading Assets
-          </span>
-        </div>
-
-        {/* Spinning Wheel */}
-        <motion.div
-          className="relative w-16 h-16 md:w-20 md:h-20"
-          animate={{ rotate: 360 }}
-          transition={{
-            repeat: Infinity,
-            duration: 8, // Slower rotation feels heavier/larger
-            ease: "linear",
-          }}
-        >
-          {/* Using standard img tag if motion.img causes issues with Next.js Image component, 
-               otherwise wrap Next Image in motion.div like this */}
-          <Image
-            src="/steering.png"
-            alt="Loading..."
-            fill
-            className="object-contain"
-          />
-        </motion.div>
-      </motion.div>
-
-      {/* OPTIONAL: Bottom Left decorative coordinates/version number */}
-      <motion.div
-        className="absolute bottom-10 left-10 hidden md:block text-xs font-mono text-neutral-600"
-        exit={{ opacity: 0, transition: { duration: 0.3 } }}
-      >
-        LAT: 24.55.01 N <br /> LON: 78.12.00 W
-      </motion.div>
-    </motion.div>
   );
 }
 
@@ -231,8 +163,8 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
       const widthChanged =
         Math.abs(
           window.innerWidth -
-            initialViewportHeight.current *
-              (window.innerWidth / window.innerHeight),
+          initialViewportHeight.current *
+          (window.innerWidth / window.innerHeight),
         ) > 100;
 
       if (widthChanged && ref.current) {
@@ -358,7 +290,7 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
           transition={{ duration: 1.5 }}
         >
           {/* Darkening overlay */}
-          <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/80 to-black/100 pointer-events-none -z-10" />
+          <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/80 to-black pointer-events-none -z-10" />
 
           <div className="relative z-10 flex flex-col items-center text-center w-full pb-16">
             <motion.h2
@@ -407,11 +339,10 @@ function LandingContent({ setPages }: { setPages: (pages: number) => void }) {
 }
 
 export default function Scene({ session }: { session: Session | null }) {
-  const [loaded, setLoaded] = useState(false);
   const [pages, setPages] = useState(3);
-  const [progress, setProgress] = useState(0);
   const [isUnderwater, setIsUnderwater] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const { isNight } = useDayNight();
 
   function ScrollSync({
     setUnderwater,
@@ -427,21 +358,6 @@ export default function Scene({ session }: { session: Session | null }) {
 
     return null;
   }
-
-  useEffect(() => {
-    // Simulate loading progress
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setLoaded(true);
-          return 100;
-        }
-        return prev + 2;
-      });
-    }, 50);
-    return () => clearInterval(interval);
-  }, []);
 
   // Prevent keyboard navigation from breaking scroll sync
   useEffect(() => {
@@ -491,16 +407,13 @@ export default function Scene({ session }: { session: Session | null }) {
         height: "100dvh",
       }}
     >
-      {/* Loading Screen Overlay */}
-      <AnimatePresence>
-        {!loaded && <LoadingScreen progress={progress} />}
-      </AnimatePresence>
-
-      {loaded && (
-        <div className="absolute inset-0 pointer-events-none z-40">
-          <Navbar isUnderwater={isUnderwater} session={session} />
-        </div>
-      )}
+      <div className="absolute inset-0 pointer-events-none z-40">
+        {/* The Navbar component itself handles pointer-events-auto for buttons */}
+        <Navbar
+          isUnderwater={isUnderwater}
+          session={session}
+        />
+      </div>
 
       <Canvas
         gl={{ antialias: true, alpha: false }}
@@ -508,16 +421,17 @@ export default function Scene({ session }: { session: Session | null }) {
         color="black"
       >
         <Suspense fallback={null}>
-          <ScrollControls pages={pages} damping={0.2}>
+          <ScrollControls key={pages} pages={pages} damping={0.2}>
             <ScrollSync setUnderwater={setIsUnderwater} />
-            <Background loaded={loaded} loadingProgress={progress} />
+            <Background
+              isNight={isNight}
+            />
+            {/* Scroll content */}
             <Scroll
               html
               style={{
                 width: "100vw",
                 height: "120vh",
-                opacity: loaded ? 1 : 0,
-                transition: "opacity 1s ease-in-out",
               }}
             >
               <LandingContent setPages={setPages} />
@@ -525,8 +439,6 @@ export default function Scene({ session }: { session: Session | null }) {
           </ScrollControls>
         </Suspense>
       </Canvas>
-
-      {/* CSS for custom keyframe animations */}
       <style jsx global>{`
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }

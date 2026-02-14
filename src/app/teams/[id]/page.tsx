@@ -1,3 +1,4 @@
+import { TeamPageLayout } from "~/components/teams/TeamPageLayout";
 import {
   AlertCircle,
   CheckCircle2,
@@ -382,20 +383,7 @@ export default async function TeamDetailsPage({
 
   return (
     // MAIN CONTAINER: Sky Gradient
-    <div className="relative flex min-h-screen flex-col items-center justify-center p-6 py-12 md:p-12 overflow-hidden bg-linear-to-b from-[#10569c] via-[#61b2e4] to-[#eef7fb] text-white">
-      <div className="absolute inset-0 w-full h-full z-0 opacity-20 pointer-events-none mix-blend-multiply">
-        <Image
-          src="/images/palm-tree.png"
-          alt="Palm trees"
-          fill
-          className="object-cover object-bottom"
-          priority
-        />
-      </div>
-
-      {/* --- DECORATIVE LAYERS (The Beach) --- */}
-      <div className="absolute -bottom-[5%] left-[-20%] w-[140%] h-[25vh] md:h-[35vh] bg-[#fffac2]/40 rounded-[100%] blur-3xl z-0 pointer-events-none" />
-      <div className="absolute -bottom-[12%] left-[-10%] w-[120%] h-[20vh] md:h-[30vh] bg-[#fbf6db] rounded-[50%] shadow-[0_-10px_50px_rgba(240,230,180,0.8)] z-0 pointer-events-none" />
+    <TeamPageLayout>
 
       {/* --- CONTENT --- */}
       <div className="relative z-10 w-full max-w-3xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -417,7 +405,7 @@ export default async function TeamDetailsPage({
             {/* 2. DESKTOP ONLY: Title & ID */}
             <div className="hidden md:flex items-center gap-4 min-w-0">
               {/* Title: Allows wrapping for long names */}
-              <h1 className="text-3xl font-bold drop-shadow-sm leading-tight break-words max-w-[500px]">
+              <h1 className="text-3xl font-bold drop-shadow-sm leading-tight wrap-break-word max-w-[500px]">
                 {team.name}
               </h1>
 
@@ -437,7 +425,7 @@ export default async function TeamDetailsPage({
 
           {/* CENTER CONTENT (MOBILE ONLY) - Title & ID */}
           <div className="md:hidden flex flex-col items-center space-y-4 px-4 w-full">
-            <h1 className="text-3xl font-bold drop-shadow-sm text-center break-words leading-tight">
+            <h1 className="text-3xl font-bold drop-shadow-sm text-center wrap-break-word leading-tight">
               {team.name}
             </h1>
             {user.isLeader && (
@@ -535,6 +523,6 @@ export default async function TeamDetailsPage({
           {renderStatusContent()}
         </div>
       </div>
-    </div>
-  );
+    </TeamPageLayout>
+ );
 }
