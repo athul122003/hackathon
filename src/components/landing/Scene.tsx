@@ -1,15 +1,13 @@
+/** biome-ignore-all lint/performance/noImgElement: <TODO: MIGHT CHANGE LATER> */
 "use client";
 
 import {
-  Scroll,
-  ScrollControls,
-  useScroll,
   useTexture,
 } from "@react-three/drei";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { motion } from "framer-motion";
 import type { Session } from "next-auth";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useDayNight } from "~/components/providers/useDayNight";
 import Footer from "./Footer";
@@ -28,11 +26,10 @@ useTexture.preload([
   "/images/underwater.png",
 ]);
 
-function Background({ isNight }: { isNight: boolean }) {
+function Background({ isNight, scrollProgress }: { isNight: boolean; scrollProgress: number }) {
   const { viewport } = useThree();
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<any>(null);
-  const scroll = useScroll();
   const [morning, night, underwater] = useTexture([
     "/images/morning.webp",
     "/images/night.webp",
@@ -48,7 +45,7 @@ function Background({ isNight }: { isNight: boolean }) {
       // Fade out sway between scroll 0.1 (start of transition) and 0.3 (deep in water)
       // smoothstep returns 0->1 between min/max, so 1 - smoothstep gives 1->0
       const swayFactor =
-        1 - THREE.MathUtils.smoothstep(scroll.offset, 0.1, 0.3);
+        1 - THREE.MathUtils.smoothstep(scrollProgress, 0.1, 0.3);
 
       if (swayFactor > 0.001) {
         // Roll (z-axis) - faster rocking
@@ -80,7 +77,7 @@ function Background({ isNight }: { isNight: boolean }) {
 
     if (materialRef.current) {
       materialRef.current.uTime = time * 0.6;
-      const progress = scroll.range(0.05, 0.14);
+      const progress = Math.max(0, Math.min(1, (scrollProgress - 0.05) / 0.14));
       materialRef.current.uTransitionProgress = progress;
       materialRef.current.uHoverProgress = state.pointer.x * 0.5 + 0.5;
 
@@ -204,14 +201,9 @@ function LandingContent({
   return (
     <div
       ref={ref}
-      className="w-full text-white no-scrollbar pointer-events-auto flex flex-col"
-      style={{
-        minHeight: "100dvh",
-      }}
+      className="w-full text-white no-scrollbar pointer-events-auto"
     >
-      {/* Main content wrapper */}
-      <div className="flex-1">
-        {/* HERITAGE SECTION (SUNNY) */}
+      {/* HERITAGE SECTION (SUNNY) */}
         <motion.section
           className="h-screen flex flex-col items-center justify-center relative p-8 text-center bg-linear-to-b from-black/20 via-transparent to-transparent"
           initial={{ opacity: 0, y: 50 }}
@@ -333,7 +325,7 @@ function LandingContent({
                 {/* Animated glow rings */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 rounded-full border border-yellow-500/10 animate-[ping_4s_ease-in-out_infinite]" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-72 md:h-72 rounded-full border border-yellow-500/20 animate-[ping_3s_ease-in-out_infinite_0.5s]" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-[28rem] md:h-[28rem] rounded-full bg-yellow-500/5 blur-3xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-md md:h-112 rounded-full bg-yellow-500/5 blur-3xl" />
 
                 {/* The number */}
                 <span className="text-sm md:text-lg font-mono font-bold tracking-[0.5em] text-yellow-400/60 uppercase mb-2">
@@ -371,34 +363,49 @@ function LandingContent({
             </div>
           </motion.section>
         </div>
-        <div className="mt-auto w-full">
-          <Footer />
-        </div>
-      </div>
+        
+        <Footer />
     </div>
   );
+}
+
+function ScrollSync({
+  setUnderwater,
+  scrollProgress,
+}: {
+  setUnderwater: (v: boolean) => void;
+  scrollProgress: number;
+}) {
+  useFrame(() => {
+    setUnderwater(scrollProgress > 0.15);
+  });
+
+  return null;
 }
 
 export default function Scene({ session }: { session: Session | null }) {
   const [pages, setPages] = useState(3);
   const [isUnderwater, setIsUnderwater] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const htmlScrollRef = useRef<HTMLDivElement>(null);
   const { isNight } = useDayNight();
 
-  function ScrollSync({
-    setUnderwater,
-  }: {
-    setUnderwater: (v: boolean) => void;
-  }) {
-    const scroll = useScroll();
+  // Track HTML scroll position
+  useEffect(() => {
+    const htmlElement = htmlScrollRef.current;
+    if (!htmlElement) return;
 
-    useFrame(() => {
-      const offset = scroll.offset; // 0 → 1
-      setUnderwater(offset > 0.15);
-    });
+    const handleScroll = () => {
+      const scrollTop = htmlElement.scrollTop;
+      const maxScroll = htmlElement.scrollHeight - htmlElement.clientHeight;
+      const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
+      setScrollProgress(progress);
+    };
 
-    return null;
-  }
+    htmlElement.addEventListener('scroll', handleScroll, { passive: true });
+    return () => htmlElement.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Prevent keyboard navigation from breaking scroll sync
   useEffect(() => {
@@ -438,6 +445,20 @@ export default function Scene({ session }: { session: Session | null }) {
     };
   }, []);
 
+  const canvasContent = useMemo(() => (
+    <Canvas
+      className="canvas1"
+      gl={{ antialias: true, alpha: false }}
+      dpr={[1, 1.5]}
+      color="black"
+    >
+      <Suspense fallback={null}>
+        <ScrollSync setUnderwater={setIsUnderwater} scrollProgress={scrollProgress} />
+        <Background isNight={isNight} scrollProgress={scrollProgress} />
+      </Suspense>
+    </Canvas>
+  ), [isNight, scrollProgress]);
+
   return (
     <div
       ref={scrollContainerRef}
@@ -448,34 +469,21 @@ export default function Scene({ session }: { session: Session | null }) {
         height: "100dvh",
       }}
     >
+      {/* HTML Content Layer */}
+      <div 
+        ref={htmlScrollRef}
+        className="absolute inset-0 overflow-y-auto overflow-x-hidden no-scrollbar"
+        style={{ zIndex: 10 }}
+      >
+        <LandingContent setPages={setPages} pages={pages} />
+      </div>
+
       <div className="absolute inset-0 pointer-events-none z-40">
         {/* The Navbar component itself handles pointer-events-auto for buttons */}
         <Navbar isUnderwater={isUnderwater} session={session} />
       </div>
 
-      <Canvas
-        className="canvas1"
-        gl={{ antialias: true, alpha: false }}
-        dpr={[1, 1.5]}
-        color="black"
-      >
-        <Suspense fallback={null}>
-          <ScrollControls pages={pages} damping={0.2}>
-            <ScrollSync setUnderwater={setIsUnderwater} />
-            <Background isNight={isNight} />
-            {/* Scroll content */}
-            <Scroll
-              html
-              style={{
-                width: "100%",
-                height: "100%",
-              }}
-            >
-              <LandingContent setPages={setPages} pages={pages} />
-            </Scroll>
-          </ScrollControls>
-        </Suspense>
-      </Canvas>
+      {canvasContent}
       <style jsx global>{`
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
