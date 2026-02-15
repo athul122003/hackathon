@@ -187,7 +187,7 @@ function LandingContent({
     const preventFocusScroll = (e: FocusEvent) => {
       e.preventDefault();
       const target = e.target as HTMLElement;
-      if (target) {
+      if (target && typeof target.scrollIntoView === "function") {
         // Scroll into view without affecting the 3D scroll system
         target.scrollIntoView({
           behavior: "instant",
