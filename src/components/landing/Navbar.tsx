@@ -20,12 +20,8 @@ const NAV_LINKS = [
 <<<<<<< HEAD
 <<<<<<< HEAD
   { name: "About", href: "/about" },
-<<<<<<< HEAD
   { name: "Tracks", href: "#" },
   { name: "Prizes", href: "#" },
-=======
-  { name: "Events", href: "#" },
->>>>>>> db5812d (feat: added about us page and optimized UI to be smooth by elminating some blurs and animations)
   { name: "Timeline", href: "#" },
 =======
   { name: "About", href: "/#" },

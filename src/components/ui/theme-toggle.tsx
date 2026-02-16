@@ -20,18 +20,22 @@ export function ThemeToggle() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 0544a48 (refactor: Move timeline scene and water background components into a dedicated `components` subdirectory.)
 =======
 >>>>>>> a945d76 (feat: added contact us page and enhanced images quality)
 =======
 >>>>>>> f879387 (feat: added about us page and optimized UI to be smooth by elminating some blurs and animations)
+=======
+>>>>>>> 2b78ce9 (fix: resolve remaining conflict markers)
   if (
     pathname === "/contact" ||
     pathname === "/about" ||
     pathname === "/timeline"
   )
     return null;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -50,6 +54,8 @@ export function ThemeToggle() {
   if (pathname === "/contact" || pathname === "/about") return null;
 >>>>>>> db5812d (feat: added about us page and optimized UI to be smooth by elminating some blurs and animations)
 >>>>>>> f879387 (feat: added about us page and optimized UI to be smooth by elminating some blurs and animations)
+=======
+>>>>>>> 2b78ce9 (fix: resolve remaining conflict markers)
 
   return (
     <motion.button
