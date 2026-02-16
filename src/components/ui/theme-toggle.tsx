@@ -10,15 +10,21 @@ export function ThemeToggle() {
   const pathname = usePathname();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0544a48 (refactor: Move timeline scene and water background components into a dedicated `components` subdirectory.)
   if (
     pathname === "/contact" ||
     pathname === "/about" ||
     pathname === "/timeline"
   )
     return null;
+<<<<<<< HEAD
 =======
   if (pathname === "/contact" || pathname === "/about") return null;
 >>>>>>> b576a06 (feat: added about us page and optimized UI to be smooth by elminating some blurs and animations)
+=======
+>>>>>>> 0544a48 (refactor: Move timeline scene and water background components into a dedicated `components` subdirectory.)
 
   return (
     <motion.button

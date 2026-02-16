@@ -6,7 +6,7 @@ import { DayNightProvider } from "~/components/providers/useDayNight";
 import { GlobalLoader } from "~/components/ui/global-loader";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { SessionProvider } from "next-auth/react";
-import "./globals.css" assert { type: "css" };
+import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",

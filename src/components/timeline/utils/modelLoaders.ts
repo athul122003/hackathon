@@ -1,6 +1,6 @@
-import * as THREE from 'three';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 interface ModelCache {
   model: THREE.Group | null;
@@ -22,8 +22,10 @@ const finalIslandModelCache: ModelCache = {
 
 function setupDracoLoader(): DRACOLoader {
   const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
-  dracoLoader.setDecoderConfig({ type: 'js' });
+  dracoLoader.setDecoderPath(
+    "https://www.gstatic.com/draco/versioned/decoders/1.5.6/",
+  );
+  dracoLoader.setDecoderConfig({ type: "js" });
   return dracoLoader;
 }
 
@@ -56,21 +58,25 @@ export function loadIslandModel(callback: (model: THREE.Group) => void): void {
   loader.setDRACOLoader(dracoLoader);
 
   loader.load(
-    '/models/island.glb',
+    "/models/island.glb",
     (gltf) => {
       const scene = gltf.scene;
       optimizeModel(scene);
       islandModelCache.model = scene;
-      islandModelCache.callbacks.forEach((cb) => { cb(scene); });
+      islandModelCache.callbacks.forEach((cb) => {
+        cb(scene);
+      });
       islandModelCache.callbacks = [];
       dracoLoader.dispose();
     },
     undefined,
-    (error) => console.error('Error loading island model:', error)
+    (error) => console.error("Error loading island model:", error),
   );
 }
 
-export function loadFinalIslandModel(callback: (model: THREE.Group) => void): void {
+export function loadFinalIslandModel(
+  callback: (model: THREE.Group) => void,
+): void {
   if (finalIslandModelCache.model) {
     callback(finalIslandModelCache.model);
     return;
@@ -84,16 +90,18 @@ export function loadFinalIslandModel(callback: (model: THREE.Group) => void): vo
   loader.setDRACOLoader(dracoLoader);
 
   loader.load(
-    '/models/Island-Final.glb',
+    "/models/Island-Final.glb",
     (gltf) => {
       const scene = gltf.scene;
       optimizeModel(scene);
       finalIslandModelCache.model = scene;
-      finalIslandModelCache.callbacks.forEach((cb) => { cb(scene); });
+      finalIslandModelCache.callbacks.forEach((cb) => {
+        cb(scene);
+      });
       finalIslandModelCache.callbacks = [];
       dracoLoader.dispose();
     },
     undefined,
-    (error) => console.error('Error loading final island model:', error)
+    (error) => console.error("Error loading final island model:", error),
   );
 }

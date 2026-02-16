@@ -1,16 +1,19 @@
-'use client';
+"use client";
 
-import { extend, useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
-import * as THREE from 'three';
-import { Water } from 'three/examples/jsm/objects/Water.js';
+import { extend, useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
+import { Water } from "three/examples/jsm/objects/Water.js";
 
 extend({ Water });
 
 export function Ocean() {
   const waterRef = useRef<Water>(null);
 
-  const waterGeometry = useMemo(() => new THREE.PlaneGeometry(3000, 3000, 2, 2), []);
+  const waterGeometry = useMemo(
+    () => new THREE.PlaneGeometry(3000, 3000, 2, 2),
+    [],
+  );
 
   const sunDirection = useMemo(() => {
     const dir = new THREE.Vector3();
@@ -28,10 +31,10 @@ export function Ocean() {
       textureWidth: 512,
       textureHeight: 512,
       waterNormals: new THREE.TextureLoader().load(
-        'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/waternormals.jpg',
+        "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/waternormals.jpg",
         (texture) => {
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        }
+        },
       ),
       sunDirection: sunDirection,
       sunColor: 0xfff5e0,
@@ -40,7 +43,7 @@ export function Ocean() {
       fog: true,
       alpha: 0.95,
     });
-    
+
     waterInstance.material.transparent = true;
     return waterInstance;
   }, [waterGeometry, sunDirection]);

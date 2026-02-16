@@ -14,13 +14,13 @@ import {
 import { useRef } from "react";
 import { events } from "~/constants/timeline";
 
-
-const getEventDetails = (event: typeof events[0], index: number) => {
-  const dateMap: Record<number, { day: string; month: string; year: string }> = {
-    1: { day: "17", month: "APR", year: "2026" },
-    2: { day: "18", month: "APR", year: "2026" },
-    3: { day: "19", month: "APR", year: "2026" },
-  };
+const getEventDetails = (event: (typeof events)[0], index: number) => {
+  const dateMap: Record<number, { day: string; month: string; year: string }> =
+    {
+      1: { day: "17", month: "APR", year: "2026" },
+      2: { day: "18", month: "APR", year: "2026" },
+      3: { day: "19", month: "APR", year: "2026" },
+    };
   const date = dateMap[event.day] || { day: "??", month: "APR", year: "2026" };
 
   const titleLower = event.title.toLowerCase();
@@ -32,7 +32,13 @@ const getEventDetails = (event: typeof events[0], index: number) => {
     icon = Flag;
     accent = "#f87171";
     accentRgb = "248,113,113";
-  } else if (titleLower.includes("food") || titleLower.includes("lunch") || titleLower.includes("dinner") || titleLower.includes("breakfast") || titleLower.includes("snack")) {
+  } else if (
+    titleLower.includes("food") ||
+    titleLower.includes("lunch") ||
+    titleLower.includes("dinner") ||
+    titleLower.includes("breakfast") ||
+    titleLower.includes("snack")
+  ) {
     icon = Utensils;
     accent = "#facc15";
     accentRgb = "250,204,21";
@@ -40,7 +46,11 @@ const getEventDetails = (event: typeof events[0], index: number) => {
     icon = Anchor;
     accent = "#22d3ee";
     accentRgb = "34,211,238";
-  } else if (titleLower.includes("end") || titleLower.includes("closing") || titleLower.includes("winner")) {
+  } else if (
+    titleLower.includes("end") ||
+    titleLower.includes("closing") ||
+    titleLower.includes("winner")
+  ) {
     icon = Trophy;
     accent = "#eab308";
     accentRgb = "234,179,8";
@@ -50,13 +60,20 @@ const getEventDetails = (event: typeof events[0], index: number) => {
     accentRgb = "192,132,252";
   } else if (titleLower.includes("cool") || titleLower.includes("chill")) {
     icon = Coffee;
-    accent = "#60a5fa"; 
+    accent = "#60a5fa";
     accentRgb = "96,165,250";
-  } else if (titleLower.includes("pitch") || titleLower.includes("talk") || titleLower.includes("mic")) {
+  } else if (
+    titleLower.includes("pitch") ||
+    titleLower.includes("talk") ||
+    titleLower.includes("mic")
+  ) {
     icon = Mic;
-    accent = "#f472b6"; 
+    accent = "#f472b6";
     accentRgb = "244,114,182";
-  } else if (titleLower.includes("engagement") || titleLower.includes("activity")) {
+  } else if (
+    titleLower.includes("engagement") ||
+    titleLower.includes("activity")
+  ) {
     icon = Zap;
     accent = "#4ade80";
     accentRgb = "74,222,128";
@@ -71,34 +88,36 @@ const getEventDetails = (event: typeof events[0], index: number) => {
     icon,
     accent,
     accentRgb,
-    label: event.day === 1 && index === 0 ? "DAY 1" : undefined
+    label: event.day === 1 && index === 0 ? "DAY 1" : undefined,
   };
 };
 
 export default function Timeline2D() {
   const richEvents = events.map((e, i) => getEventDetails(e, i));
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start center", "end center"]
+    offset: ["start center", "end center"],
   });
 
   const scaleY = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
-    restDelta: 0.001
+    restDelta: 0.001,
   });
 
   return (
-    <section ref={containerRef} className="relative z-10 w-full min-h-screen bg-transparent py-20 overflow-hidden">
-        
+    <section
+      ref={containerRef}
+      className="relative z-10 w-full min-h-screen bg-transparent py-20 overflow-hidden"
+    >
       {/* Underwater Background Image */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none bg-cover bg-center"
-        style={{ backgroundImage: 'url(/images/underwater.jpg)' }}
+        style={{ backgroundImage: "url(/images/underwater.jpg)" }}
       />
-      
+
       {/* Dark Overlay for Readability */}
       <div className="absolute inset-0 pointer-events-none bg-black/40" />
 
@@ -120,23 +139,27 @@ export default function Timeline2D() {
         <div className="relative max-w-5xl mx-auto pb-32">
           {/* Central rope — Desktop */}
           <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-[#c5a059]/20">
-            <motion.div 
-               style={{ scaleY, originY: 0 }}
-               className="w-full h-full bg-[#c5a059] shadow-[0_0_15px_rgba(197,160,89,0.5)]"
+            <motion.div
+              style={{ scaleY, originY: 0 }}
+              className="w-full h-full bg-[#c5a059] shadow-[0_0_15px_rgba(197,160,89,0.5)]"
             />
           </div>
 
           {/* Left rope — Mobile */}
           <div className="md:hidden absolute left-6 top-0 bottom-0 w-px bg-[#c5a059]/20">
-             <motion.div 
-               style={{ scaleY, originY: 0 }}
-               className="w-full h-full bg-[#c5a059] shadow-[0_0_15px_rgba(197,160,89,0.5)]"
+            <motion.div
+              style={{ scaleY, originY: 0 }}
+              className="w-full h-full bg-[#c5a059] shadow-[0_0_15px_rgba(197,160,89,0.5)]"
             />
           </div>
 
           <div className="flex flex-col gap-20 md:gap-28">
             {richEvents.map((event, index) => (
-              <TimelineItem key={`${event.title}-${index}`} event={event} index={index} />
+              <TimelineItem
+                key={`${event.title}-${index}`}
+                event={event}
+                index={index}
+              />
             ))}
           </div>
         </div>
@@ -177,7 +200,10 @@ function TimelineItem({
           className="w-14 h-14 rounded-full bg-[#0f172a] border-2 backdrop-blur-xl flex items-center justify-center z-10 shadow-lg group"
           style={{ borderColor: event.accent }}
         >
-          <Icon className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" style={{ color: event.accent }} />
+          <Icon
+            className="w-6 h-6 group-hover:scale-110 transition-transform duration-300"
+            style={{ color: event.accent }}
+          />
         </div>
       </div>
 
@@ -209,8 +235,6 @@ function TimelineItem({
               e.currentTarget.style.boxShadow = `0 10px 30px -10px rgba(0,0,0,0.5)`;
             }}
           >
-
-
             <div
               className={`relative flex items-center gap-4 p-6 md:p-8 pb-2 md:pb-3 ${
                 isEven ? "md:flex-row-reverse md:text-right" : ""
