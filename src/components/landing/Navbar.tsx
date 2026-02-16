@@ -17,22 +17,10 @@ function cn(...inputs: ClassValue[]) {
 
 const NAV_LINKS = [
   { name: "Home", href: "/" },
-<<<<<<< HEAD
-<<<<<<< HEAD
   { name: "About", href: "/about" },
   { name: "Tracks", href: "#" },
   { name: "Prizes", href: "#" },
   { name: "Timeline", href: "#" },
-=======
-  { name: "About", href: "/#" },
-  { name: "Tracks", href: "/#" },
-  { name: "Prizes", href: "/#" },
->>>>>>> 69c5d01 (feat: added contact us page and enhanced images quality)
-=======
-  { name: "About", href: "/about" },
-  { name: "Events", href: "#" },
-  { name: "Timeline", href: "#" },
->>>>>>> 1647aaf (feat: added about us page and optimized UI to be smooth by elminating some blurs and animations)
   { name: "Contact", href: "/contact" },
 ];
 
