@@ -358,14 +358,14 @@ function LandingContent({
                 Worth Over
               </span>
               <span
-                className="text-8xl md:text-[12rem] font-black font-sans leading-none tracking-tight"
+                className="text-6xl md:text-8xl lg:text-[12rem] font-black font-sans leading-none tracking-tight"
                 style={{
                   color: "#eab308",
                   textShadow:
                     "0 0 40px rgba(234,179,8,0.5), 0 0 80px rgba(234,179,8,0.3), 0 0 120px rgba(234,179,8,0.15)",
                 }}
               >
-                ₹3L
+                ₹3,00,000
                 <span className="text-yellow-400/70">+</span>
               </span>
               <span className="text-lg md:text-2xl font-pirate text-yellow-300/50 tracking-[0.3em] mt-2">

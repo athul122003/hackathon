@@ -20,7 +20,8 @@ const NAV_LINKS = [
 <<<<<<< HEAD
 <<<<<<< HEAD
   { name: "About", href: "/about" },
-  { name: "Events", href: "#" },
+  { name: "Tracks", href: "#" },
+  { name: "Prizes", href: "#" },
   { name: "Timeline", href: "#" },
 =======
   { name: "About", href: "/#" },

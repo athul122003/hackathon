@@ -4,6 +4,10 @@ import { motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useDayNight } from "~/components/providers/useDayNight";
+<<<<<<< HEAD
+=======
+
+>>>>>>> a945d76 (feat: added contact us page and enhanced images quality)
 
 export function ThemeToggle() {
   const { isNight, toggleTheme } = useDayNight();
@@ -11,8 +15,11 @@ export function ThemeToggle() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 0544a48 (refactor: Move timeline scene and water background components into a dedicated `components` subdirectory.)
+=======
+>>>>>>> a945d76 (feat: added contact us page and enhanced images quality)
   if (
     pathname === "/contact" ||
     pathname === "/about" ||
@@ -20,11 +27,17 @@ export function ThemeToggle() {
   )
     return null;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   if (pathname === "/contact" || pathname === "/about") return null;
 >>>>>>> b576a06 (feat: added about us page and optimized UI to be smooth by elminating some blurs and animations)
 =======
 >>>>>>> 0544a48 (refactor: Move timeline scene and water background components into a dedicated `components` subdirectory.)
+=======
+=======
+  if (pathname === "/contact") return null;
+>>>>>>> 4e550d1 (feat: added contact us page and enhanced images quality)
+>>>>>>> a945d76 (feat: added contact us page and enhanced images quality)
 
   return (
     <motion.button
