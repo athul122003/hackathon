@@ -1,12 +1,16 @@
 "use client";
 
 import { TriangleAlert } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { apiFetch } from "~/lib/fetcher";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import EventDetails from "./details";
 import EventDrawer from "./drawer";
+import { UserDetailsForm } from "./userDetails";
 
 export type Event = {
   id: string;
@@ -32,6 +36,20 @@ const Events = () => {
   );
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+  const { data: session } = useSession();
+  console.log("Session data:", session);
+
+  useEffect(() => {
+    if (error === "email-mismatch") {
+      router.replace("/events");
+      setTimeout(() => {
+        toast.error("Email mismatch. Please log in with the correct account.");
+      }, 2000);
+    }
+  }, [error, router.replace]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -72,6 +90,10 @@ const Events = () => {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
+      {/* {session?.eventUser && !session.eventUser.gender && ( */}
+      {/*   <UserDetailsForm /> */}
+      {/* )} */}
+
       <EventDrawer
         event={selectedEvent}
         drawerOpen={drawerOpen}

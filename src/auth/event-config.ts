@@ -1,7 +1,8 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import NextAuth, { type DefaultSession } from "next-auth";
+import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import db from "~/db";
+import { query } from "~/db/data";
 import {
   eventAccounts,
   eventSessions,
@@ -9,19 +10,16 @@ import {
   eventVerificationTokens,
 } from "~/db/schema/event-auth";
 import { env } from "~/env";
-
-// Separate key for eventUsers
-declare module "next-auth" {
-  interface Session extends DefaultSession {
-    eventUser: {
-      id: string;
-    } & DefaultSession["user"];
-  }
-}
+import { auth as pAuth } from "./config";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "database",
+  },
+  cookies: {
+    sessionToken: {
+      name: "authjs.event.session-token",
+    },
   },
   basePath: "/api/auth/event",
   adapter: DrizzleAdapter(db, {
@@ -36,14 +34,35 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  events: {
+    async signIn({ user }) {
+      const pSession = await pAuth();
+      if (pSession?.user?.id) {
+        const participant = await query.participants.findOne({
+          where: (participants, { eq }) =>
+            eq(participants.id, pSession.user.id),
+        });
+
+        await query.eventUsers.update(user.id ?? "", {
+          collegeId: participant?.collegeId ?? null,
+        });
+      }
+    },
+  },
   callbacks: {
-    // HACK: fetch and add user data to session
+    async signIn({ user }) {
+      const pSession = await pAuth();
+      if (pSession?.user?.id) {
+        if (user.email !== pSession.user.email)
+          return "/events?error=email-mismatch";
+      }
+      return true;
+    },
     async redirect({ baseUrl }) {
       return `${baseUrl}/events`;
     },
     async session({ session, user }) {
-      if (user) {
-        session.eventUser.id = user.id;
+      if (user.id) {
         session.eventUser = user;
       }
       return session;

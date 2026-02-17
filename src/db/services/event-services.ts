@@ -1,11 +1,11 @@
 import { count, eq } from "drizzle-orm";
+import db from "~/db";
+import { query } from "~/db/data";
+import { deleteParticipant } from "~/db/data/event-users";
+import { eventParticipants, eventTeams } from "~/db/schema";
 import { AppError } from "~/lib/errors/app-error";
 import { errorResponse } from "~/lib/response/error";
 import { successResponse } from "~/lib/response/success";
-import db from "..";
-import { eventParticipants, eventTeams } from "../schema";
-import { query } from ".";
-import { deleteParticipant } from "./event-users";
 
 export async function createEventTeam(
   eventId: string,

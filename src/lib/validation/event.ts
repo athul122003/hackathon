@@ -1,4 +1,5 @@
 import z from "zod";
+import { genderEnum, stateEnum } from "~/db/enum";
 
 export const eventSchema = z.object({
   title: z.string().min(2).max(100),
@@ -13,3 +14,15 @@ export const eventSchema = z.object({
   minTeamSize: z.number().min(1),
   maxTeamSize: z.number().min(1),
 });
+
+export const eventUserSchema = z.object({
+  state: z.enum(stateEnum.enumValues, {
+    message: "Please select a valid state",
+  }),
+  gender: z.enum(genderEnum.enumValues, {
+    message: "Please select a valid gender",
+  }),
+  collegeId: z.string().min(1, "College is required"),
+});
+
+export type EventUserInput = z.infer<typeof eventUserSchema>;

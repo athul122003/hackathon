@@ -17,10 +17,18 @@ declare module "next-auth" {
       id: string;
       isRegistrationComplete: boolean;
     } & DefaultSession["user"];
+    eventUser?: DefaultSession["user"] & {
+      id: string;
+    };
   }
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  cookies: {
+    sessionToken: {
+      name: "authjs.hf.session-token",
+    },
+  },
   adapter: DrizzleAdapter(db, {
     usersTable: participants,
     accountsTable: accounts,

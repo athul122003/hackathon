@@ -1,13 +1,13 @@
 import type { NextRequest } from "next/server";
 import { protectedEventRoute } from "~/auth/route-handlers";
+import { findByEvent } from "~/db/data/event-users";
 import {
   confirmEventTeam,
   createEventTeam,
   deleteEventTeam,
   joinEventTeam,
   leaveEventTeam,
-} from "~/db/data/event-teams";
-import { findByEvent } from "~/db/data/event-users";
+} from "~/db/services/event-services";
 import { AppError } from "~/lib/errors/app-error";
 import { errorResponse } from "~/lib/response/error";
 
