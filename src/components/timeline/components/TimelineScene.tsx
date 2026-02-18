@@ -1159,14 +1159,14 @@ const Ship = forwardRef<
 
         if (distToIsland < dockingRadius) {
           setPausedAtIsland(i);
-          
+
           // Hard stop: reset target and accumulation to current position to kill lerp
           const segmentSize = 400;
           const segments = totalIslands + 1;
           const progressVal = progressRef.current;
           targetProgressRef.current = progressVal;
           scrollAccumRef.current = progressVal * (segmentSize * segments);
-          
+
           scrollAccumAtIsland.current = 0;
           if (onDock) onDock(i);
           break;
@@ -1755,7 +1755,7 @@ export default function TimelineScene() {
       skyTriggeredForRef.current = idx;
       const [topHex, bottomHex] = getSkyForIsland(idx);
       tweenSkyTo(topHex, bottomHex, 1.5, bgOverlayRef.current);
-      
+
       // Auto-open focus for the final island
       if (idx === ISLAND_POSITIONS.length - 1) {
         setSelectedEvent(events[idx]);
