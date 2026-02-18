@@ -162,7 +162,7 @@ function FixedHero({ scrollRef }: { scrollRef: React.MutableRefObject<number> })
   useAnimationFrame(() => {
     if (containerRef.current) {
       const progress = scrollRef.current;
-      const opacity = 1 - THREE.MathUtils.smoothstep(progress, 0.04, 0.08);
+      const opacity = 1 - THREE.MathUtils.smoothstep(progress, 0, 0.05);
       const scale = 1 - progress * 2;
 
       containerRef.current.style.opacity = opacity.toString();
@@ -538,7 +538,8 @@ export default function Scene({ session }: { session: Session | null }) {
       duration: 1.0, // Slower duration for "stronger" smooth effect
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Custom easing
       smoothWheel: true,
-      syncTouch: false, // Don't hijack touch unless desired
+      syncTouch: true, 
+      touchMultiplier: 2, 
     });
 
     lenisRef.current = lenis;
@@ -605,7 +606,7 @@ export default function Scene({ session }: { session: Session | null }) {
       <div
         ref={htmlScrollRef}
         className="absolute inset-0 overflow-y-auto overflow-x-hidden no-scrollbar"
-        style={{ zIndex: 10 }}
+        style={{ zIndex: 10, touchAction: "pan-y" }}
       >
         <FixedHero scrollRef={scrollRef} />
         <LandingContent setPages={setPages} pages={pages} />
