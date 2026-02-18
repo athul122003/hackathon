@@ -72,6 +72,7 @@ export const eventAudienceEnum = pgEnum("event_audience", [
   "Non-Participants",
   "Both",
 ]);
+
 export const paymentStatusEnum = pgEnum("payment_status", [
   "Pending",
   "Paid",
