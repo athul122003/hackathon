@@ -15,11 +15,14 @@ import { IdProofStep } from "~/components/forms/register-steps/IdProofStep";
 import { NameStep } from "~/components/forms/register-steps/NameStep";
 import { PhoneStep } from "~/components/forms/register-steps/PhoneStep";
 import { StateStep } from "~/components/forms/register-steps/StateStep";
+import { useDayNight } from "~/components/providers/useDayNight";
 import { Button } from "~/components/ui/button";
 import { Form } from "~/components/ui/form";
 import { apiFetch } from "~/lib/fetcher";
-import { useDayNight } from "~/components/providers/useDayNight";
-import { type RegisterParticipantInput, registerParticipantSchema } from "~/lib/validation/participant";
+import {
+  type RegisterParticipantInput,
+  registerParticipantSchema,
+} from "~/lib/validation/participant";
 
 interface College {
   id: string;
@@ -118,10 +121,11 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
         onSubmit={form.handleSubmit(onSubmit, (errors) => {
           console.log("Validation errors:", errors);
         })}
-        className={`relative flex min-h-screen flex-col items-center justify-center px-6 overflow-hidden text-white transition-colors duration-1000 ${isNight
-          ? "bg-linear-to-b from-[#0f172a] via-[#1e1a78] to-[#2d5f7c]"
-          : "bg-linear-to-b from-[#10569c] via-[#61b2e4] to-[#eef7fb]"
-          }`}
+        className={`relative flex min-h-screen flex-col items-center justify-center px-6 overflow-hidden text-white transition-colors duration-1000 ${
+          isNight
+            ? "bg-linear-to-b from-[#0f172a] via-[#1e1a78] to-[#2d5f7c]"
+            : "bg-linear-to-b from-[#10569c] via-[#61b2e4] to-[#eef7fb]"
+        }`}
       >
         {/* --- TOP PROGRESS BAR --- */}
         <div className="absolute top-0 left-0 w-full h-1.5 bg-white/20 z-50">
@@ -143,14 +147,16 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
 
         {/* --- DECORATIVE ELEMENTS (The Beach) --- */}
         <div
-          className={`absolute -bottom-[5%] left-[-20%] w-[140%] h-[35vh] rounded-[100%] blur-3xl z-0 pointer-events-none transition-colors duration-1000 ${isNight ? "bg-[#1e1b4b]/40" : "bg-[#fffac2]/40"
-            }`}
+          className={`absolute -bottom-[5%] left-[-20%] w-[140%] h-[35vh] rounded-[100%] blur-3xl z-0 pointer-events-none transition-colors duration-1000 ${
+            isNight ? "bg-[#1e1b4b]/40" : "bg-[#fffac2]/40"
+          }`}
         />
         <div
-          className={`absolute -bottom-[12%] left-[-10%] w-[120%] h-[30vh] rounded-[50%] z-0 pointer-events-none transition-colors duration-1000 ${isNight
-            ? "bg-[#312e81] shadow-[0_-10px_50px_rgba(30,27,75,0.8)]"
-            : "bg-[#fbf6db] shadow-[0_-10px_50px_rgba(240,230,180,0.8)]"
-            }`}
+          className={`absolute -bottom-[12%] left-[-10%] w-[120%] h-[30vh] rounded-[50%] z-0 pointer-events-none transition-colors duration-1000 ${
+            isNight
+              ? "bg-[#312e81] shadow-[0_-10px_50px_rgba(30,27,75,0.8)]"
+              : "bg-[#fbf6db] shadow-[0_-10px_50px_rgba(240,230,180,0.8)]"
+          }`}
         />
         {/* Step Counter Text */}
         <div className="absolute top-8 left-6 text-sm text-white/80 z-20 font-medium tracking-wide">

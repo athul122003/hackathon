@@ -157,7 +157,11 @@ function Background({
   );
 }
 
-function FixedHero({ scrollRef }: { scrollRef: React.MutableRefObject<number> }) {
+function FixedHero({
+  scrollRef,
+}: {
+  scrollRef: React.MutableRefObject<number>;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useAnimationFrame(() => {
@@ -169,7 +173,8 @@ function FixedHero({ scrollRef }: { scrollRef: React.MutableRefObject<number> })
       containerRef.current.style.opacity = opacity.toString();
       containerRef.current.style.transform = `scale(${Math.max(0, scale)})`;
 
-      containerRef.current.style.visibility = opacity <= 0.001 ? "hidden" : "visible";
+      containerRef.current.style.visibility =
+        opacity <= 0.001 ? "hidden" : "visible";
     }
   });
 
@@ -221,19 +226,25 @@ function FixedHero({ scrollRef }: { scrollRef: React.MutableRefObject<number> })
                 className="absolute inset-0 bg-[#34211e] rounded-sm"
                 style={{
                   clipPath: "polygon(2% 0%, 98% 5%, 100% 100%, 0% 95%)",
-                  backgroundImage: "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 20px)",
+                  backgroundImage:
+                    "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 20px)",
                 }}
               />
               <div
                 className="absolute inset-0 bg-black/20"
-                style={{ clipPath: "polygon(2% 0%, 98% 5%, 100% 100%, 0% 95%)" }}
+                style={{
+                  clipPath: "polygon(2% 0%, 98% 5%, 100% 100%, 0% 95%)",
+                }}
               />
 
               <div className="absolute top-2 left-4 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-[inset_1px_1px_2px_rgba(255,255,255,0.2)]" />
               <div className="absolute top-3 right-5 w-3 h-3 rounded-full bg-[#1a0f0a] shadow-[inset_1px_1px_2px_rgba(255,255,255,0.2)]" />
 
               <div className="relative z-10">
-                <p className="text-xl md:text-3xl font-crimson font-bold italic text-[#d7ccc8] tracking-widest drop-shadow-md opacity-90" style={{ transform: "rotate(1deg)" }}>
+                <p
+                  className="text-xl md:text-3xl font-crimson font-bold italic text-[#d7ccc8] tracking-widest drop-shadow-md opacity-90"
+                  style={{ transform: "rotate(1deg)" }}
+                >
                   Embark on a Voyage of Innovation
                 </p>
               </div>
@@ -252,13 +263,24 @@ function FixedHero({ scrollRef }: { scrollRef: React.MutableRefObject<number> })
             <p className="text-xs font-mono tracking-[0.3em] uppercase text-white/70">
               Dive Deeper
             </p>
+            <div className="text-xl md:text-3xl font-bold text-white/70">
+              Scroll Down
+            </div>
             <svg
               className="w-6 h-6 text-white/70"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              role="img"
+              aria-label="Scroll down arrow"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              <title>Scroll down arrow</title>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+              />
             </svg>
           </div>
         </motion.div>
@@ -338,7 +360,6 @@ function LandingContent({
       ref={ref}
       className="w-full text-white no-scrollbar pointer-events-none"
     >
-
       <section className="h-screen w-full relative z-0"></section>
 
       {/* SPACER FOR TRANSITION - Optional extra space before sponsors */}
@@ -387,7 +408,8 @@ function LandingContent({
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div className="group relative aspect-video bg-black/30 border border-cyan-500/30 rounded-xl flex items-center justify-center hover:bg-cyan-900/40 transition-all duration-500 overflow-hidden"
+                <div
+                  className="group relative aspect-video bg-black/30 border border-cyan-500/30 rounded-xl flex items-center justify-center hover:bg-cyan-900/40 transition-all duration-500 overflow-hidden"
                   key={i}
                 >
                   <span className="text-cyan-400 font-mono text-lg group-hover:scale-110 transition-transform">
@@ -555,8 +577,8 @@ export default function Scene({ session }: { session: Session | null }) {
       duration: 1.0, // Slower duration for "stronger" smooth effect
       easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)), // Custom easing
       smoothWheel: true,
-      syncTouch: true, 
-      touchMultiplier: 2, 
+      syncTouch: true,
+      touchMultiplier: 2,
     });
 
     lenisRef.current = lenis;
