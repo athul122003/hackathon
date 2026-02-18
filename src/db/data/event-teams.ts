@@ -24,7 +24,8 @@ export async function memberCount(eventId: string, teamId: string) {
 export async function teamCount(eventId: string) {
   return (
     await query.eventTeams.findMany({
-      where: (t, { eq }) => eq(t.eventId, eventId),
+      where: (t, { eq, and }) =>
+        and(eq(t.eventId, eventId), eq(t.isComplete, true)),
     })
   ).length;
 }

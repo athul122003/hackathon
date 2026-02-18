@@ -13,8 +13,47 @@ import { AppError } from "~/lib/errors/app-error";
 import { errorResponse } from "~/lib/response/error";
 import { successResponse } from "~/lib/response/success";
 import type { UpdateEventUserInput } from "~/lib/validation/event";
-import { findByEventId } from "../data/event";
+import { eventRegistrationOpen, findByEventId } from "../data/event";
 import { findByIdandEvent, memberCount, teamCount } from "../data/event-teams";
+
+export async function getAllEvents(userId?: string) {
+  const registrationsOpen = await eventRegistrationOpen();
+  const events = await query.events.findMany({
+    where: (events, { eq, not }) => not(eq(events.status, "Draft")),
+    orderBy: (events, { desc }) => desc(events.date),
+  });
+
+  if (!userId)
+    return successResponse({ events, registrationsOpen }, { toast: false });
+
+  const participants = await query.eventParticipants.findMany({});
+  const teams = await query.eventTeams.findMany({});
+
+  const res = events.map(async (e) => {
+    const participant = participants.find(
+      (p) => p.eventId === e.id && p.userId === userId,
+    );
+
+    if (!participant) return { ...e, userStatus: "NOT_REGISTERED" };
+
+    if (e.type === "Solo") return { ...e, userStatus: "REGISTERED" };
+
+    const team = teams.find((t) => t.id === participant.teamId);
+    const members = participants.filter((p) => p.teamId === team?.id);
+
+    return {
+      ...e,
+      userStatus: team?.isComplete ? "TEAM_REGISTERED" : "PENDING_CONFIRMATION",
+      isLeader: participant.isLeader,
+      teamMembers: members.map((em) => em.userId),
+    };
+  });
+
+  return successResponse(
+    { events: await Promise.all(res), registrationsOpen },
+    { toast: false },
+  );
+}
 
 export async function updateUserDetails(
   userId: string,

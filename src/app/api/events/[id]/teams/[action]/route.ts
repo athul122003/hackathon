@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { protectedEventRoute } from "~/auth/route-handlers";
+import { eventRegistrationOpen } from "~/db/data/event";
 import { findByEvent } from "~/db/data/event-users";
 import {
   confirmEventTeam,
@@ -13,6 +14,16 @@ import { errorResponse } from "~/lib/response/error";
 
 export const POST = protectedEventRoute(
   async (req: NextRequest, context, user) => {
+    const registrationsOpen = await eventRegistrationOpen();
+    if (!registrationsOpen) {
+      return errorResponse(
+        new AppError("Registrations closed", 403, {
+          title: "Registrations Closed",
+          description: "Event registrations are currently closed.",
+        }),
+      );
+    }
+
     const { id: eventId, action } = await context.params;
     const eventUser = await findByEvent(eventId, user.id);
 

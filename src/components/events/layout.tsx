@@ -3,7 +3,7 @@
 import { TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { use, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { apiFetch } from "~/lib/fetcher";
 import { Card, CardContent, CardHeader } from "../ui/card";
@@ -34,6 +34,7 @@ const Events = ({
   searchParams: Promise<{ error?: string }>;
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [registration, setRegistration] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [drawerDirection, setDrawerDirection] = useState<"right" | "bottom">(
     "right",
@@ -45,6 +46,28 @@ const Events = ({
   const { data: session, update } = useSession();
   console.log("Session data:", session);
 
+  const fetchEvents = useCallback(async () => {
+    try {
+      const response = await apiFetch<{
+        events: Event[];
+        registrationsOpen: boolean;
+      }>("/api/events/getAll", {
+        method: "GET",
+      });
+      console.log("Fetched events:", response);
+      setRegistration(response?.registrationsOpen ?? false);
+      if (response) setEvents(response?.events as Event[]);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
   useEffect(() => {
     if (error === "email-mismatch") {
       router.replace("/events");
@@ -52,7 +75,7 @@ const Events = ({
         toast.error("Email mismatch. Please log in with the correct account.");
       }, 2000);
     }
-  }, [error, router]);
+  }, [error, router.replace]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -62,27 +85,6 @@ const Events = ({
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await apiFetch<{ events: Event[] | null }>(
-          "/api/events/getAll",
-          {
-            method: "GET",
-          },
-        );
-        console.log("Fetched events:", response);
-        if (response) setEvents(response?.events as Event[]);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvents();
   }, []);
 
   const handleCardClick = (id: string) => {
@@ -101,6 +103,7 @@ const Events = ({
         event={selectedEvent}
         drawerOpen={drawerOpen}
         setDrawerOpen={setDrawerOpen}
+        registrationOpen={registration}
         drawerDirection={drawerDirection}
       />
 

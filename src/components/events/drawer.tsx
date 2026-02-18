@@ -14,11 +14,13 @@ export default function EventDrawer({
   event,
   drawerOpen,
   setDrawerOpen,
+  registrationOpen,
   drawerDirection,
 }: {
   event: Event | null;
   drawerOpen: boolean;
   setDrawerOpen: (open: boolean) => void;
+  registrationOpen: boolean;
   drawerDirection: "right" | "bottom";
 }) {
   const { data: session } = useSession();
@@ -125,32 +127,35 @@ export default function EventDrawer({
             </div>
           </div>
           <div>
-            {session ? (
-              <Button
-                onClick={() => alert("Registration functionality coming soon!")}
-                className="w-full py-6 text-xl text-[#0b2545] cursor-pointer capitalize shrink-0 flex gap-2 items-center justify-center bg-linear-to-r from-[#cfb536] to-[#c2a341] hover:brightness-110 transition-all duration-300"
-              >
-                Register Now
-              </Button>
-            ) : (
-              <>
-                <div className="mb-4 p-3 rounded-md bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm">
-                  <p className="font-bold">Note for Hackfest Participants:</p>
-                  <p>
-                    If you previously registered for Hackfest, please log in
-                    using the same email address used during that registration.
-                    If this does not apply to you, you may ignore this message
-                    and continue normally.
-                  </p>
-                </div>
+            {registrationOpen &&
+              (session ? (
                 <Button
-                  onClick={() => redirect("/api/auth/event/signin")}
+                  onClick={() =>
+                    alert("Registration functionality coming soon!")
+                  }
                   className="w-full py-6 text-xl text-[#0b2545] cursor-pointer capitalize shrink-0 flex gap-2 items-center justify-center bg-linear-to-r from-[#cfb536] to-[#c2a341] hover:brightness-110 transition-all duration-300"
                 >
-                  Log in to Register
+                  Register Now
                 </Button>
-              </>
-            )}
+              ) : (
+                <>
+                  <div className="mb-4 p-3 rounded-md bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm">
+                    <p className="font-bold">Note for Hackfest Participants:</p>
+                    <p>
+                      If you previously registered for Hackfest, please log in
+                      using the same email address used during that
+                      registration. If this does not apply to you, you may
+                      ignore this message and continue normally.
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => redirect("/api/auth/event/signin")}
+                    className="w-full py-6 text-xl text-[#0b2545] cursor-pointer capitalize shrink-0 flex gap-2 items-center justify-center bg-linear-to-r from-[#cfb536] to-[#c2a341] hover:brightness-110 transition-all duration-300"
+                  >
+                    Log in to Register
+                  </Button>
+                </>
+              ))}
           </div>
         </div>
       </DrawerContent>

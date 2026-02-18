@@ -49,6 +49,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           gender: participant?.gender ?? null,
           collegeId: participant?.collegeId ?? null,
         });
+      } else {
+        const existingUser = await query.participants.findOne({
+          where: (participants, { eq }) =>
+            eq(participants.email, user.email ?? ""),
+        });
+
+        if (existingUser) {
+          await query.eventUsers.update(user.id ?? "", {
+            state: existingUser.state ?? null,
+            gender: existingUser.gender ?? null,
+            collegeId: existingUser.collegeId ?? null,
+          });
+        }
       }
     },
   },
@@ -64,8 +77,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async redirect({ url, baseUrl }) {
       if (url.includes("/error?error=email-mismatch"))
         return `${baseUrl}/events?error=email-mismatch`;
-
-      if (url.startsWith(baseUrl)) return url;
 
       return `${baseUrl}/events`;
     },

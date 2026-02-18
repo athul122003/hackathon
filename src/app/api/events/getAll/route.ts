@@ -1,5 +1,5 @@
 import { auth } from "~/auth/event-config";
-import { getAllEvents } from "~/db/data/events";
+import { getAllEvents } from "~/db/services/event-services";
 
 export async function GET() {
   const session = await auth();
