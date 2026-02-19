@@ -14,7 +14,7 @@ export default function AboutSlate() {
                 <div className="relative w-20 h-20 md:w-24 md:h-24 mb-4">
                   <div className="absolute inset-0 bg-cyan-400/20 blur-xl rounded-full" />
                   <Image
-                    src="/logos/glowingLogo.png"
+                    src="/logos/glowingLogo.webp"
                     fill
                     alt="HF Logo"
                     className="object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.6)]"
@@ -50,7 +50,7 @@ export default function AboutSlate() {
                   </span>
                   <span className="text-3xl font-black text-stone-400">19</span>
                 </div>
-                <span className="text-stone-500 font-mono text-xs tracking-[0.3em] mt-1">
+                <span className="text-stone-500 font-crimson text-xs tracking-[0.3em] mt-1">
                   2026
                 </span>
               </div>

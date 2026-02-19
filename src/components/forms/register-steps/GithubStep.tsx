@@ -57,7 +57,7 @@ export function GithubStep({ form, initialGithubUsername }: GithubStepProps) {
                     rounded-4xl
                     
                     /* TEXT STYLING */
-                    text-center font-mono text-white/90 
+                    text-center font-crimson text-white/90 
                     text-xl px-0
                     md:text-4xl 
                     

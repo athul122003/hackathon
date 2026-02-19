@@ -345,7 +345,7 @@ export default function EventListTab({
                 <Input
                   value={deleteConfirmation}
                   onChange={(e) => setDeleteConfirmation(e.target.value)}
-                  className="font-mono text-sm mt-4"
+                  className="font-crimson text-sm mt-4"
                 />
               </div>
             </div>

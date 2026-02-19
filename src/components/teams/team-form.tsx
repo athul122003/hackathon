@@ -201,7 +201,7 @@ export function TeamForm() {
                       <Input
                         placeholder="e.g. 1234-5678"
                         {...field}
-                        className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus-visible:ring-white/50 h-12 font-mono text-lg"
+                        className="bg-black/20 border-white/20 text-white placeholder:text-white/40 focus-visible:ring-white/50 h-12 font-crimson text-lg"
                       />
                     </FormControl>
                     <FormMessage className="text-red-300 font-medium" />

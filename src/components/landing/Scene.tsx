@@ -100,7 +100,7 @@ function Background({
       // Use damped progress for smoother transition
       const transitionProgress = Math.max(
         0,
-        Math.min(1, (progress - 0.05) / 0.06),
+        Math.min(1, (progress - 0.05) / 0.14),
       );
       materialRef.current.uTransitionProgress = transitionProgress;
       materialRef.current.uHoverProgress = state.pointer.x * 0.5 + 0.5;
@@ -167,7 +167,7 @@ function FixedHero({
   useAnimationFrame(() => {
     if (containerRef.current) {
       const progress = scrollRef.current;
-      const opacity = 1 - THREE.MathUtils.smoothstep(progress, 0, 0.09);
+      const opacity = 1 - THREE.MathUtils.smoothstep(progress, 0, 0.08);
       const scale = 1 - progress * 2;
 
       containerRef.current.style.opacity = opacity.toString();
@@ -197,11 +197,11 @@ function FixedHero({
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative pointer-events-auto" // Interactive if needed
           >
-            <div className="absolute inset-0 bg-white/20 blur-3xl rounded-full scale-110 -z-10" />
+            <div className="absolute -z-10" />
             <img
-              src="/logo.png"
+              src="/logo.webp"
               alt="HF Logo"
-              className="w-48 md:w-64 h-auto drop-shadow-2xl mb-6 hover:scale-105 transition-transform duration-500"
+              className="w-48 ml-11 md:w-64 h-auto drop-shadow-2xl mb-6 hover:scale-105 transition-transform duration-500"
             />
           </motion.div>
 
@@ -260,7 +260,7 @@ function FixedHero({
           transition={{ delay: 2, duration: 1 }}
         >
           <div className="flex flex-col items-center gap-2 animate-bounce">
-            <p className="text-xs font-mono tracking-[0.3em] uppercase text-white/70">
+            <p className="text-xs font-crimson tracking-[0.3em] uppercase text-white/70">
               Dive Deeper
             </p>
             <div className="text-xl md:text-3xl font-bold text-white/70">
@@ -374,7 +374,7 @@ function LandingContent({
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          viewport={{ margin: "-100px" }}
+          viewport={{ margin: "-100px", once: true }}
         >
           <div className="w-full max-w-6xl">
             <motion.h2
@@ -382,6 +382,7 @@ function LandingContent({
               initial={{ scale: 0.9, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
             >
               Our Sponsors
             </motion.h2>
@@ -393,7 +394,7 @@ function LandingContent({
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="group relative w-72 md:w-96 aspect-video bg-white/70 backdrop-blur-sm border-2 border-cyan-400/50 rounded-2xl flex items-center justify-center hover:border-cyan-300 transition-all duration-500 overflow-hidden shadow-[0_0_25px_rgba(0,200,255,0.2)] hover:shadow-[0_0_40px_rgba(0,200,255,0.4)]">
+              <div className="group relative w-72 md:w-96 aspect-video bg-white/70 border-2 border-cyan-400/50 rounded-2xl flex items-center justify-center hover:border-cyan-300 transition-all duration-500 overflow-hidden hover:shadow-[0_0_40px_rgba(0,200,255,0.4)]">
                 <img
                   src="/logos/nmamit.png"
                   alt="NITTE"
@@ -401,7 +402,7 @@ function LandingContent({
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-              <span className="mt-3 text-sm font-mono font-semibold tracking-[0.3em] uppercase text-cyan-300/80">
+              <span className="mt-3 text-sm font-crimson font-semibold tracking-[0.3em] uppercase text-cyan-300/80">
                 Executive Sponsor
               </span>
             </motion.div>
@@ -412,7 +413,7 @@ function LandingContent({
                   className="group relative aspect-video bg-black/30 border border-cyan-500/30 rounded-xl flex items-center justify-center hover:bg-cyan-900/40 transition-all duration-500 overflow-hidden"
                   key={i}
                 >
-                  <span className="text-cyan-400 font-mono text-lg group-hover:scale-110 transition-transform">
+                  <span className="text-cyan-400 font-crimson text-lg group-hover:scale-110 transition-transform">
                     Sponsor {i}
                   </span>
                   <div className="absolute inset-0 bg-linear-to-t from-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -436,6 +437,7 @@ function LandingContent({
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
+          viewport={{ once: true }}
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full pt-16 pb-8">
             <motion.h2
@@ -443,6 +445,7 @@ function LandingContent({
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
             >
               Prize Pool
             </motion.h2>
@@ -453,25 +456,25 @@ function LandingContent({
               initial={{ scale: 0.8, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", bounce: 0.4, duration: 1.2 }}
+              viewport={{ once: true }}
             >
               {/* Animated glow rings */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 rounded-full border border-yellow-500/10 animate-[ping_4s_ease-in-out_infinite]" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-72 md:h-72 rounded-full border border-yellow-500/20 animate-[ping_3s_ease-in-out_infinite_0.5s]" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 md:w-md md:h-112 rounded-full bg-yellow-500/5 blur-3xl" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 rounded-full border border-yellow-500/10" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-72 md:h-72 rounded-full border border-yellow-500/20" />
 
               {/* The number */}
-              <span className="text-sm md:text-lg font-mono font-bold tracking-[0.5em] text-yellow-400/60 uppercase mb-2">
+              <span className="text-sm md:text-lg font-crimson font-bold tracking-[0.5em] text-yellow-400/60 uppercase mb-2">
                 Worth Over
               </span>
               <span
-                className="text-8xl md:text-[12rem] font-black font-sans leading-none tracking-tight"
+                className="text-8xl md:text-[12rem] font-black font-pirata leading-none tracking-tight"
                 style={{
                   color: "#eab308",
                   textShadow:
                     "0 0 40px rgba(234,179,8,0.5), 0 0 80px rgba(234,179,8,0.3), 0 0 120px rgba(234,179,8,0.15)",
                 }}
               >
-                ₹3L
+                ₹3,00,000
                 <span className="text-yellow-400/70">+</span>
               </span>
               <span className="text-lg md:text-2xl font-pirate text-yellow-300/50 tracking-[0.3em] mt-2">

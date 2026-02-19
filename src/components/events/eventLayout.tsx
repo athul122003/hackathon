@@ -176,9 +176,8 @@ const Events = ({ session }: { session: Session | null }) => {
           </DrawerTitle>
           {selectedEvent ? (
             <div
-              className={`flex flex-col gap-6 px-4 pb-8 overflow-y-auto flex-1 ${
-                drawerDirection === "bottom" ? "pt-2" : "pt-8"
-              }`}
+              className={`flex flex-col gap-6 px-4 pb-8 overflow-y-auto flex-1 ${drawerDirection === "bottom" ? "pt-2" : "pt-8"
+                }`}
             >
               <h2 className="text-4xl lg:text-5xl font-bold text-[#f4d35e] wrap-break-word text-center">
                 {selectedEvent?.title}
@@ -303,7 +302,7 @@ const Events = ({ session }: { session: Session | null }) => {
                     <div className="w-full">
                       <div className="-skew-x-37 bg-[#0f1823] absolute rounded-bl-3xl rounded-br-xl left-0 w-1/2 justify-start px-4">
                         <Image
-                          src={"/logos/glowingLogo.png"}
+                          src={"/logos/glowingLogo.webp"}
                           alt={"Hackfest Logo"}
                           width={550}
                           height={550}

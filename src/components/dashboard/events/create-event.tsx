@@ -557,7 +557,7 @@ export function EventDescription({
           value={formData.description}
           onChange={handleInputChange}
           rows={8}
-          className="font-mono text-sm"
+          className="font-crimson text-sm"
           required
         />
       ) : (

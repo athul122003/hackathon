@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import { Anchor, Scroll, Ship, Telescope, Trophy } from "lucide-react";
 
 const timelineEvents = [
@@ -63,8 +64,8 @@ export default function Timeline() {
     <section className="relative w-full py-4 md:py-1 overflow-hidden">
       {/* Ambient glows */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-900/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-900/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-900/5 rounded-full" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-900/5 rounded-full" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -72,6 +73,7 @@ export default function Timeline() {
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
           className="text-center mb-24"
         >
           <h2 className="text-5xl md:text-7xl font-pirate font-black text-transparent bg-clip-text bg-linear-to-b from-cyan-200 to-blue-600 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] tracking-wider">
@@ -115,15 +117,17 @@ function TimelineItem({
   const isEven = index % 2 === 0;
   const Icon = event.icon;
 
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ margin: "-80px" }}
-      transition={{ duration: 0.6, delay: index * 0.08 }}
-      className={`relative flex items-center flex-row ${
-        isEven ? "md:flex-row" : "md:flex-row-reverse"
-      }`}
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+      transition={{ duration: 0.8, delay: index * 0.1, ease: "easeOut" }}
+      className={`relative flex items-center flex-row ${isEven ? "md:flex-row" : "md:flex-row-reverse"
+        }`}
     >
       <div className="hidden md:block w-1/2" />
 
@@ -134,7 +138,7 @@ function TimelineItem({
           style={{ backgroundColor: event.accent, filter: "blur(20px)" }}
         />
         <div
-          className="w-14 h-14 rounded-full bg-black/80 border-2 backdrop-blur-xl flex items-center justify-center z-10 shadow-lg"
+          className="w-14 h-14 rounded-full bg-black/80 border-2 flex items-center justify-center z-10 shadow-lg"
           style={{ borderColor: event.accent }}
         >
           <Icon className="w-6 h-6" style={{ color: event.accent }} />
@@ -143,14 +147,13 @@ function TimelineItem({
 
       {/* Card */}
       <div
-        className={`w-full md:w-1/2 pl-20 md:pl-0 pr-2 ${
-          isEven ? "md:pr-14 md:pl-0" : "md:pl-14 md:pr-0"
-        }`}
+        className={`w-full md:w-1/2 pl-20 md:pl-0 pr-2 ${isEven ? "md:pr-14 md:pl-0" : "md:pl-14 md:pr-0"
+          }`}
       >
         <motion.div
-          initial={{ x: isEven ? -20 : 20, opacity: 0 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 + index * 0.08 }}
+          initial={{ x: isEven ? -30 : 30, opacity: 0 }}
+          animate={isInView ? { x: 0, opacity: 1 } : { x: isEven ? -30 : 30, opacity: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 + index * 0.1, ease: "easeOut" }}
           className="relative group"
         >
           {/* biome-ignore lint/a11y/noStaticElementInteractions: Hover effect only */}
@@ -167,14 +170,13 @@ function TimelineItem({
             }}
           >
             <div
-              className={`flex items-center gap-4 p-6 md:p-8 pb-2 md:pb-3 ${
-                isEven ? "md:flex-row-reverse md:text-right" : ""
-              }`}
+              className={`flex items-center gap-4 p-6 md:p-8 pb-2 md:pb-3 ${isEven ? "md:flex-row-reverse md:text-right" : ""
+                }`}
             >
               {/* Big day number */}
               <div className="relative shrink-0">
                 <span
-                  className={`${event.label ? "text-5xl md:text-6xl lg:text-7xl xl:text-8xl" : "text-7xl md:text-8xl"} font-black font-sans leading-none tracking-tight block`}
+                  className={`${event.label ? "text-5xl md:text-6xl lg:text-7xl xl:text-8xl" : "text-7xl md:text-8xl"} font-black font-pirata leading-none tracking-tight block`}
                   style={{
                     color: event.accent,
                     textShadow: `0 0 40px rgba(${event.accentRgb}, 0.4), 0 0 80px rgba(${event.accentRgb}, 0.2)`,
@@ -186,11 +188,10 @@ function TimelineItem({
 
               {/* Month + year stacked */}
               <div
-                className={`flex ${
-                  event.label
-                    ? "flex-row items-center gap-2 flex-wrap min-w-0"
-                    : "flex-col"
-                } ${isEven ? "md:items-end md:flex-col" : "md:flex-col md:items-start"}`}
+                className={`flex ${event.label
+                  ? "flex-row items-center gap-2 flex-wrap min-w-0"
+                  : "flex-col"
+                  } ${isEven ? "md:items-end md:flex-col" : "md:flex-col md:items-start"}`}
               >
                 <span
                   className={`${event.label ? "text-xl md:text-3xl" : "text-2xl md:text-3xl"} font-pirate font-bold tracking-[0.15em] leading-tight min-w-0`}
@@ -198,13 +199,13 @@ function TimelineItem({
                 >
                   {event.month}
                 </span>
-                <span className="text-sm font-mono text-white/30 tracking-widest self-center md:self-auto min-w-0">
+                <span className="text-sm font-crimson text-white/30 tracking-widest self-center md:self-auto min-w-0">
                   {event.year}
                 </span>
                 {/* Optional label (e.g. "36 HOURS") */}
                 {event.label && (
                   <span
-                    className="text-[10px] font-mono font-bold tracking-[0.3em] px-2 py-0.5 rounded border md:mt-1"
+                    className="text-[10px] font-crimson font-bold tracking-[0.3em] px-2 py-0.5 rounded border md:mt-1"
                     style={{
                       color: event.accent,
                       borderColor: `rgba(${event.accentRgb}, 0.3)`,
@@ -223,9 +224,8 @@ function TimelineItem({
             />
 
             <div
-              className={`p-6 md:p-8 pt-4 md:pt-5 ${
-                isEven ? "md:text-right" : "text-left"
-              }`}
+              className={`p-6 md:p-8 pt-4 md:pt-5 ${isEven ? "md:text-right" : "text-left"
+                }`}
             >
               <h3 className="text-xl md:text-2xl font-pirate font-bold text-white mb-2 drop-shadow-md">
                 {event.title}
@@ -238,9 +238,8 @@ function TimelineItem({
             <div
               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
               style={{
-                background: `radial-gradient(ellipse at ${
-                  isEven ? "100% 30%" : "0% 30%"
-                }, rgba(${event.accentRgb}, 0.06), transparent 70%)`,
+                background: `radial-gradient(ellipse at ${isEven ? "100% 30%" : "0% 30%"
+                  }, rgba(${event.accentRgb}, 0.06), transparent 70%)`,
               }}
             />
           </div>
