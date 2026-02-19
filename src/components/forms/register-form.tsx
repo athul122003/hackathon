@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { CollegeStep } from "~/components/forms/register-steps/CollegeStep";
 import { CourseStep } from "~/components/forms/register-steps/CourseStep";
 import { GenderStep } from "~/components/forms/register-steps/GenderStep";
@@ -15,6 +15,7 @@ import { IdProofStep } from "~/components/forms/register-steps/IdProofStep";
 import { NameStep } from "~/components/forms/register-steps/NameStep";
 import { PhoneStep } from "~/components/forms/register-steps/PhoneStep";
 import { StateStep } from "~/components/forms/register-steps/StateStep";
+import { useDayNight } from "~/components/providers/useDayNight";
 import { Button } from "~/components/ui/button";
 import { Form } from "~/components/ui/form";
 import { apiFetch } from "~/lib/fetcher";
@@ -45,6 +46,7 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
   const [step, setStep] = useState(0);
 
   const form = useForm<FormValues>({
+    // biome-ignore lint/suspicious/noExplicitAny: Resolving zod types is complex
     resolver: zodResolver(registerParticipantSchema) as any,
     defaultValues: {
       name: "",
@@ -123,12 +125,7 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
           }
         }}
         onSubmit={form.handleSubmit(onSubmit, (errors) => {
-          const firstError = Object.values(errors)[0];
-          toast.error("Validation Error", {
-            description:
-              firstError?.message ??
-              "Please fill in all required fields correctly.",
-          });
+          console.log("Validation errors:", errors);
         })}
         className="relative flex min-h-screen flex-col items-center justify-center px-6 overflow-hidden text-white"
       >
@@ -153,7 +150,6 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
             priority
           />
         </div>
-
 
         {/* Step Counter Text */}
         <div className="absolute top-8 left-6 text-sm text-white/80 z-20 font-medium tracking-wide">

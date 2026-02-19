@@ -142,7 +142,9 @@ export function PaymentsTable({ initialData }: PaymentsTableProps) {
       }),
       columnHelper.accessor("amount", {
         header: "Amount",
-        cell: (info) => <span className="font-mono">₹{info.getValue()}</span>,
+        cell: (info) => (
+          <span className="font-crimson">₹{info.getValue()}</span>
+        ),
       }),
       columnHelper.accessor("paymentStatus", {
         header: "Status",
@@ -159,7 +161,7 @@ export function PaymentsTable({ initialData }: PaymentsTableProps) {
       columnHelper.accessor("razorpayOrderId", {
         header: "Order ID",
         cell: (info) => (
-          <span className="font-mono text-xs text-muted-foreground">
+          <span className="font-crimson text-xs text-muted-foreground">
             {info.getValue()}
           </span>
         ),

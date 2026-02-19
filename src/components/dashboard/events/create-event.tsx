@@ -272,6 +272,7 @@ export default function CreateEventTab({
               />
               {formData.image && (
                 <div className="relative mt-2 flex justify-center rounded-md border overflow-hidden">
+                  {/* biome-ignore lint/performance/noImgElement: External user-provided image */}
                   <img
                     src={formData.image}
                     alt="Event preview"
@@ -556,7 +557,7 @@ export function EventDescription({
           value={formData.description}
           onChange={handleInputChange}
           rows={8}
-          className="font-mono text-sm"
+          className="font-crimson text-sm"
           required
         />
       ) : (

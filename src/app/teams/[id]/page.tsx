@@ -480,7 +480,7 @@ export default async function TeamDetailsPage({
                     <span className="text-sm font-medium text-white/70">
                       Payment
                     </span>
-                    <span className="text-white font-mono">
+                    <span className="text-white font-crimson">
                       {team.paymentStatus}
                     </span>
                   </div>
@@ -497,7 +497,7 @@ export default async function TeamDetailsPage({
                   <CardTitle className="text-white font-pirate text-2xl tracking-wide">
                     Team Members
                   </CardTitle>
-                  <CardDescription className="text-white/60 font-mono">
+                  <CardDescription className="text-white/60 font-crimson">
                     {members.length} / 4
                   </CardDescription>
                 </div>
@@ -514,7 +514,7 @@ export default async function TeamDetailsPage({
                       <div className="font-bold text-white text-sm">
                         {member.name || "Unknown"}
                       </div>
-                      <div className="text-xs text-white/60 font-mono">
+                      <div className="text-xs text-white/60 font-crimson">
                         {member.email}
                       </div>
                     </div>

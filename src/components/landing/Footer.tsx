@@ -46,7 +46,7 @@ const Footer = () => {
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="flex flex-row items-center justify-center gap-6">
               <Image
-                src="/logo.png"
+                src="/logo.webp"
                 priority
                 alt="Logo - Hackfest"
                 width={95}

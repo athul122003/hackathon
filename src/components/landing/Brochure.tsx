@@ -11,7 +11,7 @@ export default function BrochureDownload() {
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      viewport={{ margin: "-100px" }}
+      viewport={{ margin: "-100px", once: true }}
     >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[300px] bg-cyan-900/10 blur-3xl rounded-full pointer-events-none mix-blend-screen" />
 
@@ -20,6 +20,7 @@ export default function BrochureDownload() {
         initial={{ y: 50, scale: 0.9 }}
         whileInView={{ y: 0, scale: 1 }}
         transition={{ type: "spring", bounce: 0.4, duration: 1.2 }}
+        viewport={{ once: true }}
       >
         <div className="relative overflow-hidden rounded-3xl border border-cyan-500/30 bg-black/40 backdrop-blur-sm shadow-[0_0_50px_rgba(6,182,212,0.15)] group pl-6">
           <div className="relative z-10 flex flex-col md:flex-row items-center p-8 md:p-12 gap-8 md:gap-12">
