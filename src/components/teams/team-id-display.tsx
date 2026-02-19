@@ -31,7 +31,7 @@ export function TeamIdDisplay({ teamId }: { teamId: string }) {
           <p className="text-[10px] text-white/50 uppercase tracking-widest font-bold">
             Team ID
           </p>
-          <code className="text-sm font-mono font-bold text-white tracking-wide">
+          <code className="text-sm font-crimson font-bold text-white tracking-wide">
             {shortenedId}
           </code>
         </div>

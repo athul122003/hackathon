@@ -252,7 +252,7 @@ const Events = ({ session }: { session: Session | null }) => {
                   ].map((item) => (
                     <div
                       key={item.label}
-                      className="rounded-xl p-2 flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-[#133c55] to-[#0f1823] border border-[#f4d35e]/30 shadow-[0_0_15px_rgba(244,211,94,0.15)]"
+                      className="rounded-xl p-2 flex flex-col items-center justify-center w-full h-full bg-linear-to-br from-[#133c55] to-[#0f1823] border border-[#f4d35e]/30 shadow-[0_0_15px_rgba(244,211,94,0.15)]"
                     >
                       <span className="font-bold text-purple-900 dark:text-purple-100 truncate">
                         {item.label}
@@ -303,7 +303,7 @@ const Events = ({ session }: { session: Session | null }) => {
                     <div className="w-full">
                       <div className="-skew-x-37 bg-[#0f1823] absolute rounded-bl-3xl rounded-br-xl left-0 w-1/2 justify-start px-4">
                         <Image
-                          src={"/logos/glowingLogo.png"}
+                          src={"/logos/glowingLogo.webp"}
                           alt={"Hackfest Logo"}
                           width={550}
                           height={550}
@@ -334,7 +334,7 @@ const Events = ({ session }: { session: Session | null }) => {
                 <div className="text-2xl text-[#f4d35e] text-center font-bold tracking-wide">
                   {event.title}
                 </div>
-                <div className="flex flex-col w-full gap-2 text-white px-1 py-3 justify-center items-start md:w-full h-[9rem]">
+                <div className="flex flex-col w-full gap-2 text-white px-1 py-3 justify-center items-start md:w-full h-36">
                   {getEventAttributes(event).map((attr) =>
                     attr.name ? (
                       <div

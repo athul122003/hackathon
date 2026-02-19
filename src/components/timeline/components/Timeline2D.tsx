@@ -263,7 +263,7 @@ function TimelineItem({
                 >
                   {event.month}
                 </span>
-                <span className="text-sm font-mono text-white/40 tracking-widest">
+                <span className="text-sm font-crimson text-white/40 tracking-widest">
                   {event.year}
                 </span>
               </div>

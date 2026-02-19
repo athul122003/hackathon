@@ -124,7 +124,7 @@ function OrganizerCard({
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-200 hover:text-white hover:bg-cyan-900/60 hover:border-cyan-400 transition-all group-hover:scale-105"
         >
           <Phone className="w-4 h-4" />
-          <span className="font-mono text-lg">{organizer.phone}</span>
+          <span className="font-crimson text-lg">{organizer.phone}</span>
         </a>
       </div>
 
