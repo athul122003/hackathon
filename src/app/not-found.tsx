@@ -9,7 +9,7 @@ export default function NotFound() {
   const { isNight } = useDayNight();
 
   const desktopSrc = isNight ? "/images/404-dark.webp" : "/images/404-light.webp";
-  const mobileSrc  = isNight ? "/images/404-dark-mobile.png" : "/images/404-light-mobile.png";
+  const mobileSrc  = isNight ? "/images/404-dark-mobile.webp" : "/images/404-light-mobile.webp";
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden bg-black">
