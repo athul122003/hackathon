@@ -199,7 +199,7 @@ function FixedHero({
           >
             <div className="absolute -z-10" />
             <img
-              src="/logo11.png"
+              src="/logo11.webp"
               alt="HF Logo"
               className="w-64 md:w-120 h-auto drop-shadow-2xl mb-6 hover:scale-105 transition-transform duration-500"
             />
