@@ -107,10 +107,10 @@ export default function TimelinePage() {
             </span>
             <span
               style={{
-                fontFamily: "var(--font-cinzel), serif",
+                fontFamily: "var(--font-pirata), serif",
                 color: "#8B4513",
-                fontSize: "14px",
-                fontWeight: 700,
+                fontSize: "18px",
+                fontWeight: 400,
                 textShadow: "0 1px 1px rgba(255,255,255,0.1)",
               }}
             >
@@ -128,7 +128,7 @@ export default function TimelinePage() {
               borderRadius: "18px",
               border: "1px solid #8B4513",
               boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
-              transform: is3D ? "translateX(0)" : "translateX(56px)",
+              transform: is3D ? "translateX(0)" : "translateX(54px)",
               transition:
                 "transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
               display: "flex",
@@ -139,12 +139,10 @@ export default function TimelinePage() {
           >
             <span
               style={{
-                fontFamily: is3D
-                  ? "var(--font-pirata), serif"
-                  : "var(--font-cinzel), serif",
+                fontFamily: "var(--font-pirata), serif",
                 color: "#2A1A0A",
-                fontSize: is3D ? "20px" : "14px",
-                fontWeight: is3D ? 400 : 700,
+                fontSize: "20px",
+                fontWeight: 400,
               }}
             >
               {is3D ? "3D" : "2D"}
