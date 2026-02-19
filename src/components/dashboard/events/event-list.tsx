@@ -1,5 +1,5 @@
 "use client";
-import { Check, Edit2, MoreVertical, Trash2, X } from "lucide-react";
+import { Edit2, MoreVertical, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Badge } from "~/components/ui/badge";
@@ -345,7 +345,7 @@ export default function EventListTab({
                 <Input
                   value={deleteConfirmation}
                   onChange={(e) => setDeleteConfirmation(e.target.value)}
-                  className="font-mono text-sm mt-4"
+                  className="font-crimson text-sm mt-4"
                 />
               </div>
             </div>

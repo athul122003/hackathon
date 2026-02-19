@@ -193,7 +193,7 @@ export function SettingsTab() {
               Track Name:{" "}
               <span className="font-normal">{trackToDelete?.name}</span>
             </div>
-            <div className="bg-muted p-2 rounded text-sm font-mono break-all">
+            <div className="bg-muted p-2 rounded text-sm font-crimson break-all">
               {trackToDelete?.id}{" "}
               {/* will remove as soon as the testing of this thing is done */}
             </div>

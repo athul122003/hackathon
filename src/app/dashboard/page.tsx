@@ -154,7 +154,7 @@ export default async function DashboardPage() {
                 ).map((key) => (
                   <div
                     key={key}
-                    className="rounded bg-muted px-2 py-1 text-xs font-mono"
+                    className="rounded bg-muted px-2 py-1 text-xs font-crimson"
                   >
                     {key}
                   </div>
