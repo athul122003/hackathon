@@ -142,7 +142,9 @@ export function PaymentsTable({ initialData }: PaymentsTableProps) {
       }),
       columnHelper.accessor("amount", {
         header: "Amount",
-        cell: (info) => <span className="font-crimson">₹{info.getValue()}</span>,
+        cell: (info) => (
+          <span className="font-crimson">₹{info.getValue()}</span>
+        ),
       }),
       columnHelper.accessor("paymentStatus", {
         header: "Status",
@@ -233,9 +235,9 @@ export function PaymentsTable({ initialData }: PaymentsTableProps) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
