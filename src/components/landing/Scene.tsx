@@ -437,7 +437,7 @@ function LandingContent({
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full pt-16 pb-8">
             <motion.h2
-              className="text-5xl md:text-7xl font-pirate font-black text-center mb-16 text-transparent bg-clip-text bg-linear-to-b from-yellow-200 to-yellow-600 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)] tracking-wide"
+              className="text-5xl md:text-7xl font-pirate font-black text-center mb-16 text-transparent bg-clip-text bg-linear-to-b from-yellow-200 to-yellow-600 md:drop-shadow-[0_0_15px_rgba(250,204,21,0.5)] tracking-wide"
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -455,8 +455,8 @@ function LandingContent({
               viewport={{ once: true }}
             >
               {/* Animated glow rings */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 rounded-full border border-yellow-500/10" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-72 md:h-72 rounded-full border border-yellow-500/20" />
+              <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 rounded-full border border-yellow-500/10" />
+              <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-72 md:h-72 rounded-full border border-yellow-500/20" />
 
               {/* The number */}
               <span className="text-sm md:text-lg font-crimson font-bold tracking-[0.5em] text-yellow-400/60 uppercase mb-2">
@@ -467,7 +467,7 @@ function LandingContent({
                 style={{
                   color: "#eab308",
                   textShadow:
-                    "0 0 40px rgba(234,179,8,0.5), 0 0 80px rgba(234,179,8,0.3), 0 0 120px rgba(234,179,8,0.15)",
+                    "0 0 20px rgba(234,179,8,0.5), 0 0 40px rgba(234,179,8,0.2)",
                 }}
               >
                 ₹2,50,000
@@ -480,7 +480,7 @@ function LandingContent({
               <Link href="/timeline" passHref>
                 <button
                   type="button"
-                  className="group relative px-10 py-4 bg-cyan-600 hover:bg-cyan-500 text-white rounded-full font-pirate font-bold text-2xl transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] overflow-hidden focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black tracking-wide mt-8"
+                  className="group relative px-10 py-4 bg-cyan-600 hover:bg-cyan-500 text-white rounded-full font-pirate font-bold text-2xl transition-all hover:scale-105 md:hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] overflow-hidden focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black tracking-wide mt-8"
                   // Prevent scroll on focus
                   onFocus={(e) => {
                     e.preventDefault();
@@ -495,7 +495,7 @@ function LandingContent({
         </motion.section>
       </div>
 
-      <Footer />
+      <Footer overlayNeeded={true} />
     </div>
   );
 }

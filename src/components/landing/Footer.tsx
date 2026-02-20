@@ -1,3 +1,5 @@
+"use client";
+
 import { Instagram, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,30 +38,30 @@ const social = [
   },
 ];
 
-const Footer = () => {
+const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
   const { isNight } = useDayNight();
 
   return (
     <footer className="relative z-20 w-full flex flex-col">
-      <div className="relative h-45 w-full bg-black/50 overflow-hidden">
+      <div className={`relative h-45 ${overlayNeeded ? "bg-black/50" : ""} w-full overflow-hidden`}>
         <div
           className="absolute inset-0 z-10 bg-transparent bg-[url('/images/corals_cropped.png')] bg-repeat-x bg-size-[auto_100%] bg-top-left pointer-events-none transition-all duration-1000"
           style={{
 
             filter: isNight
               ? 'brightness(0.5) saturate(0.8) sepia(0.2) hue-rotate(180deg)'
-              : 'brightness(0.65) saturate(1.1) hue-rotate(-5deg) contrast(1.1)'
+              : 'brightness(0.6) saturate(0.8) hue-rotate(-5deg) contrast(1.0)'
           }}
         />
       </div>
       <div
-        className={`relative z-20 w-full flex-col overflow-hidden border-t transition-colors duration-1000 bg-linear-to-b backdrop-blur-md ${isNight
+        className={`relative z-20 w-full flex-col overflow-hidden border-t transition-colors duration-1000 bg-linear-to-b md:backdrop-blur-md ${isNight
           ? "border-sky-900/40 from-[#0f2a3f] via-[#091a2a] to-[#040e1a]"
-          : "border-sky-300/40 from-[#a68a62] via-[#7d603a] to-[#453018]"
+          : "border-sky-300/40 from-[#8e8071] via-[#6b5e50] to-[#42392f]"
           }`}
       >
         <div // [RAHUL]: Have put noisy overlay here, in case it gives any issues have to remove 
-          className={`absolute inset-0 pointer-events-none z-0 mix-blend-overlay transition-opacity duration-1000 ${isNight ? "opacity-30" : "opacity-[0.15]"}`}
+          className={`hidden md:block absolute inset-0 pointer-events-none z-0 mix-blend-overlay transition-opacity duration-1000`}
           style={{
             backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
           }}

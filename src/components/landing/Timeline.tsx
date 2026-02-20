@@ -76,7 +76,7 @@ export default function Timeline() {
           viewport={{ once: true }}
           className="text-center mb-24"
         >
-          <h2 className="text-5xl md:text-7xl font-pirate font-black text-transparent bg-clip-text bg-linear-to-b from-cyan-200 to-blue-600 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] tracking-wider">
+          <h2 className="text-5xl md:text-7xl font-pirate font-black text-transparent bg-clip-text bg-linear-to-b from-cyan-200 to-blue-600 tracking-wider">
             Voyage Logs
           </h2>
           <p className="mt-4 text-lg md:text-xl text-cyan-200/60 font-pirate tracking-wide">
@@ -88,7 +88,7 @@ export default function Timeline() {
           {/* Central rope — Desktop */}
           <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2">
             <div className="w-full h-full bg-linear-to-b from-transparent via-cyan-500/40 to-transparent" />
-            <div className="absolute inset-0 w-full bg-linear-to-b from-transparent via-cyan-400/20 to-transparent animate-pulse" />
+            <div className="absolute inset-0 w-full bg-linear-to-b from-transparent via-cyan-400/20 to-transparent md:animate-pulse" />
           </div>
 
           {/* Left rope — Mobile */}
@@ -126,17 +126,18 @@ function TimelineItem({
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.8, delay: index * 0.1, ease: "easeOut" }}
-      className={`relative flex items-center flex-row ${
-        isEven ? "md:flex-row" : "md:flex-row-reverse"
-      }`}
+      className={`relative flex items-center flex-row ${isEven ? "md:flex-row" : "md:flex-row-reverse"
+        }`}
     >
       <div className="hidden md:block w-1/2" />
 
       {/* Node on the rope */}
       <div className="absolute left-6 md:left-1/2 -translate-x-1/2 z-20 flex items-center justify-center">
         <div
-          className="absolute w-20 h-20 rounded-full opacity-10"
-          style={{ backgroundColor: event.accent, filter: "blur(20px)" }}
+          className="absolute w-24 h-24 rounded-full opacity-30"
+          style={{
+            background: `radial-gradient(circle, ${event.accent} 0%, transparent 70%)`
+          }}
         />
         <div
           className="w-14 h-14 rounded-full bg-black/80 border-2 flex items-center justify-center z-10 shadow-lg"
@@ -148,9 +149,8 @@ function TimelineItem({
 
       {/* Card */}
       <div
-        className={`w-full md:w-1/2 pl-20 md:pl-0 pr-2 ${
-          isEven ? "md:pr-14 md:pl-0" : "md:pl-14 md:pr-0"
-        }`}
+        className={`w-full md:w-1/2 pl-20 md:pl-0 pr-2 ${isEven ? "md:pr-14 md:pl-0" : "md:pl-14 md:pr-0"
+          }`}
       >
         <motion.div
           initial={{ x: isEven ? -30 : 30, opacity: 0 }}
@@ -180,9 +180,8 @@ function TimelineItem({
             }}
           >
             <div
-              className={`flex items-center gap-4 p-6 md:p-8 pb-2 md:pb-3 ${
-                isEven ? "md:flex-row-reverse md:text-right" : ""
-              }`}
+              className={`flex items-center gap-4 p-6 md:p-8 pb-2 md:pb-3 ${isEven ? "md:flex-row-reverse md:text-right" : ""
+                }`}
             >
               {/* Big day number */}
               <div className="relative shrink-0">
@@ -190,7 +189,7 @@ function TimelineItem({
                   className={`${event.label ? "text-5xl md:text-6xl lg:text-7xl xl:text-8xl" : "text-7xl md:text-8xl"} font-black font-pirata leading-none tracking-tight block`}
                   style={{
                     color: event.accent,
-                    textShadow: `0 0 40px rgba(${event.accentRgb}, 0.4), 0 0 80px rgba(${event.accentRgb}, 0.2)`,
+                    textShadow: `0 0 20px rgba(${event.accentRgb}, 0.2), 0 0 40px rgba(${event.accentRgb}, 0.1)`,
                   }}
                 >
                   {event.day}
@@ -199,11 +198,10 @@ function TimelineItem({
 
               {/* Month + year stacked */}
               <div
-                className={`flex ${
-                  event.label
-                    ? "flex-row items-center gap-2 flex-wrap min-w-0"
-                    : "flex-col"
-                } ${isEven ? "md:items-end md:flex-col" : "md:flex-col md:items-start"}`}
+                className={`flex ${event.label
+                  ? "flex-row items-center gap-2 flex-wrap min-w-0"
+                  : "flex-col"
+                  } ${isEven ? "md:items-end md:flex-col" : "md:flex-col md:items-start"}`}
               >
                 <span
                   className={`${event.label ? "text-xl md:text-3xl" : "text-2xl md:text-3xl"} font-pirate font-bold tracking-[0.15em] leading-tight min-w-0`}
@@ -236,11 +234,10 @@ function TimelineItem({
             />
 
             <div
-              className={`p-6 md:p-8 pt-4 md:pt-5 ${
-                isEven ? "md:text-right" : "text-left"
-              }`}
+              className={`p-6 md:p-8 pt-4 md:pt-5 ${isEven ? "md:text-right" : "text-left"
+                }`}
             >
-              <h3 className="text-xl md:text-2xl font-pirate font-bold text-white mb-2 drop-shadow-md">
+              <h3 className="text-xl md:text-2xl font-pirate font-bold text-white mb-2 md:drop-shadow-md">
                 {event.title}
               </h3>
               <p className="text-gray-400 text-sm md:text-base leading-relaxed">
@@ -249,11 +246,10 @@ function TimelineItem({
             </div>
 
             <div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
+              className="hidden md:block absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
               style={{
-                background: `radial-gradient(ellipse at ${
-                  isEven ? "100% 30%" : "0% 30%"
-                }, rgba(${event.accentRgb}, 0.06), transparent 70%)`,
+                background: `radial-gradient(ellipse at ${isEven ? "100% 30%" : "0% 30%"
+                  }, rgba(${event.accentRgb}, 0.06), transparent 70%)`,
               }}
             />
           </div>

@@ -10,8 +10,6 @@ export function ThemeToggle() {
   const pathname = usePathname();
 
   if (
-    pathname === "/contact" ||
-    pathname === "/about" ||
     pathname === "/timeline"
   )
     return null;
