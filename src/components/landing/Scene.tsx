@@ -201,7 +201,7 @@ function FixedHero({
             <img
               src="/logo11.webp"
               alt="HF Logo"
-              className="w-64 md:w-120 h-auto drop-shadow-2xl mb-6 hover:scale-105 transition-transform duration-500"
+              className="w-86 md:w-140 h-auto drop-shadow-2xl mb-6 hover:scale-105 transition-transform duration-500"
             />
           </motion.div>
 
@@ -380,11 +380,11 @@ function LandingContent({
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              Our Sponsors
+              Our Sponsor
             </motion.h2>
 
             <motion.div
-              className="flex flex-col items-center mb-12"
+              className="flex flex-col items-center mb-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -403,7 +403,7 @@ function LandingContent({
               </span>
             </motion.div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div
                   className="group relative aspect-video bg-black/30 border border-cyan-500/30 rounded-xl flex items-center justify-center hover:bg-cyan-900/40 transition-all duration-500 overflow-hidden"
@@ -415,7 +415,7 @@ function LandingContent({
                   <div className="absolute inset-0 bg-linear-to-t from-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </motion.section>
 
@@ -470,7 +470,7 @@ function LandingContent({
                     "0 0 40px rgba(234,179,8,0.5), 0 0 80px rgba(234,179,8,0.3), 0 0 120px rgba(234,179,8,0.15)",
                 }}
               >
-                ₹3,00,000
+                ₹2,50,000
                 <span className="text-yellow-400/70">+</span>
               </span>
               <span className="text-lg md:text-2xl font-pirate text-yellow-300/50 tracking-[0.3em] mt-2">

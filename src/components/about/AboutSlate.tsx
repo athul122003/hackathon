@@ -138,7 +138,7 @@ export default function AboutSlate() {
                     Total Bounty
                   </span>
                   <span className="text-5xl font-pirate text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]">
-                    ₹ 3,00,000+
+                    ₹ 2,50,000+
                   </span>
                 </div>
 

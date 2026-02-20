@@ -7,7 +7,7 @@ import Image from "next/image";
 export default function BrochureDownload() {
   return (
     <motion.section
-      className="w-full py-26 mt-6 flex flex-col items-center justify-center relative overflow-visible"
+      className="w-full py-12 mt-6 flex flex-col items-center justify-center relative overflow-visible"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 1 }}
