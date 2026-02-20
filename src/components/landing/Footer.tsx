@@ -38,8 +38,8 @@ const social = [
 const Footer = () => {
   return (
     <footer className="relative z-20 w-full flex flex-col">
-      <div className="relative h-45 w-full bg-transparent bg-[url('/images/corals_cropped.png')] bg-repeat-x bg-size-[auto_100%] bg-top-left">
-        <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/10 via-black/25 to-black/45" />
+      <div className="relative h-45 w-full bg-black/50">
+        <div className="absolute inset-0 z-10 bg-transparent bg-[url('/images/corals_cropped.png')] bg-repeat-x bg-size-[auto_100%] bg-top-left pointer-events-none" />
       </div>
       <div className="relative z-20 w-full flex-col overflow-hidden border-t border-stone-700/30 bg-linear-to-b from-[#d2c1a2] via-[#a2825a] to-[#5b4630] backdrop-blur-md">
         <div className="relative z-10 flex h-full flex-col items-center justify-evenly space-y-12 p-4 py-8 lg:flex-row">
