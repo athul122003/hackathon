@@ -14,7 +14,7 @@ export default function AboutSlate() {
                 <div className="relative w-20 h-20 md:w-24 md:h-24 mb-4">
                   <div className="absolute inset-0 bg-cyan-400/20 blur-xl rounded-full" />
                   <Image
-                    src="/logos/glowingLogo.webp"
+                    src="/logos/logowithglow.webp"
                     fill
                     alt="HF Logo"
                     className="object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.6)]"

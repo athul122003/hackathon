@@ -85,7 +85,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async redirect({ baseUrl }) {
-      return baseUrl;
+      return `${baseUrl}/teams`;
     },
     async session({ session, user }) {
       session.user.id = user.id;

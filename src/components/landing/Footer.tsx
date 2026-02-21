@@ -71,7 +71,7 @@ const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
           <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-linear-to-r from-transparent to-transparent blur-sm transition-colors duration-1000 ${isNight ? "via-sky-600/50" : "via-amber-300/60"}`} />
 
           <div className="flex flex-col items-center gap-8 z-10">
-            <div className={`flex flex-col items-center justify-center gap-4 transition-all duration-1000 ${isNight ? "drop-shadow-[0_0_10px_rgba(255,255,255,0.15)]" : "drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"}`}>
+            <div className={`flex flex-col items-center justify-center gap-4 transition-all duration-1000`}>
               <div className="flex flex-row items-center justify-center gap-6">
                 <Image
                   src="/logo.webp"
@@ -80,11 +80,8 @@ const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
                   width={95}
                   height={50}
                   className=""
-                  style={{
-                    filter: !isNight ? 'drop-shadow(0 0 10px rgba(255,255,255,0.3))' : 'none'
-                  }}
                 />
-                <Link href="https://www.finiteloop.co.in/" target="_blank">
+                <Link href="https://www.finiteloop.club/" target="_blank">
                   <Image
                     src="/logos/flc_logo_crop.png"
                     priority
@@ -92,13 +89,10 @@ const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
                     width={75}
                     height={50}
                     className="opacity-85 hover:opacity-100 transition-all duration-1000"
-                    style={{
-                      filter: !isNight ? 'brightness(0) invert(1)' : 'none'
-                    }}
                   />
                 </Link>
               </div>
-              <Link href="https://nmamit.nitte.edu.in/" target="_blank">
+              <Link href="https://nitte.edu.in/nmamit/" target="_blank">
                 <Image
                   src="/logos/NMAMITLogo.png"
                   priority

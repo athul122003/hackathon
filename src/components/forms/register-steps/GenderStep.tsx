@@ -47,7 +47,7 @@ export function GenderStep({ form, onNext }: GenderStepProps) {
               </div>
 
               <FormControl>
-                <div className="flex flex-col space-y-2 pt-4 w-full relative">
+                <div className="flex flex-col space-y-2  px-3 py-2 -mx-3 pt-4 w-full relative">
                   {sortedGenders.map((gender, index) => {
                     const isSelected = field.value === gender;
 
@@ -61,7 +61,7 @@ export function GenderStep({ form, onNext }: GenderStepProps) {
                         }}
                         style={{ animationDelay: `${index * 50}ms` }}
                         className={cn(
-                          "group flex w-full h-16 items-center justify-between rounded-xl border border-white/10 bg-white/90 px-4 text-left transition-all duration-200 hover:bg-white/80 hover:border-white/30 active:scale-[0.98] animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards leading-none",
+                          "group flex w-full h-16 items-center justify-between rounded-xl border border-white/10 bg-white/90 px-4 text-left transition-all duration-200 hover:bg-white/80 hover:border-white/30 active:scale-[0.98] animate-in fade-in slide-in-from-bottom-2 fill-mode-backwards leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:scale-[1.02]",
                           // Apply sticky highlighting only to the selected item
                           isSelected && "bg-white sticky top-0 z-10 shadow-md",
                         )}

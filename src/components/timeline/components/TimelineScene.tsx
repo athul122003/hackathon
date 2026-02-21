@@ -50,6 +50,45 @@ export default function TimelineScene() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        document.activeElement?.tagName === "INPUT" ||
+        document.activeElement?.tagName === "TEXTAREA"
+      ) {
+        return;
+      }
+
+      const controls = shipControlsRef.current;
+      if (!controls) return;
+
+      const key = e.key;
+      const isForward =
+        key === "ArrowRight" ||
+        key === "d" ||
+        key === "D" ||
+        key === "ArrowUp" ||
+        key === "w" ||
+        key === "W";
+      const isBackward =
+        key === "ArrowLeft" ||
+        key === "a" ||
+        key === "A" ||
+        key === "ArrowDown" ||
+        key === "s" ||
+        key === "S";
+
+      if (isForward) {
+        controls.moveForward(1.5);
+      } else if (isBackward) {
+        controls.moveBackward(1.5);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   function hexToRgb(hex: string) {
     const h = hex.replace("#", "");
     return {
@@ -139,7 +178,7 @@ export default function TimelineScene() {
       const pos = ISLAND_POSITIONS[i];
       const dist = Math.sqrt(
         (globalShipPosition.x - pos[0]) ** 2 +
-          (globalShipPosition.z - pos[2]) ** 2,
+        (globalShipPosition.z - pos[2]) ** 2,
       );
       if (dist < PRE_TRIGGER) {
         skyTriggeredForRef.current = i;

@@ -390,14 +390,17 @@ function LandingContent({
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="group relative w-72 md:w-96 aspect-video bg-white/70 border-2 border-cyan-400/50 rounded-2xl flex items-center justify-center hover:border-cyan-300 transition-all duration-500 overflow-hidden hover:shadow-[0_0_40px_rgba(0,200,255,0.4)]">
-                <img
-                  src="/logos/nmamit.png"
-                  alt="NITTE"
-                  className="w-3/4 h-auto object-contain scale-110 group-hover:scale-115 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
+              <Link href="https://nitte.edu.in/nmamit/" target="_blank">
+                <div className="group relative w-72 md:w-96 aspect-video bg-white/70 border-2 border-cyan-400/50 rounded-2xl flex items-center justify-center hover:border-cyan-300 transition-all duration-500 overflow-hidden hover:shadow-[0_0_40px_rgba(0,200,255,0.4)]">
+
+                  <img
+                    src="/logos/nmamit.png"
+                    alt="NITTE"
+                    className="w-3/4 h-auto object-contain scale-110 group-hover:scale-115 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </Link>
               <span className="mt-3 text-sm font-crimson font-semibold tracking-[0.3em] uppercase text-cyan-300/80">
                 Executive Sponsor
               </span>
