@@ -446,7 +446,7 @@ export default async function TeamDetailsPage({
                       : "bg-blue-100 text-blue-700 border border-blue-200"
                   }`}
                 >
-                 {team.isCompleted ? "Completed" : "Active"}
+                  {team.isCompleted ? "Completed" : "Active"}
                 </span>
               </div>
               {resultsOut &&

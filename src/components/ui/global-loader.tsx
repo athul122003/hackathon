@@ -11,7 +11,7 @@ export function GlobalLoader() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (pathname?.startsWith("/dashboard")) {
+    if (pathname?.startsWith("/")) {
       setLoading(false);
       return;
     }
