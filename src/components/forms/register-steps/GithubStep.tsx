@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, LogOutIcon, Repeat, Repeat1, RepeatIcon } from "lucide-react";
+import { Github, RepeatIcon } from "lucide-react";
 import { signIn, signOut } from "next-auth/react";
 import type { UseFormReturn } from "react-hook-form";
 import {
@@ -64,7 +64,8 @@ export function GithubStep({ form, initialGithubUsername }: GithubStepProps) {
                 >
                   {field.value ?? initialGithubUsername ?? ""}
                 </div>
-                <div
+                <button
+                  type="button"
                   onClick={async () => {
                     await signOut({ redirect: false });
                     await signIn("github");
@@ -73,7 +74,7 @@ export function GithubStep({ form, initialGithubUsername }: GithubStepProps) {
                   title="Switch GitHub Account"
                 >
                   <RepeatIcon className="h-5 w-5 text-[#10569c] group-hover:text-[#0c4075] transition-colors" />
-                </div>
+                </button>
               </div>
             </FormControl>
           </FormItem>

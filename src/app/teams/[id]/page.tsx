@@ -1,15 +1,12 @@
 import {
   AlertCircle,
-  BadgeAlert,
   BadgeCheck,
   BadgeX,
   BookUser,
-  CheckCircle,
   CheckCircle2,
   Clock,
   CreditCard,
   Home,
-  Info,
   Users,
   XCircle,
 } from "lucide-react";
@@ -131,7 +128,7 @@ export default async function TeamDetailsPage({
                   Congratulations! Your team has been selected! Please complete
                   the payment to confirm your participation.
                 </p>
-                {user.isLeader ? (
+                {team.leaderId === user.id ? (
                   paymentsOpen ? (
                     <Button
                       asChild
@@ -271,7 +268,7 @@ export default async function TeamDetailsPage({
           </CardHeader>
           <CardContent className="space-y-4">
             {!team.isCompleted &&
-              (user.isLeader ? (
+              (team.leaderId === user.id ? (
                 <div className="space-y-4">
                   <p className="text-sm md:text-base text-[#10569c]/80 font-medium">
                     As the team leader, you can confirm the team once you have
@@ -317,7 +314,7 @@ export default async function TeamDetailsPage({
                       submission={submission}
                     />
                   </div>
-                ) : user.isLeader ? (
+                ) : team.leaderId === user.id ? (
                   <div className="text-[#10569c]">
                     <TeamSubmissionForm teamId={team.id} />
                   </div>
@@ -397,7 +394,6 @@ export default async function TeamDetailsPage({
               <div className="shrink-0">
                 <TeamIdDisplay teamId={team.id} />
               </div>
-
             </div>
 
             {/* 3. MOBILE ONLY: Sign Out */}
@@ -411,7 +407,7 @@ export default async function TeamDetailsPage({
             <h1 className="text-4xl font-pirate font-bold text-white drop-shadow-sm drop-shadow-black/50 text-center wrap-break-word leading-tight tracking-wide">
               {team.name}
             </h1>
-            {user.isLeader && (
+            {team.leaderId === user.id && (
               <div className="flex justify-center">
                 <TeamIdDisplay teamId={team.id} />
               </div>
@@ -444,12 +440,13 @@ export default async function TeamDetailsPage({
                   Status
                 </span>
                 <span
-                  className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider shadow-sm ${team.isCompleted
-                    ? "bg-green-100 text-green-700 border border-green-200"
-                    : "bg-blue-100 text-blue-700 border border-blue-200"
-                    }`}
+                  className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider shadow-sm ${
+                    team.isCompleted
+                      ? "bg-green-100 text-green-700 border border-green-200"
+                      : "bg-blue-100 text-blue-700 border border-blue-200"
+                  }`}
                 >
-                  {team.isCompleted ? "Completed" : "Active"}
+                 {team.isCompleted ? "Completed" : "Active"}
                 </span>
               </div>
               {resultsOut &&
@@ -480,14 +477,14 @@ export default async function TeamDetailsPage({
                     Team Members
                   </CardTitle>
                   <CardDescription className="text-[#10569c]/60 font-bold font-crimson text-lg">
-                <div className="flex items-center">
-                    {members.length >= 3 ? (
-                    <BadgeCheck className="w-4 h-4 mr-1 inline text-green-500" />
-                  ) : (
-                    <BadgeX className="w-4 h-4 mr-1 inline text-red-500" />
-                  )}
-                 {members.length} / 4
-                </div>
+                    <div className="flex items-center">
+                      {members.length >= 3 ? (
+                        <BadgeCheck className="w-4 h-4 mr-1 inline text-green-500" />
+                      ) : (
+                        <BadgeX className="w-4 h-4 mr-1 inline text-red-500" />
+                      )}
+                      {members.length} / 4
+                    </div>
                   </CardDescription>
                 </div>
               </div>
@@ -507,7 +504,7 @@ export default async function TeamDetailsPage({
                         {member.email}
                       </div>
                     </div>
-                    {member.isLeader && (
+                    {team.leaderId === member.id && (
                       <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 border border-amber-200 px-2 py-1 rounded-md shadow-sm">
                         Leader
                       </span>

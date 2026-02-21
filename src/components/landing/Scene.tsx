@@ -188,7 +188,7 @@ function FixedHero({
       <div className="flex h-screen flex-col items-center justify-center relative p-8 text-center">
         <div className="z-10 flex flex-col items-center">
           {/* LOGO */}
-          <div className="relative pointer-events-auto flex flex-col items-center" >
+          <div className="relative pointer-events-auto flex flex-col items-center">
             <div className="flex flex-col items-center mb-0">
               <img
                 src="/logos/nmamit.png"

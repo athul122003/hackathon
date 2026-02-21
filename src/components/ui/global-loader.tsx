@@ -125,7 +125,6 @@ export function GlobalLoader() {
             className="absolute bottom-10 left-10 hidden md:block text-xs font-crimson text-neutral-600"
             exit={{ opacity: 0, transition: { duration: 0.3 } }}
           >
-           
             LAT: 18°18'02.0"N <br /> LON: 64°49'32.2"W
           </motion.div>
         </motion.div>

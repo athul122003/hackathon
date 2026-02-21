@@ -73,7 +73,8 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
       try {
         const parsed = JSON.parse(saved);
         if (parsed.step !== undefined) setStep(parsed.step);
-        if (parsed.furthestStep !== undefined) setFurthestStep(parsed.furthestStep);
+        if (parsed.furthestStep !== undefined)
+          setFurthestStep(parsed.furthestStep);
         if (parsed.formData) {
           form.reset({
             ...parsed.formData,
@@ -90,13 +91,17 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
   const formValues = form.watch();
   useEffect(() => {
     if (isLoaded) {
+      // biome-ignore lint/correctness/noUnusedVariables: strip github from localStorage
       const { github, ...formDataToSave } = formValues;
       const dataToSave = {
         step,
         furthestStep,
         formData: formDataToSave,
       };
-      localStorage.setItem("hackfest_register_progress", JSON.stringify(dataToSave));
+      localStorage.setItem(
+        "hackfest_register_progress",
+        JSON.stringify(dataToSave),
+      );
     }
   }, [isLoaded, step, furthestStep, formValues]);
 
@@ -244,11 +249,12 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
                   <div
                     className={`
                       absolute -left-[33px] w-5 h-5 rounded-full border-2 transition-all duration-300 flex items-center justify-center
-                      ${isCurrent
-                        ? "bg-white border-white scale-110 shadow-[0_0_12px_rgba(255,255,255,0.8)]"
-                        : isPast
-                          ? "bg-white/90 border-white/90"
-                          : "bg-black/40 border-white/30 group-hover:bg-white/20"
+                      ${
+                        isCurrent
+                          ? "bg-white border-white scale-110 shadow-[0_0_12px_rgba(255,255,255,0.8)]"
+                          : isPast
+                            ? "bg-white/90 border-white/90"
+                            : "bg-black/40 border-white/30 group-hover:bg-white/20"
                       }
                     `}
                   >
@@ -257,11 +263,12 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
                   <span
                     className={`
                       ml-2 transition-all duration-300 font-medium
-                      ${isCurrent
-                        ? "text-white text-lg tracking-widest font-pirate translate-x-2"
-                        : isPast
-                          ? "text-white/80 text-sm tracking-widest font-pirate"
-                          : "text-white/50 text-sm tracking-widest font-pirate group-hover:text-white/70"
+                      ${
+                        isCurrent
+                          ? "text-white text-lg tracking-widest font-pirate translate-x-2"
+                          : isPast
+                            ? "text-white/80 text-sm tracking-widest font-pirate"
+                            : "text-white/50 text-sm tracking-widest font-pirate group-hover:text-white/70"
                       }
                     `}
                   >
@@ -343,7 +350,8 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2
                 "
               >
-                <ArrowLeft className="w-5 h-5" /> <span className="mr-16">Back</span>
+                <ArrowLeft className="w-5 h-5" />{" "}
+                <span className="mr-16">Back</span>
               </Button>
             ) : (
               <div className="flex-1" />
@@ -366,11 +374,13 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
                 "Submitting..."
               ) : isLastStep ? (
                 <>
-                  <span className="ml-16">Submit</span> <ArrowRight className="w-5 h-5" />
+                  <span className="ml-16">Submit</span>{" "}
+                  <ArrowRight className="w-5 h-5" />
                 </>
               ) : (
                 <>
-                  <span className="ml-16">Next</span> <ArrowRight className="w-5 h-5" />
+                  <span className="ml-16">Next</span>{" "}
+                  <ArrowRight className="w-5 h-5" />
                 </>
               )}
             </Button>
