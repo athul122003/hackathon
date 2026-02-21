@@ -1,5 +1,10 @@
 import {
   AlertCircle,
+  BadgeAlert,
+  BadgeCheck,
+  BadgeX,
+  BookUser,
+  CheckCircle,
   CheckCircle2,
   Clock,
   CreditCard,
@@ -292,10 +297,8 @@ export default async function TeamDetailsPage({
                   <p className="text-sm md:text-base text-[#10569c]/80 font-medium mb-4">
                     You can leave the team before it is confirmed by the leader.
                   </p>
-                  {/* Leave Button uses standard outlined white/blue */}
-                  <div className="[&_button]:w-full [&_button]:bg-white/90 [&_button]:border-[#10569c]/30 [&_button]:text-[#10569c] [&_button]:hover:bg-white [&_button]:hover:border-[#10569c]/60 [&_button]:font-bold [&_button]:shadow-sm [&_button]:transition-all [&_button]:h-12 [&_button]:rounded-xl">
-                    <LeaveTeamButton />
-                  </div>
+                  {/* Leave Button */}
+                  <LeaveTeamButton />
                 </div>
               ))}
 
@@ -390,11 +393,11 @@ export default async function TeamDetailsPage({
               </h1>
 
               {/* ID */}
-              {user.isLeader && (
-                <div className="shrink-0">
-                  <TeamIdDisplay teamId={team.id} />
-                </div>
-              )}
+
+              <div className="shrink-0">
+                <TeamIdDisplay teamId={team.id} />
+              </div>
+
             </div>
 
             {/* 3. MOBILE ONLY: Sign Out */}
@@ -428,7 +431,7 @@ export default async function TeamDetailsPage({
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-[#10569c]/10 rounded-lg ring-1 ring-[#10569c]/20 shadow-sm">
-                  <Info className="w-5 h-5 text-[#10569c]" />
+                  <BookUser className="w-5 h-5 text-[#10569c]" />
                 </div>
                 <CardTitle className="text-[#10569c] font-pirate text-2xl tracking-wide">
                   Team Details
@@ -441,11 +444,10 @@ export default async function TeamDetailsPage({
                   Status
                 </span>
                 <span
-                  className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider shadow-sm ${
-                    team.isCompleted
-                      ? "bg-green-100 text-green-700 border border-green-200"
-                      : "bg-blue-100 text-blue-700 border border-blue-200"
-                  }`}
+                  className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider shadow-sm ${team.isCompleted
+                    ? "bg-green-100 text-green-700 border border-green-200"
+                    : "bg-blue-100 text-blue-700 border border-blue-200"
+                    }`}
                 >
                   {team.isCompleted ? "Completed" : "Active"}
                 </span>
@@ -478,7 +480,14 @@ export default async function TeamDetailsPage({
                     Team Members
                   </CardTitle>
                   <CardDescription className="text-[#10569c]/60 font-bold font-crimson text-lg">
-                    {members.length} / 4
+                <div className="flex items-center">
+                    {members.length >= 3 ? (
+                    <BadgeCheck className="w-4 h-4 mr-1 inline text-green-500" />
+                  ) : (
+                    <BadgeX className="w-4 h-4 mr-1 inline text-red-500" />
+                  )}
+                 {members.length} / 4
+                </div>
                   </CardDescription>
                 </div>
               </div>

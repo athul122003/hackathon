@@ -74,7 +74,7 @@ export function CollegeStep({
               <FormLabel className="text-3xl md:text-5xl font-pirate font-bold text-white drop-shadow-sm leading-tight text-center tracking-wide">
                 Select your College
               </FormLabel>
-              <p className="text-white/80 text-lg">
+              <p className="text-white/80 text-lg font-crimson">
                 Type to search, click to select
               </p>
             </div>
@@ -85,7 +85,6 @@ export function CollegeStep({
                 {/* Fixed alignment for the search icon */}
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-white" />
                 <Input
-                  autoFocus
                   placeholder="Search..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -126,7 +125,7 @@ export function CollegeStep({
                     className={cn(
                       "group flex w-full min-h-16 items-center justify-between rounded-xl border border-white/10 bg-white/90 px-4 text-left transition-all duration-200 hover:bg-white/80 hover:border-white/30 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:scale-[1.02]",
                       field.value === college.id &&
-                        "bg-white border-white/50 sticky top-0 z-10 backdrop-blur-md shadow-lg",
+                      "bg-white border-white/50 sticky top-0 z-10 backdrop-blur-md shadow-lg",
                     )}
                   >
                     <div className="flex flex-col gap-1">

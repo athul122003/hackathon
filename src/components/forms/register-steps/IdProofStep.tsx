@@ -44,17 +44,12 @@ export function IdProofStep({ form, onNext }: IdProofStepProps) {
               <div className="relative w-full">
                 {field.value ? (
                   /* IMAGE PREVIEW */
-                  <div className="relative group w-full rounded-xl border border-white/10 bg-white/90 overflow-hidden shadow-lg transition-all duration-200">
-                    <div className="relative group w-full rounded-xl border border-white/10 bg-white/90 overflow-hidden shadow-lg transition-all duration-200">
-                      <Image
-                        src={field.value}
-                        alt="ID Proof"
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        className="w-full h-auto"
-                      />
-                    </div>
+                  <div className="relative group w-full h-64 rounded-xl border border-white/10 bg-white/90 overflow-hidden shadow-lg transition-all duration-200">
+                    <img
+                      src={field.value}
+                      alt="ID Proof"
+                      className="w-full h-full object-contain p-2"
+                    />
 
                     {/* Remove Button */}
                     <div className="absolute top-3 right-3">
