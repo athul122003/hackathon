@@ -99,8 +99,8 @@ export function CollegeStep({
                     text-xl font-medium font-pirate text-white
                     placeholder:text-white/80
                     leading-none
-                    focus-visible:ring-1 focus-visible:ring-[#10569c]/50
-                    focus-visible:border-white/30
+                    focus-visible:ring-1 focus-visible:ring-white
+                    focus-visible:border-white
                     transition-all duration-200
                   "
                 />
@@ -108,7 +108,7 @@ export function CollegeStep({
             </FormControl>
 
             {/* List Container */}
-            <div className="max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar space-y-2">
+            <div className="max-h-[40vh] overflow-y-auto pr-2  px-3 py-2 -mx-3 custom-scrollbar space-y-2">
               {loadingColleges ? (
                 <div className="flex flex-col items-center justify-center py-12 text-[#10569c]/70 gap-4">
                   <Loader2 className="h-8 w-8 animate-spin text-[#10569c]" />
@@ -124,7 +124,7 @@ export function CollegeStep({
                       onNext();
                     }}
                     className={cn(
-                      "group flex w-full min-h-16 items-center justify-between rounded-xl border border-white/10 bg-white/90 px-4 text-left transition-all duration-200 hover:bg-white/80 hover:border-white/30 active:scale-[0.98]",
+                      "group flex w-full min-h-16 items-center justify-between rounded-xl border border-white/10 bg-white/90 px-4 text-left transition-all duration-200 hover:bg-white/80 hover:border-white/30 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:scale-[1.02]",
                       field.value === college.id &&
                         "bg-white border-white/50 sticky top-0 z-10 backdrop-blur-md shadow-lg",
                     )}

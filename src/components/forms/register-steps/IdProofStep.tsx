@@ -4,7 +4,6 @@ import { UploadCloud, X } from "lucide-react";
 import Image from "next/image";
 import type { UseFormReturn } from "react-hook-form";
 import { CloudinaryUpload } from "~/components/cloudinary-upload";
-import { Button } from "~/components/ui/button";
 import {
   FormControl,
   FormField,

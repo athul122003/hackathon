@@ -405,7 +405,7 @@ export default async function TeamDetailsPage({
 
           {/* CENTER CONTENT (MOBILE ONLY) - Title & ID */}
           <div className="md:hidden flex flex-col items-center space-y-4 px-4 w-full">
-            <h1 className="text-4xl font-pirate font-bold text-[#10569c] drop-shadow-sm text-center wrap-break-word leading-tight tracking-wide">
+            <h1 className="text-4xl font-pirate font-bold text-white drop-shadow-sm drop-shadow-black/50 text-center wrap-break-word leading-tight tracking-wide">
               {team.name}
             </h1>
             {user.isLeader && (
@@ -416,7 +416,7 @@ export default async function TeamDetailsPage({
           </div>
 
           {/* RIGHT SIDE (DESKTOP ONLY) - Sign Out */}
-          <div className="hidden md:block shrink-0 [&_button]:!bg-white/90 [&_button]:!border-[#10569c]/30 [&_button]:!text-[#10569c] [&_button]:hover:!bg-white [&_button]:hover:!border-[#10569c]/60 [&_button]:!backdrop-blur-sm [&_button]:!rounded-xl [&_button]:!shadow-sm [&_button]:!transition-all">
+          <div className="hidden md:block shrink-0 [&_button]:bg-white/90! [&_button]:border-[#10569c]/30! [&_button]:!text-[#10569c] [&_button]:hover:!bg-white [&_button]:hover:!border-[#10569c]/60 [&_button]:!backdrop-blur-sm [&_button]:!rounded-xl [&_button]:!shadow-sm [&_button]:!transition-all">
             <SignOut variant="outline" />
           </div>
         </div>

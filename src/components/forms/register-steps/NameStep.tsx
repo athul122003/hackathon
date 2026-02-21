@@ -44,7 +44,7 @@ export function NameStep({ form, onNext }: NameStepProps) {
                   rounded-none 
                   text-center text-3xl md:text-5xl font-light text-white 
                   placeholder:text-white/30 
-                  focus-visible:ring-0 focus-visible:border-white 
+                  focus-visible:ring-0 focus-visible:border-white
                   focus-visible:outline-none 
                   h-auto py-6 
                   transition-all duration-300

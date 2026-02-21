@@ -81,8 +81,8 @@ export function StateStep({ form, onNext }: StateStepProps) {
                     text-xl font-medium font-pirate text-white
                     placeholder:text-white/80
                     leading-none
-                    focus-visible:ring-1 focus-visible:ring-[#10569c]/50
-                    focus-visible:border-white/30
+                    focus-visible:ring-1 focus-visible:ring-white
+                    focus-visible:border-white
                     transition-all duration-200
                   "
                 />
@@ -90,7 +90,7 @@ export function StateStep({ form, onNext }: StateStepProps) {
             </FormControl>
 
             {/* Scrollable List of Options */}
-            <div className="max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar space-y-2">
+            <div className="max-h-[40vh] overflow-y-auto px-3 py-2 -mx-3 custom-scrollbar space-y-2">
               {filteredStates.length > 0 ? (
                 filteredStates.map((state) => (
                   <button
@@ -101,7 +101,7 @@ export function StateStep({ form, onNext }: StateStepProps) {
                       onNext();
                     }}
                     className={cn(
-                      "group flex w-full h-16 items-center justify-between rounded-xl border border-white/10 bg-white/90 px-4 text-left transition-all hover:bg-white/80 hover:border-white/30 active:scale-[0.98]",
+                      "group flex w-full h-16 items-center justify-between rounded-xl border border-white/10 bg-white/90 px-4 text-left transition-all hover:bg-white/80 hover:border-white/30 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2  focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:scale-[1.02]",
                       field.value === state &&
                         "bg-white border-white/50 ring-1 ring-[#10569c]/50 sticky top-0 z-10 shadow-lg",
                     )}
