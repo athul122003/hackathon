@@ -66,7 +66,7 @@ export default function AboutSlate() {
               <h3 className="text-xl font-pirate text-cyan-200 mb-4 border-b border-cyan-500/30 pb-2 inline-block w-fit pr-12">
                 What is Hackfest?
               </h3>
-              <p className="text-stone-300 font-crimson text-lg leading-relaxed">
+              <p className="text-stone-300 text-justify font-crimson text-lg leading-relaxed">
                 NMAM Institute of Technology presents a national-level tech
                 fest. A 36-hour hackathon where 60 teams from across the seas
                 gather to foster innovation and showcase their skills in a
@@ -84,14 +84,11 @@ export default function AboutSlate() {
               <h3 className="text-xl font-pirate text-cyan-200 mb-4 border-b border-cyan-500/30 pb-2 inline-block w-fit pr-12">
                 About NMAMIT
               </h3>
-              <p className="text-stone-300 font-crimson text-lg leading-relaxed">
-                NMAM Institute of Technology (NMAMIT), Nitte, established in
-                1986, is a premier autonomous engineering college in Udupi,
-                Karnataka, and a constituent unit of Nitte (Deemed to be
-                University). Accredited with an 'A' grade by NAAC and NBA
-                (Tier-1), it offers diverse UG (BTech), PG (MTech, MCA, MBA),
-                and PhD programs in engineering, with a strong focus on
-                research, placements, and industry-oriented curriculum.{" "}
+              <p className="text-stone-300 text-justify font-crimson text-lg leading-relaxed">
+                NMAM Institute of Technology (1986) is an AICTE-approved
+                constituent of Nitte (Deemed to be University), ranked 151–200
+                in National Institutional Ranking Framework 2025, with AICTE-CII
+                ‘Platinum’ industry linkage status and global collaborations.
               </p>
             </div>
             <div className="absolute inset-0 bg-linear-to-b from-cyan-500/5 to-transparent pointer-events-none" />

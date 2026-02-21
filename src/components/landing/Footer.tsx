@@ -82,7 +82,7 @@ const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
                   alt="Logo - Hackfest"
                   width={95}
                   height={50}
-                  className=""
+                  className={`transition-all duration-1000 ${isNight ? "drop-shadow-[0_0_15px_rgba(2,132,199,0.6)]" : "drop-shadow-[0_0_15px_rgba(251,191,36,0.6)]"}`}
                 />
                 <Link href="https://www.finiteloop.club/" target="_blank">
                   <Image

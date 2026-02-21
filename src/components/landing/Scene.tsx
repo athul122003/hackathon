@@ -158,8 +158,10 @@ function Background({
 }
 
 function FixedHero({
+  isNight,
   scrollRef,
 }: {
+  isNight: boolean;
   scrollRef: React.MutableRefObject<number>;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -195,13 +197,23 @@ function FixedHero({
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative pointer-events-auto" // Interactive if needed
+            className="relative pointer-events-auto flex flex-col items-center" // Interactive if needed
           >
+            <div className="flex flex-col items-center mb-0">
+              <img
+                src="/logos/nmamit.png"
+                alt="NMAMIT Logo"
+                className={`w-59 md:w-64 h-auto drop-shadow-md mb-1 ${isNight ? "brightness-0 invert" : ""}`}
+              />
+              <span className="text-white/80 font-inter tracking-[0.2em] font-semibold uppercase text-xs">
+                Presents
+              </span>
+            </div>
             <div className="absolute -z-10" />
             <img
               src="/logo11.webp"
               alt="HF Logo"
-              className="w-86 md:w-140 h-auto drop-shadow-2xl mb-6 hover:scale-105 transition-transform duration-500"
+              className="w-84 md:w-140 h-auto drop-shadow-2xl mb-6 hover:scale-105 transition-transform duration-500"
             />
           </motion.div>
 
@@ -213,7 +225,7 @@ function FixedHero({
             transition={{ duration: 1, delay: 0.8 }}
           >
             <div
-              className="relative px-12 py-6 transform -rotate-2 animate-[float_4s_ease-in-out_infinite]"
+              className="relative px-4 py-8 transform -rotate-2 animate-[float_4s_ease-in-out_infinite]"
               style={{
                 filter: "drop-shadow(0 10px 10px rgba(0,0,0,0.5))",
               }}
@@ -648,7 +660,7 @@ export default function Scene({ session }: { session: Session | null }) {
         className="absolute inset-0 overflow-y-auto overflow-x-hidden no-scrollbar"
         style={{ zIndex: 10, touchAction: "pan-y" }}
       >
-        <FixedHero scrollRef={scrollRef} />
+        <FixedHero isNight={isNight} scrollRef={scrollRef} />
         <LandingContent setPages={setPages} pages={pages} />
       </div>
 
