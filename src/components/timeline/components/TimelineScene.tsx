@@ -20,6 +20,7 @@ export default function TimelineScene() {
     null,
   );
   const [activeDock, setActiveDock] = useState<number | null>(null);
+  const [showScrollHint, setShowScrollHint] = useState(true);
   const isMobile = useIsMobile();
 
   const shipControlsRef =
@@ -50,43 +51,33 @@ export default function TimelineScene() {
     };
   }, []);
 
+  // Handle hiding/showing scroll hint based on user activity
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (
-        document.activeElement?.tagName === "INPUT" ||
-        document.activeElement?.tagName === "TEXTAREA"
-      ) {
-        return;
+    let idleTimeout: NodeJS.Timeout;
+    const handleActivity = (e: Event) => {
+      if (e.type === "keydown") {
+        const key = (e as KeyboardEvent).key;
+        if (key !== "ArrowUp" && key !== "ArrowDown") return;
       }
-
-      const controls = shipControlsRef.current;
-      if (!controls) return;
-
-      const key = e.key;
-      const isForward =
-        key === "ArrowRight" ||
-        key === "d" ||
-        key === "D" ||
-        key === "ArrowUp" ||
-        key === "w" ||
-        key === "W";
-      const isBackward =
-        key === "ArrowLeft" ||
-        key === "a" ||
-        key === "A" ||
-        key === "ArrowDown" ||
-        key === "s" ||
-        key === "S";
-
-      if (isForward) {
-        controls.moveForward(1.5);
-      } else if (isBackward) {
-        controls.moveBackward(1.5);
-      }
+      setShowScrollHint(false);
+      clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(() => {
+        setShowScrollHint(true);
+      }, 3000); // Reappear after 3s of idle
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("wheel", handleActivity, { passive: true });
+    window.addEventListener("keydown", handleActivity, { passive: true });
+    window.addEventListener("touchstart", handleActivity, { passive: true });
+    window.addEventListener("touchmove", handleActivity, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", handleActivity);
+      window.removeEventListener("keydown", handleActivity);
+      window.removeEventListener("touchstart", handleActivity);
+      window.removeEventListener("touchmove", handleActivity);
+      clearTimeout(idleTimeout);
+    };
   }, []);
 
   function hexToRgb(hex: string) {
@@ -268,6 +259,36 @@ export default function TimelineScene() {
       </Canvas>
 
       {isMobile && <MobileControls shipControls={shipControlsRef} />}
+
+      {/* Desktop Scroll Hint */}
+      {!isMobile && (
+        <div
+          className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-10 pointer-events-none flex flex-col items-center gap-2 animate-bounce transition-opacity duration-1000 ${
+            showScrollHint ? "opacity-80" : "opacity-0"
+          }`}
+        >
+          <p className="text-xs font-crimson tracking-[0.3em] uppercase text-white drop-shadow-md">
+            Navigate Timeline
+          </p>
+          <div className="text-lg font-bold text-white drop-shadow-md">
+            Scroll or Use Arrow Keys
+          </div>
+          <svg
+            className="w-6 h-6 text-white drop-shadow-md"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <title>Scroll or Use Arrow Keys</title>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          </svg>
+        </div>
+      )}
 
       <FocusDialog
         selectedEvent={selectedEvent}
