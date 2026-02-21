@@ -392,7 +392,6 @@ function LandingContent({
             >
               <Link href="https://nitte.edu.in/nmamit/" target="_blank">
                 <div className="group relative w-72 md:w-96 aspect-video bg-white/70 border-2 border-cyan-400/50 rounded-2xl flex items-center justify-center hover:border-cyan-300 transition-all duration-500 overflow-hidden hover:shadow-[0_0_40px_rgba(0,200,255,0.4)]">
-
                   <img
                     src="/logos/nmamit.png"
                     alt="NITTE"

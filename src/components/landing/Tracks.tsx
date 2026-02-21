@@ -5,7 +5,6 @@ import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import {
   AnimatePresence,
   motion,
-  type PanInfo,
   useMotionValue,
   useSpring,
   useTransform,
@@ -239,6 +238,7 @@ function MobileTrackStack() {
     <div className="flex flex-col items-center justify-center pt-8 w-full gap-6 relative">
       <div className="flex flex-row items-center justify-center w-full gap-4 relative">
         <button
+          type="button"
           onClick={goPrev}
           className="z-20 p-2 lg:p-3 bg-black/80 md:bg-black/40 hover:bg-black/90 md:hover:bg-black/70 md:backdrop-blur-md rounded-full border border-cyan-500/30 text-cyan-400 transition-all hover:scale-110 active:scale-95 shrink-0"
           aria-label="Previous Track"
@@ -269,6 +269,7 @@ function MobileTrackStack() {
         </div>
 
         <button
+          type="button"
           onClick={goNext}
           className="z-20 p-2 lg:p-3 bg-black/80 md:bg-black/40 hover:bg-black/90 md:hover:bg-black/70 md:backdrop-blur-md rounded-full border border-cyan-500/30 text-cyan-400 transition-all hover:scale-110 active:scale-95 shrink-0"
           aria-label="Next Track"

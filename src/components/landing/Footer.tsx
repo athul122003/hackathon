@@ -8,16 +8,12 @@ import { useDayNight } from "~/components/providers/useDayNight";
 const social = [
   {
     link: "https://www.instagram.com/hackfest.dev",
-    icon: (
-      <Instagram className="h-6 w-6 transition-colors" />
-    ),
+    icon: <Instagram className="h-6 w-6 transition-colors" />,
     name: "Instagram",
   },
   {
     link: "mailto:admin@hackfest.dev",
-    icon: (
-      <Mail className="h-6 w-6 transition-colors" />
-    ),
+    icon: <Mail className="h-6 w-6 transition-colors" />,
     name: "E-mail",
   },
   {
@@ -43,35 +39,42 @@ const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
 
   return (
     <footer className="relative z-20 w-full flex flex-col">
-      <div className={`relative h-45 ${overlayNeeded ? "bg-black/50" : ""} w-full overflow-hidden`}>
+      <div
+        className={`relative h-45 ${overlayNeeded ? "bg-black/50" : ""} w-full overflow-hidden`}
+      >
         <div
           className="absolute inset-0 z-10 bg-transparent bg-[url('/images/corals_cropped.png')] bg-repeat-x bg-size-[auto_100%] bg-top-left pointer-events-none transition-all duration-1000"
           style={{
-
             filter: isNight
-              ? 'brightness(0.5) saturate(0.8) sepia(0.2) hue-rotate(180deg)'
-              : 'brightness(0.6) saturate(0.8) hue-rotate(-5deg) contrast(1.0)'
+              ? "brightness(0.5) saturate(0.8) sepia(0.2) hue-rotate(180deg)"
+              : "brightness(0.6) saturate(0.8) hue-rotate(-5deg) contrast(1.0)",
           }}
         />
       </div>
       <div
-        className={`relative z-20 w-full flex-col overflow-hidden border-t transition-colors duration-1000 bg-linear-to-b md:backdrop-blur-md ${isNight
-          ? "border-sky-900/40 from-[#0f2a3f] via-[#091a2a] to-[#040e1a]"
-          : "border-sky-300/40 from-[#8e8071] via-[#6b5e50] to-[#42392f]"
-          }`}
+        className={`relative z-20 w-full flex-col overflow-hidden border-t transition-colors duration-1000 bg-linear-to-b md:backdrop-blur-md ${
+          isNight
+            ? "border-sky-900/40 from-[#0f2a3f] via-[#091a2a] to-[#040e1a]"
+            : "border-sky-300/40 from-[#8e8071] via-[#6b5e50] to-[#42392f]"
+        }`}
       >
-        <div // [RAHUL]: Have put noisy overlay here, in case it gives any issues have to remove 
+        <div // [RAHUL]: Have put noisy overlay here, in case it gives any issues have to remove
           className={`hidden md:block absolute inset-0 pointer-events-none z-0 mix-blend-overlay transition-opacity duration-1000`}
           style={{
-            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
           }}
         />
         <div className="relative z-10 flex h-full flex-col items-center justify-evenly space-y-12 p-4 py-8 lg:flex-row">
           {/* Glow effect */}
-          <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-linear-to-r from-transparent to-transparent blur-sm transition-colors duration-1000 ${isNight ? "via-sky-600/50" : "via-amber-300/60"}`} />
+          <div
+            className={`absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-linear-to-r from-transparent to-transparent blur-sm transition-colors duration-1000 ${isNight ? "via-sky-600/50" : "via-amber-300/60"}`}
+          />
 
           <div className="flex flex-col items-center gap-8 z-10">
-            <div className={`flex flex-col items-center justify-center gap-4 transition-all duration-1000`}>
+            <div
+              className={`flex flex-col items-center justify-center gap-4 transition-all duration-1000`}
+            >
               <div className="flex flex-row items-center justify-center gap-6">
                 <Image
                   src="/logo.webp"
@@ -101,13 +104,17 @@ const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
                   height={100}
                   className="opacity-85 hover:opacity-100 transition-all duration-1000"
                   style={{
-                    filter: isNight ? 'brightness(0) invert(1) opacity(0.8)' : 'brightness(0) invert(1) opacity(0.95)'
+                    filter: isNight
+                      ? "brightness(0) invert(1) opacity(0.8)"
+                      : "brightness(0) invert(1) opacity(0.95)",
                   }}
                 />
               </Link>
             </div>
             <div className="flex flex-col items-center gap-4 md:gap-4">
-              <p className={`text-base font-medium transition-colors duration-1000 ${isNight ? "text-stone-300" : "text-amber-50"}`}>
+              <p
+                className={`text-base font-medium transition-colors duration-1000 ${isNight ? "text-stone-300" : "text-amber-50"}`}
+              >
                 Connect with us:
               </p>
               <ul className="flex gap-6 md:gap-6">
@@ -127,7 +134,9 @@ const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
           </div>
           <div className="flex flex-col items-center gap-8 z-10">
             <div className="flex flex-col items-center justify-center gap-10 md:flex-row">
-              <div className={`overflow-hidden rounded-lg border transition-colors duration-1000 ${isNight ? "border-sky-800/40 shadow-[0_0_15px_rgba(2,132,199,0.15)]" : "border-amber-600/30 shadow-[0_0_20px_rgba(251,191,36,0.15)]"}`}>
+              <div
+                className={`overflow-hidden rounded-lg border transition-colors duration-1000 ${isNight ? "border-sky-800/40 shadow-[0_0_15px_rgba(2,132,199,0.15)]" : "border-amber-600/30 shadow-[0_0_20px_rgba(251,191,36,0.15)]"}`}
+              >
                 <iframe
                   title="Maps"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3884.6730533394866!2d74.93141407492217!3d13.183002587152156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbb56415ad85e5b%3A0x10b77ac6f6afc7fa!2sN.M.A.M.%20Institute%20of%20Technology!5e0!3m2!1sen!2sin!4v1705002903689!5m2!1sen!2sin"
@@ -139,15 +148,21 @@ const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
                 ></iframe>
               </div>
               <div className="flex flex-col gap-2 text-center">
-                <p className={`text-lg font-bold transition-colors duration-1000 ${isNight ? "text-sky-300" : "text-amber-100"}`}>
+                <p
+                  className={`text-lg font-bold transition-colors duration-1000 ${isNight ? "text-sky-300" : "text-amber-100"}`}
+                >
                   NMAM Institute of Technology, Nitte
                 </p>
-                <p className={`text-sm font-medium transition-colors duration-1000 ${isNight ? "text-stone-400" : "text-amber-50/80"}`}>
+                <p
+                  className={`text-sm font-medium transition-colors duration-1000 ${isNight ? "text-stone-400" : "text-amber-50/80"}`}
+                >
                   Karkala, Udupi District, Karnataka
                 </p>
               </div>
             </div>
-            <p className={`text-center text-base font-medium transition-colors duration-1000 ${isNight ? "text-stone-300" : "text-amber-50/90"}`}>
+            <p
+              className={`text-center text-base font-medium transition-colors duration-1000 ${isNight ? "text-stone-300" : "text-amber-50/90"}`}
+            >
               Interested to sponsor? Let us know{" "}
               <Link
                 href="mailto:sponsor@hackfest.dev"
@@ -158,7 +173,9 @@ const Footer = ({ overlayNeeded = false }: { overlayNeeded?: boolean }) => {
             </p>
           </div>
         </div>
-        <div className={`w-full border-t py-4 text-center font-medium text-sm transition-colors duration-1000 ${isNight ? "border-sky-900/40 text-stone-500" : "border-amber-900/40 text-amber-50/60"}`}>
+        <div
+          className={`w-full border-t py-4 text-center font-medium text-sm transition-colors duration-1000 ${isNight ? "border-sky-900/40 text-stone-500" : "border-amber-900/40 text-amber-50/60"}`}
+        >
           <p>2026 &copy; Hackfest | All rights reserved</p>
         </div>
       </div>

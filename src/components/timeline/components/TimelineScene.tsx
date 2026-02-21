@@ -178,7 +178,7 @@ export default function TimelineScene() {
       const pos = ISLAND_POSITIONS[i];
       const dist = Math.sqrt(
         (globalShipPosition.x - pos[0]) ** 2 +
-        (globalShipPosition.z - pos[2]) ** 2,
+          (globalShipPosition.z - pos[2]) ** 2,
       );
       if (dist < PRE_TRIGGER) {
         skyTriggeredForRef.current = i;

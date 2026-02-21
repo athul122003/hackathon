@@ -85,7 +85,14 @@ export default function AboutSlate() {
                 About NMAMIT
               </h3>
               <p className="text-stone-300 font-crimson text-lg leading-relaxed">
-                NMAM Institute of Technology (NMAMIT), Nitte, established in 1986, is a premier autonomous engineering college in Udupi, Karnataka, and a constituent unit of Nitte (Deemed to be University). Accredited with an 'A' grade by NAAC and NBA (Tier-1), it offers diverse UG (BTech), PG (MTech, MCA, MBA), and PhD programs in engineering, with a strong focus on research, placements, and industry-oriented curriculum.               </p>
+                NMAM Institute of Technology (NMAMIT), Nitte, established in
+                1986, is a premier autonomous engineering college in Udupi,
+                Karnataka, and a constituent unit of Nitte (Deemed to be
+                University). Accredited with an 'A' grade by NAAC and NBA
+                (Tier-1), it offers diverse UG (BTech), PG (MTech, MCA, MBA),
+                and PhD programs in engineering, with a strong focus on
+                research, placements, and industry-oriented curriculum.{" "}
+              </p>
             </div>
             <div className="absolute inset-0 bg-linear-to-b from-cyan-500/5 to-transparent pointer-events-none" />
             <div className="absolute -inset-px border border-cyan-500/20 rounded-xl opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
