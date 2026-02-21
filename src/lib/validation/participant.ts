@@ -26,10 +26,7 @@ export const participantSchema = z.object({
 export const registerParticipantSchema = z
   .object({
     name: z.string().min(3, "Name must be greater than 3 characters"),
-    alias: z
-      .string()
-      .max(15, "Alias must be 15 characters or less")
-      .optional(),
+    alias: z.string().max(15, "Alias must be 15 characters or less").optional(),
     phone: z
       .string()
       .min(10, "Phone number must be 10 digits")

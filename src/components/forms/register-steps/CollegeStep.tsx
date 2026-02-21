@@ -2,8 +2,8 @@
 
 import { Check, Loader2, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Button } from "~/components/ui/button";
 import type { UseFormReturn } from "react-hook-form";
+import { Button } from "~/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -162,7 +162,7 @@ export function CollegeStep({
                         className={cn(
                           "group flex w-full min-h-16 items-center justify-between rounded-xl border border-white/10 bg-white/90 px-4 text-left transition-all duration-200 hover:bg-white/80 hover:border-white/30 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:scale-[1.02]",
                           field.value === college.id &&
-                          "bg-white border-white/50 sticky top-0 z-10 backdrop-blur-md shadow-lg",
+                            "bg-white border-white/50 sticky top-0 z-10 backdrop-blur-md shadow-lg",
                         )}
                       >
                         <div className="flex flex-col gap-1">
@@ -226,7 +226,9 @@ export function CollegeStep({
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
                   <Check className="w-8 h-8 text-[#10569c]" />
                 </div>
-                <h3 className="text-3xl font-pirate text-white">Request Sent!</h3>
+                <h3 className="text-3xl font-pirate text-white">
+                  Request Sent!
+                </h3>
                 <p className="text-white/80 text-lg">
                   Our crew has been contacted. Please check out tomorrow.
                 </p>
@@ -237,7 +239,9 @@ export function CollegeStep({
             ) : (
               <div className="flex flex-col space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-3xl font-pirate text-white">Add College</h3>
+                  <h3 className="text-3xl font-pirate text-white">
+                    Add College
+                  </h3>
                   <p className="text-white/80 text-sm">
                     Enter the full name of your college
                   </p>

@@ -69,7 +69,10 @@ export function TeamForm() {
         if (checkRes.status === 405) {
           const checkData2 = await checkRes.json();
           const checkData = checkData2[0].output;
-          if (checkData.suggested_names && checkData.suggested_names.length > 0) {
+          if (
+            checkData.suggested_names &&
+            checkData.suggested_names.length > 0
+          ) {
             setSuggestedNames(checkData.suggested_names);
             setLoading(false);
             return;

@@ -79,7 +79,8 @@ export function NameStep({ form, onNext }: NameStepProps) {
               <FormLabel className="text-xl md:text-2xl font-pirate font-bold text-white/80 drop-shadow-sm leading-tight tracking-wide flex flex-col items-center text-center">
                 <span>Short Name for ID Card</span>
                 <span className="text-sm font-normal text-white/60 mt-2 max-w-sm">
-                  Your full name will be printed on the ID. If you prefer a shorter name, or if your name is too long, enter it here.
+                  Your full name will be printed on the ID. If you prefer a
+                  shorter name, or if your name is too long, enter it here.
                 </span>
                 <span
                   className={`text-lg font-normal mt-2 ${needsAlias ? "text-[#e54d2e]" : "text-white/50"}`}
