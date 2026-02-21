@@ -22,7 +22,6 @@
     "db:seed": "tsx src/db/seed.ts",
     "setup:env": "cp .env.example .env && echo AUTH_SECRET=$(openssl rand -base64 32) && echo 'Setup complete'"
   },
-
   "dependencies": {
     "@auth/core": "^0.34.3",
     "@auth/drizzle-adapter": "^1.11.1",
@@ -64,6 +63,7 @@
     "react-hook-form": "^7.67.0",
     "react-markdown": "^10.1.0",
     "react-pdf": "^10.3.0",
+    "react-scan": "^0.5.3",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "sonner": "^2.0.7",
