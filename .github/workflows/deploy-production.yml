@@ -155,7 +155,7 @@ jobs:
 
       - name: Trigger Dokploy deployment
         run: |
-          curl -X POST https://vps.finiteloop.club/api/application.deploy \
+          curl -X POST https://vps.hackfest.dev/api/application.deploy \
           -H 'accept: application/json' \
           -H 'Content-Type: application/json' \
           -H 'x-api-key: ${{ secrets.DOKPLOY_API_KEY }}' \
