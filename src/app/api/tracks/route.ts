@@ -1,14 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { auth } from "~/auth/dashboard-config";
+import { publicRoute } from "~/auth/route-handlers";
+import { adminProtected, type RouteContext } from "~/auth/routes-wrapper";
 import {
   createTrack,
   deleteTrack,
   getTracks,
 } from "~/db/services/track-services";
-import { isAdmin } from "~/lib/auth/check-access";
 import { AppError } from "~/lib/errors/app-error";
 
-export async function GET() {
+export const GET = publicRoute(async () => {
   try {
     const tracks = await getTracks();
     return NextResponse.json(tracks);
@@ -18,14 +18,10 @@ export async function GET() {
     }
     return new NextResponse("Internal Server Error", { status: 500 });
   }
-}
+});
 
-export async function POST(req: NextRequest) {
+export const POST = adminProtected(async (req: Request) => {
   try {
-    const session = await auth();
-    if (!session?.dashboardUser || !isAdmin(session.dashboardUser)) {
-      return new NextResponse("Forbidden", { status: 403 });
-    }
 
     const body = await req.json();
     const { name } = body;
@@ -42,14 +38,10 @@ export async function POST(req: NextRequest) {
     }
     return new NextResponse("Internal Server Error", { status: 500 });
   }
-}
+});
 
-export async function DELETE(req: NextRequest) {
+export const DELETE = adminProtected(async (req: Request) => {
   try {
-    const session = await auth();
-    if (!session?.dashboardUser || !isAdmin(session.dashboardUser)) {
-      return new NextResponse("Forbidden", { status: 403 });
-    }
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
@@ -66,4 +58,4 @@ export async function DELETE(req: NextRequest) {
     }
     return new NextResponse("Internal Server Error", { status: 500 });
   }
-}
+});

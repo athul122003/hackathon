@@ -1,13 +1,16 @@
 import { type NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { publicRoute } from "~/auth/route-handlers";
+import { rateLimiters } from "~/lib/rate-limit";
 
-export async function POST(req: NextRequest) {
-  const SMTP_HOST = process.env.SMTP_HOST;
-  const SMTP_PORT = Number(process.env.SMTP_PORT);
-  const SMTP_USER = process.env.SMTP_USER;
-  const SMTP_PASS = process.env.SMTP_PASS;
-  try {
-    const body = await req.json();
+export const POST = publicRoute(
+  async (req: NextRequest) => {
+    const SMTP_HOST = process.env.SMTP_HOST;
+    const SMTP_PORT = Number(process.env.SMTP_PORT) || 587;
+    const SMTP_USER = process.env.SMTP_USER;
+    const SMTP_PASS = process.env.SMTP_PASS;
+    try {
+      const body = await req.json();
     const { customCollegeName, participantData } = body;
 
     if (!customCollegeName) {
@@ -67,4 +70,6 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
-}
+},
+rateLimiters.email,
+);

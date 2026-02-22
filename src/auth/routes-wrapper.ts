@@ -1,10 +1,12 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 import type { Session } from "next-auth";
+import { type RateLimiterRedis } from "rate-limiter-flexible";
 import { auth } from "~/auth/dashboard-config";
 import { hasPermission, isAdmin } from "~/lib/auth/check-access";
 import { AppError } from "~/lib/errors/app-error";
 import { errorResponse } from "~/lib/response/error";
+import { getIdentifier, rateLimiters, withRateLimit } from "~/lib/rate-limit";
 import { getCurrentUser } from "./get-current-user";
 
 export type RouteContext<T = Record<string, string>> = {
@@ -47,6 +49,7 @@ export function protectedRoute(
 
 export function adminProtected<T = Record<string, string>>(
   handler: RouteHandler<T>,
+  customRateLimiter?: RateLimiterRedis,
 ) {
   return async (request: Request, context: RouteContext<T>) => {
     const session = await auth();
@@ -65,6 +68,12 @@ export function adminProtected<T = Record<string, string>>(
       );
     }
 
+    // custom or default rate limiter
+    const limiter = customRateLimiter || rateLimiters.api;
+    const identifier = getIdentifier(request as any, session.dashboardUser.id);
+    const rateLimitResponse = await withRateLimit(request as any, limiter, identifier);
+    if (rateLimitResponse) return rateLimitResponse;
+
     try {
       return await handler(request, context, session.dashboardUser);
     } catch (err) {
@@ -76,6 +85,7 @@ export function adminProtected<T = Record<string, string>>(
 export function permissionProtected<T = Record<string, string>>(
   permissions: string[],
   handler: RouteHandler<T>,
+  customRateLimiter?: RateLimiterRedis,
 ) {
   return async (request: Request, context: RouteContext<T>) => {
     const session = await auth();
@@ -86,6 +96,12 @@ export function permissionProtected<T = Record<string, string>>(
         { status: 401 },
       );
     }
+
+    // apply custom or default 
+    const limiter = customRateLimiter || rateLimiters.api;
+    const identifier = getIdentifier(request as any, session.dashboardUser.id);
+    const rateLimitResponse = await withRateLimit(request as any, limiter, identifier);
+    if (rateLimitResponse) return rateLimitResponse;
 
     // Admins bypass permission checks
     if (isAdmin(session.dashboardUser)) {

@@ -1,55 +1,31 @@
 import { eq } from "drizzle-orm";
 import { type NextRequest, NextResponse } from "next/server";
-import { auth as dashboardAuth } from "~/auth/dashboard-config";
+import { permissionProtected } from "~/auth/routes-wrapper";
 import db from "~/db";
 import { query } from "~/db/data";
 import { getAllEventsForAdmin } from "~/db/data/events";
 import { events } from "~/db/schema";
-import { hasPermission } from "~/lib/auth/permissions";
 import { AppError } from "~/lib/errors/app-error";
 import { errorResponse } from "~/lib/response/error";
 import { successResponse } from "~/lib/response/success";
 import { eventSchema } from "~/lib/validation/event";
 
-export async function GET(req: NextRequest) {
-  const url = new URL(req.url);
-  const action = url.pathname.split("/").pop() || "";
-  const session = await dashboardAuth();
-  const searchParams = new URLSearchParams(url.searchParams);
+export const GET = permissionProtected(
+  ["events:manage"],
+  async (req: Request) => {
+    const url = new URL(req.url);
+    const action = url.pathname.split("/").pop() || "";
+    const searchParams = new URLSearchParams(url.searchParams);
 
-  try {
-    switch (action) {
-      case "getAllForAdmin":
-        if (
-          session?.dashboardUser &&
-          hasPermission(session.dashboardUser, "events:manage")
-        ) {
+    try {
+      switch (action) {
+        case "getAllForAdmin":
           return NextResponse.json(await getAllEventsForAdmin());
-        } else {
-          return NextResponse.json(
-            "You are not authorized to view this resource",
-            { status: 401 },
-          );
-        }
 
-      case "getAllById": {
-        if (
-          !session ||
-          !session.dashboardUser ||
-          !hasPermission(session.dashboardUser, "events:manage")
-        ) {
-          return errorResponse(
-            new AppError("Unauthorized", 401, {
-              toast: true,
-              title: "Unauthorized",
-              description: "You are not authorized to perform this action",
-            }),
-          );
-        }
-
-        const id = searchParams.get("id");
-        console.log(id);
-        if (!id) {
+        case "getAllById": {
+          const id = searchParams.get("id");
+          console.log(id);
+          if (!id) {
           return errorResponse(
             new AppError("Missing required field", 400, {
               toast: true,
@@ -73,47 +49,35 @@ export async function GET(req: NextRequest) {
           );
         }
 
-        return successResponse(event);
+          return successResponse(event);
+        }
+
+        default:
+          return NextResponse.json(
+            { success: false, error: "Unknown action" },
+            { status: 400 },
+          );
       }
-
-      default:
-        return NextResponse.json(
-          { success: false, error: "Unknown action" },
-          { status: 400 },
-        );
+    } catch (error) {
+      console.error("Events route error:", error);
+      return NextResponse.json(
+        { success: false, error: (error as Error).message },
+        {
+          statusText:
+            ((error as Error).cause as string) || "Internal Server Error",
+        },
+      );
     }
-  } catch (error) {
-    console.error("Events route error:", error);
-    return NextResponse.json(
-      { success: false, error: (error as Error).message },
-      {
-        statusText:
-          ((error as Error).cause as string) || "Internal Server Error",
-      },
-    );
-  }
-}
+  },
+);
 
-export async function POST(req: NextRequest) {
-  const url = new URL(req.url);
-  const action = url.pathname.split("/").pop() || "";
-  const session = await dashboardAuth();
+export const POST = permissionProtected(
+  ["events:manage"],
+  async (req: Request) => {
+    const url = new URL(req.url);
+    const action = url.pathname.split("/").pop() || "";
 
-  if (
-    !session ||
-    !session.dashboardUser ||
-    !hasPermission(session.dashboardUser, "events:manage")
-  ) {
-    return errorResponse(
-      new AppError("Unauthorized", 401, {
-        toast: true,
-        title: "Unauthorized",
-        description: "You are not authorized to perform this action",
-      }),
-    );
-  }
-
-  switch (action) {
+    switch (action) {
     case "updateStatus": {
       const { eventId, newStatus } = await req.json();
       if (!eventId || !newStatus) {
@@ -215,24 +179,16 @@ export async function POST(req: NextRequest) {
         { status: 404 },
       );
   }
-}
+},
+);
 
-export async function DELETE(req: NextRequest) {
-  const url = new URL(req.url);
-  const action = url.pathname.split("/").pop() || "";
-  const session = await dashboardAuth();
+export const DELETE = permissionProtected(
+  ["events:manage"],
+  async (req: Request) => {
+    const url = new URL(req.url);
+    const action = url.pathname.split("/").pop() || "";
 
-  if (
-    !session ||
-    !session.dashboardUser ||
-    !hasPermission(session.dashboardUser, "events:manage")
-  ) {
-    return NextResponse.json("You are not authorized to perform this action", {
-      status: 401,
-    });
-  }
-
-  switch (action) {
+    switch (action) {
     case "delete": {
       const { eventId } = await req.json();
       if (!eventId) {
@@ -269,28 +225,16 @@ export async function DELETE(req: NextRequest) {
         { status: 404 },
       );
   }
-}
+},
+);
 
-export async function PUT(req: NextRequest) {
-  const url = new URL(req.url);
-  const action = url.pathname.split("/").pop() || "";
-  const session = await dashboardAuth();
+export const PUT = permissionProtected(
+  ["events:manage"],
+  async (req: Request) => {
+    const url = new URL(req.url);
+    const action = url.pathname.split("/").pop() || "";
 
-  if (
-    !session ||
-    !session.dashboardUser ||
-    !hasPermission(session.dashboardUser, "events:manage")
-  ) {
-    return errorResponse(
-      new AppError("Unauthorized", 401, {
-        toast: true,
-        title: "Unauthorized",
-        description: "You are not authorized to perform this action",
-      }),
-    );
-  }
-
-  switch (action) {
+    switch (action) {
     case "create": {
       const data = await req.json();
       const parsedData = eventSchema.safeParse({
@@ -340,4 +284,5 @@ export async function PUT(req: NextRequest) {
         { status: 404 },
       );
   }
-}
+},
+);
