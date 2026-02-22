@@ -164,7 +164,9 @@ function OrganizerCard({
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-200 hover:text-white hover:bg-cyan-900/60 hover:border-cyan-400 transition-all group-hover:scale-105"
             >
               <Phone className="w-4 h-4 shrink-0" />
-              <span className="font-crimson text-lg truncate max-w-[200px]">{organizer.phone}</span>
+              <span className="font-crimson text-lg truncate max-w-[200px]">
+                {organizer.phone}
+              </span>
             </a>
           )}
 
@@ -174,7 +176,9 @@ function OrganizerCard({
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-200 hover:text-white hover:bg-cyan-900/60 hover:border-cyan-400 transition-all group-hover:scale-105"
             >
               <Mail className="w-4 h-4 shrink-0" />
-              <span className="font-crimson text-lg truncate max-w-[200px]">{organizer.email}</span>
+              <span className="font-crimson text-lg truncate max-w-[200px]">
+                {organizer.email}
+              </span>
             </a>
           )}
         </div>
