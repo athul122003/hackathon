@@ -50,7 +50,7 @@ export default async function DashboardPage() {
     canViewResults: userIsAdmin || hasPermission(dashboardUser, "results:view"),
     // Events
     canManageEvents:
-      userIsAdmin || hasPermission(dashboardUser, "events:manage"),
+      userIsAdmin || hasPermission(dashboardUser, "event:manage"),
   };
 
   const hasDashboardAccess =
@@ -169,7 +169,7 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      <DashboardContent permissions={permissions} />
+      <DashboardContent permissions={permissions} session={session} />
     </div>
   );
 }

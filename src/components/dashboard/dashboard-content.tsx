@@ -2,11 +2,14 @@
 
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import type { Session } from "next-auth";
 import { Suspense, useEffect, useState } from "react";
 import { DashboardTabs } from "~/components/dashboard/dashboard-tabs";
 import { OrganiserDashboard } from "~/components/dashboard/organiser";
 import { Card, CardDescription, CardTitle } from "~/components/ui/card";
+import { hasPermission } from "~/lib/auth/permissions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import MarkAttendanceTab from "./events/attendance";
 import CreateEventTab from "./events/create-event";
 import EventListTab from "./events/event-list";
 import UpdateEventTab from "./events/update-event";
@@ -29,6 +32,7 @@ type DashboardContentProps = {
     canViewResults: boolean;
     canManageEvents: boolean;
   };
+  session: Session;
 };
 
 function AdminTab() {
@@ -231,25 +235,48 @@ function MentorTab() {
   );
 }
 
-function ManageEventsTab() {
+function ManageEventsTab({ session }: { session: Session }) {
   const [activeTab, setActiveTab] = useState("eventList");
   const [isClient, setIsClient] = useState(false);
 
-  const SUB_TABS: SubTabConfig[] = [
+  const SUB_TABS: ({ permission: string } & SubTabConfig)[] = [
     {
-      id: "eventList",
-      label: "Event List",
-      component: <EventListTab setTab={setActiveTab} />,
+      id: "all",
+      label: "All Events",
+      permission: "event:read_all",
+      component: (
+        <EventListTab
+          assigned={false}
+          setTab={setActiveTab}
+          session={session}
+        />
+      ),
     },
     {
-      id: "createEvent",
-      label: "Create Event",
+      id: "assigned",
+      label: "Assigned",
+      permission: "event:read",
+      component: (
+        <EventListTab assigned={true} setTab={setActiveTab} session={session} />
+      ),
+    },
+    {
+      id: "create",
+      permission: "event:create",
+      label: "Create",
       component: <CreateEventTab setTab={setActiveTab} />,
     },
     {
-      id: "updateEvent",
-      label: "Update Event",
+      id: "update",
+      permission: "event:update",
+      label: "Update",
       component: <UpdateEventTab setTab={setActiveTab} />,
+    },
+    {
+      id: "attendance",
+      permission: "event:attendance",
+      label: "Mark Attendance",
+      component: <MarkAttendanceTab setTab={setActiveTab} />,
     },
   ];
 
@@ -290,28 +317,39 @@ function ManageEventsTab() {
         defaultValue="eventList"
       >
         <TabsList className="w-fit justify-between h-auto flex-wrap gap-1 bg-muted/50 p-1">
-          {SUB_TABS.map((tab) => (
-            <TabsTrigger
-              key={tab.id}
-              value={tab.id}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-3 py-1.5 text-sm"
-            >
-              {tab.label}
-            </TabsTrigger>
-          ))}
+          {SUB_TABS.map((tab) => {
+            return (
+              hasPermission(session.dashboardUser, tab.permission) && (
+                <TabsTrigger
+                  key={tab.id}
+                  value={tab.id}
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-3 py-1.5 text-sm"
+                >
+                  {tab.label}
+                </TabsTrigger>
+              )
+            );
+          })}
         </TabsList>
 
-        {SUB_TABS.map((tab) => (
-          <TabsContent key={tab.id} value={tab.id} className="mt-6">
-            {tab.component}
-          </TabsContent>
-        ))}
+        {SUB_TABS.map((tab) => {
+          return (
+            hasPermission(session.dashboardUser, tab.permission) && (
+              <TabsContent key={tab.id} value={tab.id} className="mt-6">
+                {tab.component}
+              </TabsContent>
+            )
+          );
+        })}
       </Tabs>
     </div>
   );
 }
 
-export function DashboardContent({ permissions }: DashboardContentProps) {
+export function DashboardContent({
+  permissions,
+  session,
+}: DashboardContentProps) {
   const {
     isAdmin,
     canViewAllTeams,
@@ -341,7 +379,7 @@ export function DashboardContent({ permissions }: DashboardContentProps) {
       id: "events",
       label: "Events",
       hasAccess: isAdmin || canManageEvents,
-      content: <ManageEventsTab />,
+      content: <ManageEventsTab session={session} />,
     },
     {
       id: "evaluator",

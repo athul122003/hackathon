@@ -1,13 +1,17 @@
 import "dotenv/config";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, or } from "drizzle-orm";
 import { hashPassword } from "~/lib/auth/password";
-import { eventStatusEnum } from "./enum";
+import { eventAudienceEnum, eventStatusEnum, eventTypeEnum } from "./enum";
 import db from "./index";
 import {
   colleges,
   dashboardUserRoles,
   dashboardUsers,
+  eventOrganizers,
+  eventParticipants,
   events,
+  eventTeams,
+  eventUsers,
   permissions,
   rolePermissions,
   roles,
@@ -69,6 +73,11 @@ async function seed() {
       description: "Remarks only, no scoring",
       isSystemRole: true,
     },
+    {
+      name: "EVENT_ORGANIZER",
+      description: "Organize and manage events",
+      isSystemRole: true,
+    },
   ];
 
   const roleMap = new Map<string, string>(); // name -> id
@@ -107,7 +116,6 @@ async function seed() {
     { key: "settings:manage", description: "Manage system settings" },
     { key: "roles:manage", description: "Manage roles" },
     { key: "users:manage_staff", description: "Manage staff users" },
-    { key: "events:manage", description: "Manage events" },
     // Participant / Team Visibility
     { key: "team:view_all", description: "View all teams" },
     { key: "team:view_top60", description: "View top 60 teams" },
@@ -144,6 +152,14 @@ async function seed() {
     { key: "slot:view", description: "View slot allocations" },
     { key: "slot:assign", description: "Assign slots" },
     { key: "slot:regenerate", description: "Regenerate slot allocations" },
+    // Event management
+    { key: "event:manage", description: "Get access to manage events tab" },
+    { key: "event:read_all", description: "Read all events" },
+    { key: "event:read", description: "Read assigned event" },
+    { key: "event:create", description: "Create new event" },
+    { key: "event:update", description: "Update an event" },
+    { key: "event:attendance", description: "Mark event attendance" },
+    { key: "event:delete", description: "Delete an event" },
   ];
 
   const permissionMap = new Map<string, string>(); // key -> id
@@ -217,6 +233,15 @@ async function seed() {
       "team:view_team_details",
       "submission:view",
       "submission:remark",
+    ],
+    EVENT_ORGANIZER: [
+      "dashboard:access",
+      "event:manage",
+      "event:create",
+      "event:read",
+      "event:update",
+      "event:attendance",
+      "event:delete",
     ],
   };
 
@@ -306,29 +331,169 @@ async function seed() {
     }
   }
 
+  console.log("Seeding Dashboard Organizer");
+  // Get existing organizer
+  const existingOrganizer = await db
+    .select()
+    .from(dashboardUsers)
+    .where(eq(dashboardUsers.username, "organizer"))
+    .limit(1);
+  let organizer: typeof dashboardUsers.$inferSelect | null = null;
+  if (existingOrganizer.length > 0) {
+    console.log("⚠️  Event Organizer already exists. Skipping.");
+    organizer = existingOrganizer[0];
+  } else {
+    // Create new organizer
+    const newOrganizers = await db
+      .insert(dashboardUsers)
+      .values({
+        username: "organizer",
+        passwordHash: await hashPassword("organizer"),
+        name: "Event Organizer",
+        isActive: true,
+      })
+      .returning();
+    organizer = newOrganizers[0];
+
+    // Assign EVENT_ORGANIZER role to organizer user
+    const organizerRoleId = roleMap.get("EVENT_ORGANIZER");
+    if (!organizerRoleId) {
+      throw new Error("EVENT_ORGANIZER role not found");
+    }
+
+    await db.insert(dashboardUserRoles).values({
+      dashboardUserId: organizer.id,
+      roleId: organizerRoleId,
+      isActive: true,
+    });
+
+    console.log("✅ Created event organizer user and assigned role");
+  }
+
   // Seed Events
   console.log("Seeding events...");
   const existingEventsCount = await db.select({ count: count() }).from(events);
+  const [adminUser] = await db
+    .select()
+    .from(dashboardUsers)
+    .where(eq(dashboardUsers.username, "admin"))
+    .limit(1);
   if (existingEventsCount.length > 0 && existingEventsCount[0].count === 0) {
     const eventLength = 20;
-    await db.insert(events).values(
-      Array.from({ length: eventLength }, (_, i) => ({
-        title: `Event ${i + 1}`,
-        description: `Description for Event ${i + 1}. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Laudantium reiciendis provident quidem eligendi animi praesentium natus dolores accusantium quibusdam nulla vitae deserunt quam iusto, voluptatibus mollitia autem. Laudantium, fuga tempora?`,
-        date: new Date(Date.now() + (i + 1) * 24 * 60 * 60 * 1000),
-        venue: `Venue ${i + 1}`,
-        image: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQl_LkmRRISlkI9wz7dZCmGDHJ68mMWaW4zZg&s`,
-        teamSize: i % 3 === 0 ? 1 : 4,
-        status:
-          eventStatusEnum.enumValues[
-            Math.floor(i % eventStatusEnum.enumValues.length)
+    const newEvents = await db
+      .insert(events)
+      .values(
+        Array.from({ length: eventLength }, (_, i) => ({
+          title: `Event ${i + 1}`,
+          description: `Description for Event ${i + 1}. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Laudantium reiciendis provident quidem eligendi animi praesentium natus dolores accusantium quibusdam nulla vitae deserunt quam iusto, voluptatibus mollitia autem. Laudantium, fuga tempora?`,
+          date: new Date(Date.now() + (i + 1) * 24 * 60 * 60 * 1000),
+          venue: `Venue ${i + 1}`,
+          image: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQl_LkmRRISlkI9wz7dZCmGDHJ68mMWaW4zZg&s`,
+          // teamSize: i % 3 === 0 ? 1 : 4,
+          type: eventTypeEnum.enumValues[
+            Math.floor(Math.random() * eventTypeEnum.enumValues.length)
           ],
-      })),
-    );
+          status:
+            eventStatusEnum.enumValues[
+              Math.floor(i % eventStatusEnum.enumValues.length)
+            ],
+          audience:
+            eventAudienceEnum.enumValues[
+              Math.floor(Math.random() * eventAudienceEnum.enumValues.length)
+            ],
+          category: Math.random() > 0.5 ? "Technical" : "Non-Technical",
+          hfAmount: 100 + i * 100,
+          collegeAmount: 200 + i * 100,
+          nonCollegeAmount: 300 + i * 100,
+          maxTeams: 10 + i,
+          minTeamSize: Math.floor(Math.random() * 3) + 1,
+          maxTeamSize: Math.floor(Math.random() * 3) + 2,
+        })),
+      )
+      .returning();
 
+    const newEventOrganizers = await db.insert(eventOrganizers).values(
+      newEvents.map((ev) => {
+        return {
+          eventId: ev.id,
+          organizerId:
+            Math.floor(Math.random() * 2) === 0 ? organizer?.id! : adminUser.id,
+        };
+      }),
+    );
     console.log("✅ Seeded events");
   } else {
     console.log("⚠️  Events already exist. Skipping.");
+  }
+
+  // seed Event Participants
+  console.log("Seeding event participants...");
+  const publishedEvents = await db
+    .select()
+    .from(events)
+    .where(or(eq(events.status, "Published"), eq(events.status, "Ongoing")));
+  const college = await db
+    .select()
+    .from(colleges)
+    .limit(1)
+    .then((res) => res[0]);
+  let eventUsersList = await db.select().from(eventUsers);
+  if (eventUsersList.length === 0) {
+    eventUsersList = await db
+      .insert(eventUsers)
+      .values(
+        Array.from({ length: 10 }, (_, i) => ({
+          name: `Participant ${i + 1}`,
+          email: `participant${i + 1}@hackfest.dev`,
+          collegeId: college.id,
+        })),
+      )
+      .returning();
+  }
+  for (const event of publishedEvents) {
+    const existingTeams = await db
+      .select()
+      .from(eventTeams)
+      .where(eq(eventTeams.eventId, event.id));
+    if (existingTeams.length === 0) {
+      const teams = await db
+        .insert(eventTeams)
+        .values(
+          Array.from({ length: Math.floor(Math.random() * 5) + 1 }, (_, i) => ({
+            name: `Team ${i + 1} for ${event.title}`,
+            eventId: event.id,
+            isComplete: true,
+          })),
+        )
+        .returning();
+
+      const users = [...eventUsersList];
+
+      const usedUserIds = new Set<string>();
+      await db.insert(eventParticipants).values(
+        teams.flatMap((team) => {
+          const availableUsers = eventUsersList.filter(
+            (user) => !usedUserIds.has(user.id),
+          );
+          const teamSize =
+            team.id === teams[0].id ? 1 : Math.floor(Math.random() * 4) + 1;
+          const selectedUsers = availableUsers
+            .sort(() => 0.5 - Math.random())
+            .slice(0, Math.min(teamSize, availableUsers.length));
+
+          selectedUsers.forEach((user) => {
+            usedUserIds.add(user.id);
+          });
+
+          return selectedUsers.map((user, idx) => ({
+            eventId: event.id,
+            userId: user.id,
+            teamId: team.id,
+            isLeader: idx === 0,
+          }));
+        }),
+      );
+    }
   }
 }
 

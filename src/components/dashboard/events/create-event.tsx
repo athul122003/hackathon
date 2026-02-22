@@ -1,6 +1,7 @@
 "use client";
 import { format } from "date-fns";
 import { AlertCircle, CalendarIcon, Edit, Eye, Loader2 } from "lucide-react";
+import type { Session } from "next-auth";
 import type React from "react";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";

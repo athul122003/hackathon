@@ -1,6 +1,7 @@
 import {
   dashboardUserRoles,
   dashboardUsers,
+  eventOrganizers,
   eventParticipants,
   events,
   eventTeams,
@@ -25,4 +26,5 @@ export const query = {
   dashboardUserRoles: queryBuilder(dashboardUserRoles, "dashboardUserRoles"),
   siteSettings: queryBuilder(siteSettings, "siteSettings"),
   eventUsers: queryBuilder(eventUsers, "eventUsers"),
+  eventOrganizers: queryBuilder(eventOrganizers, "eventOrganizers"),
 };
