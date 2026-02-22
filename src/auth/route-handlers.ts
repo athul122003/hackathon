@@ -2,8 +2,8 @@ import type { NextRequest, NextResponse } from "next/server";
 import type { Session } from "next-auth";
 import type { RateLimiterRedis } from "rate-limiter-flexible";
 import { AppError } from "~/lib/errors/app-error";
-import { errorResponse } from "~/lib/response/error";
 import { getIdentifier, rateLimiters, withRateLimit } from "~/lib/rate-limit";
+import { errorResponse } from "~/lib/response/error";
 import { getCurrentEventUser, getCurrentUser } from "./get-current-user";
 
 type RouteHandler = (
@@ -29,7 +29,7 @@ export function protectedRoute(
     context: { params: Promise<Record<string, string>> },
   ) => {
     const limiter = customRateLimiter || rateLimiters.api;
-    const identifier = getIdentifier(request)
+    const identifier = getIdentifier(request);
     const rateLimitResponse = await withRateLimit(request, limiter, identifier);
     if (rateLimitResponse) return rateLimitResponse;
 
@@ -85,8 +85,12 @@ export function protectedEventRoute(
   ) => {
     try {
       const limiter = customRateLimiter || rateLimiters.api;
-      const identifier = getIdentifier(request)
-      const rateLimitResponse = await withRateLimit(request, limiter, identifier);
+      const identifier = getIdentifier(request);
+      const rateLimitResponse = await withRateLimit(
+        request,
+        limiter,
+        identifier,
+      );
       if (rateLimitResponse) return rateLimitResponse;
 
       const user = await getCurrentEventUser();
@@ -122,7 +126,11 @@ export function publicRoute(
       // try ip based cuz no user on public routes
       const limiter = customRateLimiter || rateLimiters.api;
       const identifier = getIdentifier(request);
-      const rateLimitResponse = await withRateLimit(request, limiter, identifier);
+      const rateLimitResponse = await withRateLimit(
+        request,
+        limiter,
+        identifier,
+      );
       if (rateLimitResponse) return rateLimitResponse;
 
       return await handler(request, context);

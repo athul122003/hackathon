@@ -6,24 +6,21 @@ import {
   getStatesStats,
 } from "~/db/services/dashboard-stats";
 
-export const GET = permissionProtected(
-  ["dashboard:access"],
-  async () => {
-    try {
-      const [quickStats, statesStats, collegeRankings] = await Promise.all([
-        getDashboardStats(),
-        getStatesStats(),
-        getCollegeRankingsBySelections(),
-      ]);
+export const GET = permissionProtected(["dashboard:access"], async () => {
+  try {
+    const [quickStats, statesStats, collegeRankings] = await Promise.all([
+      getDashboardStats(),
+      getStatesStats(),
+      getCollegeRankingsBySelections(),
+    ]);
 
-      return NextResponse.json({
-        quickStats,
-        statesStats,
-        collegeRankings,
-      });
-    } catch (error) {
-      console.error("Failed to fetch dashboard stats:", error);
-      return new NextResponse("Internal Server Error", { status: 500 });
-    }
-  },
-);
+    return NextResponse.json({
+      quickStats,
+      statesStats,
+      collegeRankings,
+    });
+  } catch (error) {
+    console.error("Failed to fetch dashboard stats:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+});

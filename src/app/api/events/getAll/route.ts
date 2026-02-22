@@ -3,7 +3,7 @@ import { auth } from "~/auth/event-config";
 import { publicRoute } from "~/auth/route-handlers";
 import { getAllEvents } from "~/db/data/events";
 
-export const GET = publicRoute(async (req: NextRequest) => {
+export const GET = publicRoute(async (_req: NextRequest) => {
   const session = await auth();
 
   if (session?.eventUser) {

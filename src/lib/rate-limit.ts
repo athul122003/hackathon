@@ -1,21 +1,24 @@
 import Redis from "ioredis";
-import { RateLimiterRedis } from "rate-limiter-flexible";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { RateLimiterRedis } from "rate-limiter-flexible";
 import { env } from "~/env";
 
 let redis: Redis | null = null;
 
 function getRedisClient(): Redis {
   if (!redis) {
-    redis = new Redis(env.REDIS_URL!);
+    if (!env.REDIS_URL) {
+      throw new Error("REDIS_URL is required to initialize rate limiting");
+    }
+    redis = new Redis(env.REDIS_URL);
   }
   return redis;
 }
 
 function createRateLimiters() {
   const redisClient = getRedisClient();
-  
+
   return {
     payment: new RateLimiterRedis({
       storeClient: redisClient,
@@ -65,28 +68,31 @@ export function getIdentifier(req: NextRequest, userId?: string): string {
   if (userId) {
     return `user:${userId}`;
   }
-  
+
   // Try to get IP from various headers
   const forwarded = req.headers.get("x-forwarded-for");
   const realIp = req.headers.get("x-real-ip");
   const ip = forwarded?.split(",")[0] || realIp || "unknown";
-  
+
   return `ip:${ip}`;
 }
 
 //wrapper for routes
 export async function withRateLimit(
-  req: NextRequest,
+  _req: NextRequest,
   limiter: RateLimiterRedis,
   identifier: string,
 ): Promise<NextResponse | null> {
   try {
-    const rateLimitRes = await limiter.consume(identifier);
+    const _rateLimitRes = await limiter.consume(identifier);
 
     return null;
   } catch (rateLimitError) {
-    const error = rateLimitError as { msBeforeNext?: number; remainingPoints?: number };
-    
+    const error = rateLimitError as {
+      msBeforeNext?: number;
+      remainingPoints?: number;
+    };
+
     const retryAfter = error.msBeforeNext
       ? Math.ceil(error.msBeforeNext / 1000)
       : 60;

@@ -1,6 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { publicRoute } from "~/auth/route-handlers";
-import { adminProtected, type RouteContext } from "~/auth/routes-wrapper";
+import { adminProtected } from "~/auth/routes-wrapper";
 import {
   createTrack,
   deleteTrack,
@@ -22,7 +22,6 @@ export const GET = publicRoute(async () => {
 
 export const POST = adminProtected(async (req: Request) => {
   try {
-
     const body = await req.json();
     const { name } = body;
 
@@ -42,7 +41,6 @@ export const POST = adminProtected(async (req: Request) => {
 
 export const DELETE = adminProtected(async (req: Request) => {
   try {
-
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
