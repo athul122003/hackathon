@@ -14,13 +14,22 @@ import { env } from "~/env";
 import { auth as pAuth } from "./config";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  session: {
-    strategy: "database",
-  },
   cookies: {
     sessionToken: {
-      name: "authjs.event.session-token",
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-event.session-token"
+          : "event.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
     },
+  },
+  session: {
+    strategy: "database",
   },
   basePath: "/api/auth/event",
   adapter: DrizzleAdapter(db, {

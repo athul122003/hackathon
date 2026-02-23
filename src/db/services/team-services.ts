@@ -38,7 +38,6 @@ export async function createTeam(userId: string, name: string) {
       .update(participants)
       .set({
         teamId: team.id,
-        isLeader: true,
       })
       .where(eq(participants.id, userId));
 
@@ -110,7 +109,12 @@ export async function leaveTeam(userId: string) {
     });
   }
 
-  if (user.isLeader) {
+  const team = await teamData.findById(user.teamId);
+  if (!team) {
+    throw new AppError("TEAM_NOT_FOUND", 404);
+  }
+
+  if (team.leaderId === user.id) {
     throw new AppError("LEADER_CANNOT_LEAVE", 400, {
       title: "Leader cannot leave",
       description:
@@ -118,7 +122,6 @@ export async function leaveTeam(userId: string) {
     });
   }
 
-  const team = await teamData.findById(user.teamId);
   if (team?.isCompleted) {
     throw new AppError("TEAM_COMPLETED", 400, {
       title: "Team is completed",
@@ -131,7 +134,6 @@ export async function leaveTeam(userId: string) {
       .update(participants)
       .set({
         teamId: null,
-        isLeader: false,
       })
       .where(eq(participants.id, userId));
 
@@ -150,16 +152,16 @@ export async function completeTeam(userId: string, teamId: string) {
     });
   }
 
-  if (!user.isLeader) {
+  const team = await teamData.findById(teamId);
+  if (!team) {
+    throw new AppError("TEAM_NOT_FOUND", 404);
+  }
+
+  if (team.leaderId !== user.id) {
     throw new AppError("NOT_LEADER", 403, {
       title: "Not a team leader",
       description: "Only team leaders can complete a team.",
     });
-  }
-
-  const team = await teamData.findById(teamId);
-  if (!team) {
-    throw new AppError("TEAM_NOT_FOUND", 404);
   }
 
   if (team.isCompleted) {
@@ -201,7 +203,12 @@ export async function deleteTeam(userId: string, teamId: string) {
   const user = await userData.findById(userId);
   if (!user) throw new AppError("USER_NOT_FOUND", 404);
 
-  if (!user.isLeader) {
+  const team = await teamData.findById(teamId);
+  if (!team) {
+    throw new AppError("TEAM_NOT_FOUND", 404);
+  }
+
+  if (team.leaderId !== user.id) {
     throw new AppError("NOT_LEADER", 403, {
       title: "Not a team leader",
       description: "Only team leaders can delete the team.",
@@ -215,9 +222,13 @@ export async function deleteTeam(userId: string, teamId: string) {
     });
   }
 
-  const team = await teamData.findById(teamId);
-  if (!team) {
-    throw new AppError("TEAM_NOT_FOUND", 404);
+  // just a check, useful in case someone clicks delete from dashboard
+  if (team.paymentStatus === "Paid") {
+    throw new AppError("TEAM_HAS_PAYMENT", 403, {
+      title: "Cannot delete team",
+      description:
+        "This team has completed payment and cannot be deleted. Please contact support if you need assistance.",
+    });
   }
 
   return db.transaction(async (tx) => {
@@ -225,7 +236,6 @@ export async function deleteTeam(userId: string, teamId: string) {
       .update(participants)
       .set({
         teamId: null,
-        isLeader: false,
       })
       .where(eq(participants.teamId, teamId));
 

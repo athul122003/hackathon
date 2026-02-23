@@ -1,12 +1,10 @@
 "use client";
 import { format } from "date-fns";
-import { AlertCircle, CalendarIcon, Edit, Eye, Loader2 } from "lucide-react";
+import { AlertCircle, CalendarIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import type { Session } from "next-auth";
 import type React from "react";
 import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import z from "zod";
 import { Alert, AlertDescription } from "~/components/ui/alert";
@@ -35,8 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
 import { eventSchema } from "~/lib/validation/event";
 import { EventDescription } from "./create-event";

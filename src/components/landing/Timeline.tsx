@@ -1,11 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Anchor, Scroll, Ship, Telescope, Trophy } from "lucide-react";
+import { useRef } from "react";
 
 const timelineEvents = [
   {
-    day: "16",
+    day: "23",
     month: "FEB",
     year: "2026",
     title: "The Voyage Begins",
@@ -15,7 +15,7 @@ const timelineEvents = [
     accentRgb: "250,204,21",
   },
   {
-    day: "16",
+    day: "15",
     month: "MAR",
     year: "2026",
     title: "Port Closed",
@@ -25,7 +25,7 @@ const timelineEvents = [
     accentRgb: "248,113,113",
   },
   {
-    day: "26",
+    day: "28",
     month: "MAR",
     year: "2026",
     title: "The Captain's Call",
@@ -63,30 +63,25 @@ export default function Timeline() {
     <section className="relative w-full py-4 md:py-1 overflow-hidden">
       {/* Ambient glows */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-900/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-900/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-900/5 rounded-full" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-900/5 rounded-full" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-24"
-        >
-          <h2 className="text-5xl md:text-7xl font-pirate font-black text-transparent bg-clip-text bg-linear-to-b from-cyan-200 to-blue-600 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] tracking-wider">
+        <div className="text-center mb-24">
+          <h2 className="text-5xl md:text-7xl font-pirate font-black text-transparent bg-clip-text bg-linear-to-b from-cyan-200 to-blue-600 tracking-wider">
             Voyage Logs
           </h2>
           <p className="mt-4 text-lg md:text-xl text-cyan-200/60 font-pirate tracking-wide">
             Chart your course through the treacherous waters
           </p>
-        </motion.div>
+        </div>
 
         <div className="relative max-w-5xl mx-auto">
           {/* Central rope — Desktop */}
           <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2">
             <div className="w-full h-full bg-linear-to-b from-transparent via-cyan-500/40 to-transparent" />
-            <div className="absolute inset-0 w-full bg-linear-to-b from-transparent via-cyan-400/20 to-transparent animate-pulse" />
+            <div className="absolute inset-0 w-full bg-linear-to-b from-transparent via-cyan-400/20 to-transparent md:animate-pulse" />
           </div>
 
           {/* Left rope — Mobile */}
@@ -115,12 +110,11 @@ function TimelineItem({
   const isEven = index % 2 === 0;
   const Icon = event.icon;
 
+  const ref = useRef(null);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ margin: "-80px" }}
-      transition={{ duration: 0.6, delay: index * 0.08 }}
+    <div
+      ref={ref}
       className={`relative flex items-center flex-row ${
         isEven ? "md:flex-row" : "md:flex-row-reverse"
       }`}
@@ -130,11 +124,13 @@ function TimelineItem({
       {/* Node on the rope */}
       <div className="absolute left-6 md:left-1/2 -translate-x-1/2 z-20 flex items-center justify-center">
         <div
-          className="absolute w-20 h-20 rounded-full opacity-10"
-          style={{ backgroundColor: event.accent, filter: "blur(20px)" }}
+          className="absolute w-24 h-24 rounded-full opacity-30"
+          style={{
+            background: `radial-gradient(circle, ${event.accent} 0%, transparent 70%)`,
+          }}
         />
         <div
-          className="w-14 h-14 rounded-full bg-black/80 border-2 backdrop-blur-xl flex items-center justify-center z-10 shadow-lg"
+          className="w-14 h-14 rounded-full bg-black/80 border-2 flex items-center justify-center z-10 shadow-lg"
           style={{ borderColor: event.accent }}
         >
           <Icon className="w-6 h-6" style={{ color: event.accent }} />
@@ -147,12 +143,7 @@ function TimelineItem({
           isEven ? "md:pr-14 md:pl-0" : "md:pl-14 md:pr-0"
         }`}
       >
-        <motion.div
-          initial={{ x: isEven ? -20 : 20, opacity: 0 }}
-          whileInView={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 + index * 0.08 }}
-          className="relative group"
-        >
+        <div className="relative group">
           {/* biome-ignore lint/a11y/noStaticElementInteractions: Hover effect only */}
           <div
             className="relative overflow-hidden bg-black/40 border rounded-2xl transition-all duration-500"
@@ -174,10 +165,10 @@ function TimelineItem({
               {/* Big day number */}
               <div className="relative shrink-0">
                 <span
-                  className={`${event.label ? "text-5xl md:text-6xl lg:text-7xl xl:text-8xl" : "text-7xl md:text-8xl"} font-black font-sans leading-none tracking-tight block`}
+                  className={`${event.label ? "text-5xl md:text-6xl lg:text-7xl xl:text-8xl" : "text-7xl md:text-8xl"} font-black font-pirata leading-none tracking-tight block`}
                   style={{
                     color: event.accent,
-                    textShadow: `0 0 40px rgba(${event.accentRgb}, 0.4), 0 0 80px rgba(${event.accentRgb}, 0.2)`,
+                    textShadow: `0 0 20px rgba(${event.accentRgb}, 0.2), 0 0 40px rgba(${event.accentRgb}, 0.1)`,
                   }}
                 >
                   {event.day}
@@ -198,13 +189,13 @@ function TimelineItem({
                 >
                   {event.month}
                 </span>
-                <span className="text-sm font-mono text-white/30 tracking-widest self-center md:self-auto min-w-0">
+                <span className="text-sm font-crimson text-white/30 tracking-widest self-center md:self-auto min-w-0">
                   {event.year}
                 </span>
                 {/* Optional label (e.g. "36 HOURS") */}
                 {event.label && (
                   <span
-                    className="text-[10px] font-mono font-bold tracking-[0.3em] px-2 py-0.5 rounded border md:mt-1"
+                    className="text-[10px] font-crimson font-bold tracking-[0.3em] px-2 py-0.5 rounded border md:mt-1"
                     style={{
                       color: event.accent,
                       borderColor: `rgba(${event.accentRgb}, 0.3)`,
@@ -227,7 +218,7 @@ function TimelineItem({
                 isEven ? "md:text-right" : "text-left"
               }`}
             >
-              <h3 className="text-xl md:text-2xl font-pirate font-bold text-white mb-2 drop-shadow-md">
+              <h3 className="text-xl md:text-2xl font-pirate font-bold text-white mb-2 md:drop-shadow-md">
                 {event.title}
               </h3>
               <p className="text-gray-400 text-sm md:text-base leading-relaxed">
@@ -236,7 +227,7 @@ function TimelineItem({
             </div>
 
             <div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
+              className="hidden md:block absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
               style={{
                 background: `radial-gradient(ellipse at ${
                   isEven ? "100% 30%" : "0% 30%"
@@ -244,8 +235,8 @@ function TimelineItem({
               }}
             />
           </div>
-        </motion.div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

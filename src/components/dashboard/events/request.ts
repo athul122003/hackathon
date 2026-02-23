@@ -1,6 +1,5 @@
 import { toast } from "sonner";
 import type z from "zod";
-import { eventTeams } from "~/db/schema";
 import type { TeamDetails } from "~/db/services/manage-event";
 import { apiFetch } from "~/lib/fetcher";
 import type { eventSchema } from "~/lib/validation/event";
@@ -112,7 +111,7 @@ export async function toggleAttendance(
     );
 
     return response;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }
@@ -131,7 +130,7 @@ export async function toggleParticipantAttendance(
     );
 
     return response;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

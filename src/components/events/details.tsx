@@ -28,7 +28,7 @@ export default function EventDetails({
               {/* Logo notch */}
               <div className="absolute -left-6 top-0 -skew-x-37 bg-[#0f1823] rounded-bl-3xl rounded-br-xl px-10 pb-1">
                 <Image
-                  src="/logos/glowingLogo.png"
+                  src="/logos/glowingLogo.webp"
                   alt="Hackfest Logo"
                   width={550}
                   height={550}

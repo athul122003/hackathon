@@ -2,24 +2,45 @@
 
 import { motion } from "framer-motion";
 import { Mail, Phone } from "lucide-react";
-import { useState } from "react";
 
 const organizers = [
   {
     name: "Sampanna",
     phone: "+91 83105 56184",
-  },
-  {
-    name: "Omkar G Prabhu",
-    phone: "+91 94488 46524",
+    role: "Organizer",
   },
   {
     name: "Paripoorna Bhat",
     phone: "+91 73386 52017",
+    role: "Organizer",
   },
   {
     name: "Rahul N Bangera",
     phone: "+91 80503 38576",
+    role: "Organizer",
+  },
+  {
+    name: "Omkar G Prabhu",
+    phone: "",
+    email: "nnm22is022@nmamit.in",
+    role: "Organizer",
+  },
+  {
+    name: "Nandan R Pai",
+    phone: "",
+    email: "nnm22am033@nmamit.in",
+    role: "Organizer",
+  },
+];
+
+const faculty = [
+  {
+    name: "Dr. Shashank Shetty",
+    role: "Faculty Coordinator",
+  },
+  {
+    name: "Dr. Puneeth R P",
+    role: "Faculty Coordinator",
   },
 ];
 
@@ -82,12 +103,32 @@ export default function OrganizerRing() {
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
       >
-        The Crew
+        Faculty Coordinators
       </motion.h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full px-4">
-        {organizers.map((org, i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 justify-center gap-6 w-full px-4 mb-24">
+        {faculty.map((org, i) => (
           <OrganizerCard key={org.name} organizer={org} index={i} />
+        ))}
+      </div>
+
+      <motion.h2
+        className="text-4xl md:text-6xl font-pirate text-center mb-16 text-cyan-200 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]"
+        initial={{ opacity: 0, scale: 0.9 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        Student Organizers
+      </motion.h2>
+
+      <div className="flex flex-wrap justify-center gap-6 w-full px-4">
+        {organizers.map((org, i) => (
+          <div
+            key={org.name}
+            className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+          >
+            <OrganizerCard organizer={org} index={i} />
+          </div>
         ))}
       </div>
     </div>
@@ -98,7 +139,7 @@ function OrganizerCard({
   organizer,
   index,
 }: {
-  organizer: any;
+  organizer: { name: string; phone?: string; role?: string; email?: string };
   index: number;
 }) {
   return (
@@ -112,17 +153,35 @@ function OrganizerCard({
         <h3 className="font-pirate text-3xl text-cyan-100 tracking-wide mb-2 group-hover:text-cyan-300 transition-colors">
           {organizer.name}
         </h3>
-        <p className="font-crimson text-cyan-400/80 font-bold tracking-widest text-sm uppercase mb-6">
+        <p className="font-crimson text-cyan-400/80 font-bold tracking-widest text-sm uppercase mb-2">
           {organizer.role}
         </p>
 
-        <a
-          href={`tel:${organizer.phone}`}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-200 hover:text-white hover:bg-cyan-900/60 hover:border-cyan-400 transition-all group-hover:scale-105"
-        >
-          <Phone className="w-4 h-4" />
-          <span className="font-mono text-lg">{organizer.phone}</span>
-        </a>
+        <div className="flex flex-col gap-2 items-center mt-4">
+          {organizer.phone && (
+            <a
+              href={`tel:${organizer.phone}`}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-200 hover:text-white hover:bg-cyan-900/60 hover:border-cyan-400 transition-all group-hover:scale-105"
+            >
+              <Phone className="w-4 h-4 shrink-0" />
+              <span className="font-crimson text-lg truncate max-w-[200px]">
+                {organizer.phone}
+              </span>
+            </a>
+          )}
+
+          {organizer.email && (
+            <a
+              href={`mailto:${organizer.email}`}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-cyan-200 hover:text-white hover:bg-cyan-900/60 hover:border-cyan-400 transition-all group-hover:scale-105"
+            >
+              <Mail className="w-4 h-4 shrink-0" />
+              <span className="font-crimson text-lg truncate max-w-[200px]">
+                {organizer.email}
+              </span>
+            </a>
+          )}
+        </div>
       </div>
 
       <div className="absolute inset-0 bg-linear-to-t from-cyan-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />

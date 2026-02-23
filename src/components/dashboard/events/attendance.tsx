@@ -8,8 +8,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useState } from "react";
 import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -20,7 +19,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "~/components/ui/dialog";
 import { Switch } from "~/components/ui/switch";
 import {

@@ -1,8 +1,10 @@
 "use client";
 
-import { Check, Loader2, Search } from "lucide-react";
+import FuzzySearch from "fuzzy-search";
+import { Check, Loader2, Phone, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
+import { Button } from "~/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -28,6 +30,8 @@ interface CollegeStepProps {
   loadingColleges: boolean;
 }
 
+/* remove select option on 1st row */
+
 export function CollegeStep({
   form,
   onNext,
@@ -38,18 +42,47 @@ export function CollegeStep({
 
   // 1. Watch the current selection
   const selectedCollegeId = form.watch("collegeId");
+  const formValues = form.getValues();
+
+  const [isOtherModalOpen, setIsOtherModalOpen] = useState(false);
+  const [otherCollegeName, setOtherCollegeName] = useState("");
+  const [isSubmittingOther, setIsSubmittingOther] = useState(false);
+  const [otherSuccess, setOtherSuccess] = useState(false);
+
+  const handleOtherSubmit = async () => {
+    if (!otherCollegeName.trim()) return;
+    setIsSubmittingOther(true);
+
+    try {
+      fetch("/api/colleges/other", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customCollegeName: otherCollegeName,
+          participantData: formValues,
+        }),
+      }).catch((error) =>
+        console.error("Error background submitting other college:", error),
+      );
+
+      setOtherSuccess(true);
+    } finally {
+      setIsSubmittingOther(false);
+    }
+  };
 
   // 2. Filter AND Sort
   const filteredColleges = useMemo(() => {
     // A. Filter by search term
     let result = colleges;
     if (search) {
-      const lowerSearch = search.toLowerCase();
-      result = colleges.filter(
-        (c) =>
-          (c.name?.toLowerCase() ?? "").includes(lowerSearch) ||
-          (c.state?.toLowerCase() ?? "").includes(lowerSearch),
-      );
+      const searcher = new FuzzySearch(colleges, ["name", "state"], {
+        caseSensitive: false,
+        sort: true,
+      });
+      result = searcher.search(search);
     }
 
     // B. Sort: Move selected item to the top
@@ -61,7 +94,7 @@ export function CollegeStep({
   }, [search, colleges, selectedCollegeId]);
 
   return (
-    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="w-full flex flex-col font-pirate items-center animate-in fade-in slide-in-from-bottom-8 duration-700">
       <FormField
         control={form.control}
         name="collegeId"
@@ -72,94 +105,207 @@ export function CollegeStep({
               <FormLabel className="text-3xl md:text-5xl font-pirate font-bold text-white drop-shadow-sm leading-tight text-center tracking-wide">
                 Select your College
               </FormLabel>
-              <p className="text-white/60 text-lg">
+              <p className="text-white/80 text-lg font-crimson">
                 Type to search, click to select
               </p>
             </div>
 
             {/* Search Input */}
             <FormControl>
-              <div className="relative">
+              <div className="relative flex items-center">
                 {/* Fixed alignment for the search icon */}
-                <Search className="absolute left-2 top-4 -translate-y-1/2 h-6 w-6 text-white/50" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-white" />
                 <Input
-                  autoFocus
-                  placeholder="Type to search..."
+                  placeholder="Search..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="
-                    block w-full 
-                    pl-10
-                    bg-transparent 
-                    border-0 border-b-2 border-white/20 
-                    rounded-none 
-                    text-2xl md:text-3xl font-light text-white 
-                    placeholder:text-white/30 
-                    focus-visible:ring-0 focus-visible:border-white 
-                    focus-visible:outline-none 
-                    py-4 mb-8
-                    transition-all duration-300
+                    w-full 
+                    h-16            {/* Explicit height instead of padding */}
+                    rounded-xl
+                    border border-white/10
+                    bg-white/90
+                    px-4 pl-12      {/* Removed py-4 */}
+                    text-xl font-medium font-pirate text-white
+                    placeholder:text-white/80
+                    leading-none
+                    focus-visible:ring-1 focus-visible:ring-white
+                    focus-visible:border-white
+                    transition-all duration-200
                   "
                 />
               </div>
             </FormControl>
 
             {/* List Container */}
-            <div className="max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar space-y-2">
+            <div className="max-h-[40vh] overflow-y-auto pr-2 px-3 py-2 -mx-3 custom-scrollbar space-y-2 relative">
               {loadingColleges ? (
-                <div className="flex flex-col items-center justify-center py-12 text-white/60 gap-4">
-                  <Loader2 className="h-8 w-8 animate-spin" />
-                  <p>Loading colleges...</p>
+                <div className="flex flex-col items-center justify-center py-12 text-[#10569c]/70 gap-4">
+                  <Loader2 className="h-8 w-8 animate-spin text-[#10569c]" />
+                  <p className="text-lg font-medium">Loading colleges...</p>
                 </div>
-              ) : filteredColleges.length > 0 ? (
-                filteredColleges.map((college) => (
+              ) : (
+                <>
+                  {filteredColleges.length > 0 ? (
+                    filteredColleges.map((college) => (
+                      <button
+                        key={college.id}
+                        type="button"
+                        onClick={() => {
+                          field.onChange(college.id);
+                          onNext();
+                        }}
+                        className={cn(
+                          "group flex flex-col w-full min-h-16 justify-center rounded-xl border border-white/10 bg-white/90 px-4 py-3 text-left transition-all duration-200 hover:bg-white/80 hover:border-white/30 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:scale-[1.02]",
+                          field.value === college.id &&
+                            "bg-white border-white/50 sticky top-0 z-10 backdrop-blur-md shadow-lg",
+                        )}
+                      >
+                        <div className="flex w-full items-start justify-between gap-4">
+                          <span className="text-xl font-bold font-crimson text-[#10569c] leading-tight flex-1">
+                            {college.name ?? "Unnamed College"}
+                          </span>
+                          <div className="flex items-center gap-3 shrink-0 pt-0.5">
+                            {field.value === college.id ? (
+                              <Check className="h-5 w-5 text-[#10569c] animate-in zoom-in" />
+                            ) : (
+                              <span className="hidden group-hover:block text-xs font-bold uppercase tracking-widest text-[#10569c] bg-white px-2 py-1 rounded shadow-sm">
+                                Select
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex w-full justify-end mt-1">
+                          <span className="text-sm text-[#10569c]/60 leading-none font-crimson font-medium">
+                            {college.state}
+                          </span>
+                        </div>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-white/80 italic border bg-[#10569c]/30 border-dashed border-white/10 rounded-xl">
+                      No college found matching "{search}"
+                    </div>
+                  )}
+
                   <button
-                    key={college.id}
                     type="button"
-                    onClick={() => {
-                      field.onChange(college.id);
-                      onNext();
-                    }}
-                    className={cn(
-                      "group flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 text-left transition-all hover:bg-white/20 hover:border-white/30 active:scale-[0.98]",
-                      // Highlight & Sticky logic for selected item
-                      field.value === college.id &&
-                        "bg-white/20 border-white/50 ring-1 ring-white/50 sticky top-0 z-10 backdrop-blur-md shadow-lg",
-                    )}
+                    onClick={() => setIsOtherModalOpen(true)}
+                    className="group flex w-full min-h-16 items-center justify-between rounded-xl border border-dashed border-white/40 bg-white/90 px-4 text-left transition-all duration-200 hover:bg-white/80 hover:border-white/60 active:scale-[0.98] mt-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                   >
                     <div className="flex flex-col gap-1">
-                      {/* College Name */}
-                      <span className="text-xl font-medium text-white group-hover:pl-2 transition-all duration-300">
-                        {college.name ?? "Unnamed College"}
+                      <span className="text-xl font-medium font-pirate text-[#10569c] leading-none">
+                        Other (Not listed)
                       </span>
-                      {/* State Subtitle */}
-                      <span className="text-sm text-white/50 group-hover:pl-2 transition-all duration-300">
-                        {college.state}
+                      <span className="text-sm text-[#10569c]/70 leading-none">
+                        Click here to enter your college manually
                       </span>
                     </div>
-
-                    {/* Selection UI */}
                     <div className="flex items-center gap-3">
-                      {field.value === college.id && (
-                        <Check className="h-5 w-5 text-white animate-in zoom-in" />
-                      )}
-                      <span className="hidden group-hover:block text-xs font-bold uppercase tracking-widest text-white/50 bg-white/10 px-2 py-1 rounded">
-                        Select
+                      <span className="hidden group-hover:block text-xs font-bold uppercase tracking-widest text-white bg-[#10569c] px-2 py-1 rounded shadow-sm">
+                        Request
                       </span>
                     </div>
                   </button>
-                ))
-              ) : (
-                <div className="text-center py-8 text-white/40 italic border border-dashed border-white/10 rounded-xl">
-                  No college found matching "{search}"
-                </div>
+                </>
               )}
             </div>
 
-            <FormMessage className="text-center text-red-300" />
+            <FormMessage className="text-[#e54d2e] text-2xl" />
           </FormItem>
         )}
       />
+
+      {isOtherModalOpen && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md bg-[#10569c] border border-white/20 rounded-2xl shadow-2xl p-8 animate-in zoom-in-95 duration-200">
+            {otherSuccess ? (
+              <div className="flex flex-col items-center text-center space-y-4">
+                <h3 className="text-3xl mt-4 font-pirate text-white">
+                  Almost There!
+                </h3>
+                <p className="text-white/90 text-sm font-crimson">
+                  To get your college added to the list immediately, please
+                  contact:
+                </p>
+                <div className="flex flex-col gap-3 w-full mt-2">
+                  <a
+                    href="tel:+919901394465"
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-crimson text-lg transition-all"
+                  >
+                    <Phone className="w-5 h-5" />
+                    Anush: +91 99013 94465
+                  </a>
+                  {/* <a
+                    href="tel:+918050338576"
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-crimson text-lg transition-all"
+                  >
+                    <Phone className="w-5 h-5" />
+                    Rahul: +91 80503 38576
+                  </a> */}
+                </div>
+                <div className="mt-4">
+                  <Button
+                    type="button"
+                    onClick={() => setIsOtherModalOpen(false)}
+                    className="w-full bg-white text-[#10569c] hover:bg-white/90 text-lg font-pirate h-10 rounded-xl"
+                  >
+                    Okay
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col space-y-6">
+                <div className="text-center space-y-2">
+                  <h3 className="text-3xl font-pirate text-white">
+                    Add College
+                  </h3>
+                  <p className="text-white/80 text-sm">
+                    Enter the full name of your college
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <Input
+                    placeholder="Enter your college name"
+                    value={otherCollegeName}
+                    onChange={(e) => setOtherCollegeName(e.target.value)}
+                    className="
+                      w-full h-14 rounded-xl border border-white/20 bg-white/10
+                      px-4 text-lg font-pirate text-white placeholder:text-white/50
+                      focus-visible:ring-2 focus-visible:ring-white focus-visible:border-transparent
+                    "
+                  />
+
+                  <div className="flex gap-3 pt-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setIsOtherModalOpen(false)}
+                      disabled={isSubmittingOther}
+                      className="flex-1 text-white hover:bg-white/10"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleOtherSubmit}
+                      disabled={!otherCollegeName.trim() || isSubmittingOther}
+                      className="flex-1 bg-white text-[#10569c] hover:bg-white/90"
+                    >
+                      {isSubmittingOther ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        "Continue"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

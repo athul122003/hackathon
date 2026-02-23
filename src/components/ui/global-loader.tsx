@@ -78,7 +78,7 @@ export function GlobalLoader() {
           >
             <div className="relative w-16 h-16 md:w-20 md:h-20 opacity-90 hover:opacity-100 transition-opacity">
               <Image
-                src="/logos/glowingLogo.png"
+                src="/logos/logowithglow.webp"
                 alt="Logo"
                 fill
                 className="object-contain drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]"
@@ -93,10 +93,10 @@ export function GlobalLoader() {
           >
             {/* Percentage Text */}
             <div className="text-right">
-              <span className="block text-2xl font-bold font-mono tabular-nums leading-none">
+              <span className="block text-2xl font-bold font-crimson tabular-nums leading-none">
                 {Math.round(progress)}%
               </span>
-              <span className="text-[10px] text-amber-500/60 font-mono tracking-widest uppercase">
+              <span className="text-[10px] text-amber-500/60 font-crimson tracking-widest uppercase">
                 Loading Assets
               </span>
             </div>
@@ -122,10 +122,10 @@ export function GlobalLoader() {
 
           {/* OPTIONAL: Bottom Left decorative coordinates/version number */}
           <motion.div
-            className="absolute bottom-10 left-10 hidden md:block text-xs font-mono text-neutral-600"
+            className="absolute bottom-10 left-10 hidden md:block text-xs font-crimson text-neutral-600"
             exit={{ opacity: 0, transition: { duration: 0.3 } }}
           >
-            LAT: 24.55.01 N <br /> LON: 78.12.00 W
+            LAT: 18°18'02.0"N <br /> LON: 64°49'32.2"W
           </motion.div>
         </motion.div>
       )}

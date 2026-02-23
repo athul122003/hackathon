@@ -1,5 +1,5 @@
 {
-  "id": "4a1779a1-7aef-47fd-acb5-a20bdd146d57",
+  "id": "aeb27096-2194-4072-a54d-b0af72840819",
   "prevId": "643e5cc9-451b-4fac-8ade-808f24cd8882",
   "version": "7",
   "dialect": "postgresql",
@@ -1008,20 +1008,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "state": {
-          "name": "state",
-          "type": "state",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "gender": {
-          "name": "gender",
-          "type": "gender",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
         "college_id": {
           "name": "college_id",
           "type": "text",
@@ -1305,13 +1291,6 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": false
-        },
-        "isLeader": {
-          "name": "isLeader",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
         },
         "is_registration_complete": {
           "name": "is_registration_complete",
@@ -2033,13 +2012,6 @@
         },
         "registrations_open": {
           "name": "registrations_open",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "event_registrations_open": {
-          "name": "event_registrations_open",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,

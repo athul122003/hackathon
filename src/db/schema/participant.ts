@@ -9,6 +9,7 @@ export const participants = pgTable(
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
     name: text("name"),
+    alias: text("alias"),
     email: text("email").unique(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
@@ -16,7 +17,6 @@ export const participants = pgTable(
     state: stateEnum("state"),
     course: courseEnum("course"),
     gender: genderEnum("gender"),
-    isLeader: boolean("isLeader").notNull().default(false),
     isRegistrationComplete: boolean("is_registration_complete")
       .notNull()
       .default(false),

@@ -1,20 +1,14 @@
 import { eq } from "drizzle-orm";
 import type { NextResponse } from "next/server";
 import type { Session } from "next-auth";
-import z, { date } from "zod";
 import { query } from "~/db/data";
 import { AppError } from "~/lib/errors/app-error";
 import { errorResponse } from "~/lib/response/error";
 import { successResponse } from "~/lib/response/success";
 import { eventSchema } from "~/lib/validation/event";
 import db from "..";
-import { type eventStatusEnum, paymentStatusEnum } from "../enum";
-import {
-  eventOrganizers,
-  eventParticipants,
-  events,
-  eventTeams,
-} from "../schema";
+import type { eventStatusEnum } from "../enum";
+import { eventParticipants, events, eventTeams } from "../schema";
 
 export type TeamDetails = {
   id: string;
@@ -138,7 +132,7 @@ export async function getEventById(id: string | null): Promise<NextResponse> {
     }
 
     return successResponse(event, { toast: false });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(
       new AppError("Failed to fetch event.", 500, {
         toast: true,
@@ -169,7 +163,7 @@ export async function getEventTeams(
       .orderBy(eventTeams.attended, eventTeams.name);
 
     return successResponse(result, { toast: false });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(
       new AppError("Failed to fetch event teams.", 500, {
         toast: true,
@@ -251,7 +245,7 @@ export async function getTeamDetails(
     return successResponse(data, {
       toast: false,
     });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(
       new AppError("Failed to fetch team details.", 500, {
         toast: true,
@@ -295,7 +289,7 @@ export async function deleteEventById(
       title: "Event Deleted",
       description: "The event has been deleted successfully.",
     });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(
       new AppError("Failed to delete event.", 500, {
         toast: true,
@@ -345,7 +339,7 @@ export async function createNewEvent(data: any): Promise<NextResponse> {
       title: "Event Created",
       description: "The event has been created successfully.",
     });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(
       new AppError("Failed to create event.", 500, {
         toast: true,
@@ -391,7 +385,7 @@ export async function updateEventStatus(
       title: "Event Status Updated",
       description: "The event status has been updated successfully.",
     });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(
       new AppError("Failed to update event status.", 500, {
         toast: true,
@@ -472,7 +466,7 @@ export async function updateEventById(
       title: "Event Updated",
       description: "The event has been updated successfully.",
     });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(
       new AppError("Failed to update event.", 500, {
         toast: true,
@@ -501,7 +495,7 @@ export async function toggleAttendanceById(
     const result = await query.eventTeams.update(teamId, {
       attended: attended,
     });
-    const participants = await db
+    await db
       .update(eventParticipants)
       .set({ attended: attended })
       .where(eq(eventParticipants.teamId, teamId))
@@ -522,7 +516,7 @@ export async function toggleAttendanceById(
       title: "Attendance Updated",
       // description: "The attendance status has been updated successfully.",
     });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(
       new AppError("Failed to update attendance.", 500, {
         toast: true,
@@ -567,7 +561,7 @@ export async function toggleParticipantAttendanceById(
       title: "Attendance Updated",
       // description: "The attendance status has been updated successfully.",
     });
-  } catch (error) {
+  } catch (_error) {
     return errorResponse(
       new AppError("Failed to update attendance.", 500, {
         toast: true,

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import {
   FormControl,
@@ -18,8 +19,14 @@ interface PhoneStepProps {
 }
 
 export function PhoneStep({ form, onNext }: PhoneStepProps) {
+  useEffect(() => {
+    if (window.matchMedia("(pointer: fine)").matches) {
+      setTimeout(() => form.setFocus("phone"), 50);
+    }
+  }, [form]);
+
   return (
-    <div className="w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-8 duration-700">
+    <div className="w-full flex flex-col items-center animate-in font-pirate fade-in slide-in-from-bottom-8 duration-700">
       <FormField
         control={form.control}
         name="phone"
@@ -33,9 +40,9 @@ export function PhoneStep({ form, onNext }: PhoneStepProps) {
             <FormControl>
               {/* Minimalist Underline Input */}
               <Input
-                autoFocus
                 type="tel" // Triggers numeric keyboard on mobile
                 placeholder="e.g. 9876543210"
+                maxLength={10}
                 className="
                   block w-full 
                   bg-transparent 
@@ -43,21 +50,26 @@ export function PhoneStep({ form, onNext }: PhoneStepProps) {
                   rounded-none 
                   text-center text-3xl md:text-5xl font-light text-white 
                   placeholder:text-white/30 
-                  focus-visible:ring-0 focus-visible:border-white 
+                  focus-visible:ring-0 focus-visible:border-white
                   focus-visible:outline-none 
                   h-auto py-6 
                   transition-all duration-300
                   shadow-none
+                  font-crimson
                 "
                 {...field}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[^0-9]/g, "");
+                  field.onChange(val);
+                }}
                 onKeyDown={(e) => e.key === "Enter" && onNext()}
               />
             </FormControl>
 
-            <FormMessage className="text-red-300 text-lg" />
+            <FormMessage className="text-[#e54d2e] text-2xl font-crimson" />
 
             {/* "Press Enter" Hint */}
-            <div className="flex items-center justify-center gap-2 text-white/50 text-sm mt-4 animate-pulse">
+            <div className="flex items-center font-pirate text-xl justify-center gap-2 text-white/80 mt-4 animate-pulse">
               <span>
                 Press <span className="font-bold text-white">Enter ↵</span>
               </span>
