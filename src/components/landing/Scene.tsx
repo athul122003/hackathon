@@ -418,7 +418,7 @@ function LandingContent({
 
               {/* The number */}
               <span className="text-sm md:text-lg font-crimson font-bold tracking-[0.5em] text-yellow-400/60 uppercase mb-2">
-                Worth Over
+                Total Prize Pool
               </span>
               <span
                 className="text-7xl md:text-[12rem] font-black font-pirata leading-none tracking-tight"
@@ -430,9 +430,6 @@ function LandingContent({
               >
                 ₹4,00,000
                 <span className="text-yellow-400/70">+</span>
-              </span>
-              <span className="text-lg md:text-2xl font-pirate text-yellow-300/50 tracking-[0.3em] mt-2">
-                WORTH PRIZE POOL
               </span>
 
               <Link href="/timeline" passHref>
