@@ -21,7 +21,7 @@ interface CloudinaryUploadProps {
 export function CloudinaryUpload({
   onUpload,
   uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
-  maxFileSize = 10000000, // 10MB default
+  maxFileSize = 5000000, // 5MB default
   allowedFormats = ["jpg", "png", "jpeg", "webp"],
   label = "Upload Image",
   folder,

@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Send, Trash2, Upload } from "lucide-react";
+import { Download, Loader2, Send, Trash2, Upload } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -256,8 +256,23 @@ export function TeamSubmissionForm({
           Upload your presentation and select a track to submit your idea.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6 pt-6">
-        {/* <div className="space-y-2">
+      <CardContent className="space-y-6 pt-2">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/10 p-4 rounded-xl border border-white/20 gap-4">
+          <div>
+            <h3 className="text-white font-bold text-lg font-pirate tracking-wide">Presentation Template</h3>
+            <p className="text-white/80 text-sm font-crimson font-medium">Download the official template to prepare your idea submission.</p>
+          </div>
+          <a
+            href="/pptTemplate/Hackfest26-ppt-template.pptx"
+            download
+            className="flex items-center justify-center gap-2 bg-white text-[#10569c] w-full sm:w-auto px-4 py-2 rounded-lg font-bold transition-all shadow-md hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <Download className="h-4 w-4" />
+            Download Template
+          </a>
+        </div>
+
+        <div className="space-y-2">
           <label
             htmlFor="file-upload"
             className="text-sm font-bold text-white/90 uppercase tracking-wider leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -313,7 +328,7 @@ export function TeamSubmissionForm({
             )}
           </div>
           <p className="text-xs font-medium font-crimson text-white/70">
-            Max file size: 10MB. Format: PDF only.
+            Max file size: 5MB. Format: PDF only.
           </p>
         </div>
 
@@ -344,15 +359,9 @@ export function TeamSubmissionForm({
               ))}
             </SelectContent>
           </Select>
-        </div> */}
-        <div className="flex w-full justify-center items-center">
-
-          <p className="text-white/80 font-crimson text-base font-medium">
-            Idea Submission is going to start by tonight. Stay tuned!
-          </p>
         </div>
       </CardContent>
-      {/* <CardFooter className="bg-white/5 border-t border-white/10 px-6 py-4 rounded-b-xl">
+      <CardFooter className="bg-white/5 border-t border-white/10 px-6 py-4 rounded-b-xl">
         <Button
           onClick={handleSubmit}
           disabled={!selectedFile || !selectedTrack || isSubmitting}
@@ -360,7 +369,7 @@ export function TeamSubmissionForm({
         >
           {getButtonContent()}
         </Button>
-      </CardFooter> */}
+      </CardFooter>
 
       <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <AlertDialogContent className="bg-[#0a3d6e] border-white/20 text-white rounded-xl shadow-2xl">
