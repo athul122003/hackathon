@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "~/auth/config";
 import { RegisterForm } from "~/components/forms/register-form";
 import * as userData from "~/db/data/participant";
+
+export const metadata: Metadata = {
+  title: "Register",
+  description: "Register for Hackfest'26",
+};
 
 export default async function RegisterPage() {
   const session = await auth();

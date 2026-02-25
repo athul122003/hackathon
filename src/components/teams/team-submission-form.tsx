@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Send, Trash2, Upload } from "lucide-react";
+import { Download, Loader2, Send, Trash2, Upload } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -256,7 +256,22 @@ export function TeamSubmissionForm({
           Upload your presentation and select a track to submit your idea.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6 pt-6">
+      <CardContent className="space-y-6 pt-2">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/10 p-4 rounded-xl border border-white/20 gap-4">
+          <div>
+            <h3 className="text-white font-bold text-lg font-pirate tracking-wide">Presentation Template</h3>
+            <p className="text-white/80 text-sm font-crimson font-medium">Download the official template to prepare your idea submission.</p>
+          </div>
+          <a
+            href="/pptTemplate/Hackfest26-ppt-template.pptx"
+            download
+            className="flex items-center justify-center gap-2 bg-white text-[#10569c] w-full sm:w-auto px-4 py-2 rounded-lg font-bold transition-all shadow-md hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <Download className="h-4 w-4" />
+            Download Template
+          </a>
+        </div>
+
         <div className="space-y-2">
           <label
             htmlFor="file-upload"
@@ -313,7 +328,7 @@ export function TeamSubmissionForm({
             )}
           </div>
           <p className="text-xs font-medium font-crimson text-white/70">
-            Max file size: 10MB. Format: PDF only.
+            Max file size: 5MB. Format: PDF only.
           </p>
         </div>
 

@@ -7,6 +7,7 @@ import { DayNightProvider } from "~/components/providers/useDayNight";
 import { GlobalLoader } from "~/components/ui/global-loader";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import "./globals.css";
+import { JsonLd } from "~/components/ui/json-ld";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -26,9 +27,50 @@ const crimson = Crimson_Text({
 });
 
 export const metadata: Metadata = {
-  title: "Hackfest",
+  metadataBase: new URL("https://hackfest.dev"),
+  title: {
+    template: "%s | Hackfest",
+    default: "Hackfest",
+  },
   description:
     "Hackfest is a 36-hour National Level Hackathon organised by Finite Loop Club, NMAMIT, Nitte",
+  keywords: [
+    "Hackfest",
+    "Hackfest 26",
+    "Karnataka Hackathons",
+    "Hackathon",
+    "Finite Loop Club",
+    "NMAMIT",
+    "Nitte",
+  ],
+  authors: [{ name: "Finite Loop Club" }],
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://hackfest.dev",
+    title: "Hackfest",
+    description:
+      "Hackfest is a 36-hour National Level Hackathon organised by Finite Loop Club, NMAMIT, Nitte",
+    siteName: "Hackfest",
+  },
+  twitter: {
+    images: ["/logos/hflogowithbg.webp"],
+    card: "summary_large_image",
+    title: "Hackfest",
+    description:
+      "Hackfest is a 36-hour National Level Hackathon organised by Finite Loop Club, NMAMIT, Nitte",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-96x96.png", type: "image/png", sizes: "96x96" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
@@ -48,6 +90,7 @@ export default function RootLayout({
             {children}
             <ThemeToggle />
             <ToasterWrapper />
+            <JsonLd />
           </DayNightProvider>
         </SessionProvider>
         {/* Umami Analytics */}

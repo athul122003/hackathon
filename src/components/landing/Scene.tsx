@@ -11,6 +11,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useDayNight } from "~/components/providers/useDayNight";
 import BrochureDownload from "./Brochure";
+import FAQSection from "./FAQ";
 import Footer from "./Footer";
 import { Navbar } from "./Navbar";
 import { TransitionMaterial } from "./shader/TransitionMaterial";
@@ -238,7 +239,7 @@ function FixedHero({
                   className="text-xl xl:text-3xl font-crimson font-bold italic text-[#d7ccc8] tracking-widest drop-shadow-md opacity-90"
                   style={{ transform: "rotate(1deg)" }}
                 >
-                  Embark on a Voyage of Innovation
+                  Codequest: The Grand Voyage
                 </p>
               </div>
             </div>
@@ -418,7 +419,7 @@ function LandingContent({
 
               {/* The number */}
               <span className="text-sm md:text-lg font-crimson font-bold tracking-[0.5em] text-yellow-400/60 uppercase mb-2">
-                Total Prize Pool
+                Worth
               </span>
               <span
                 className="text-7xl md:text-[12rem] font-black font-pirata leading-none tracking-tight"
@@ -448,9 +449,10 @@ function LandingContent({
             </div>
           </div>
         </section>
-      </div>
+        <FAQSection />
 
-      <Footer overlayNeeded={true} />
+        <Footer overlayNeeded={true} />
+      </div>
     </div>
   );
 }
@@ -614,6 +616,8 @@ export default function Scene({ session }: { session: Session | null }) {
         gl={{ antialias: true, alpha: false }}
         dpr={[1, 1.5]}
         camera={{ position: [0, 0, 5] }}
+        eventSource={scrollContainerRef as React.RefObject<HTMLElement>}
+        eventPrefix="client"
       >
         <Suspense fallback={null}>
           <LenisUpdater
@@ -662,6 +666,8 @@ export default function Scene({ session }: { session: Session | null }) {
           left: 0;
           width: 100vw !important;
           height: 100vh !important;
+          pointer-events: none !important;
+          z-index: 0 !important;
         }
       `}</style>
     </div>

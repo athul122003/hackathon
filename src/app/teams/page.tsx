@@ -1,4 +1,5 @@
 import { Home } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "~/auth/config";
@@ -7,6 +8,12 @@ import { TeamPageLayout } from "~/components/teams/TeamPageLayout";
 import { TeamForm } from "~/components/teams/team-form";
 import { Button } from "~/components/ui/button";
 import * as userData from "~/db/data/participant";
+
+export const metadata: Metadata = {
+  title: "Teams",
+  description:
+    "Manage your team for Hackfest. Create a new team or join an existing one.",
+};
 
 export default async function TeamsPage() {
   const session = await auth();
@@ -52,10 +59,10 @@ export default async function TeamsPage() {
 
           {/* Text Content */}
           <div className="space-y-2 text-center md:flex-1 md:text-left md:pt-1">
-            <h1 className="text-3xl font-pirate font-bold drop-shadow-sm md:text-4xl tracking-wide drop-shadow-black/50">
+            <h1 className="text-3xl font-pirate font-bold drop-shadow-sm md:text-4xl tracking-wide">
               Team Management
             </h1>
-            <p className="text-white font-crimson text-base drop-shadow-black/50 md:text-xl leading-relaxed font-medium">
+            <p className="font-crimson text-base md:text-xl leading-relaxed font-medium opacity-90">
               Create a new team or join an existing one.
             </p>
           </div>
