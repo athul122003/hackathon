@@ -1,4 +1,4 @@
-import { count, countDistinct, desc, eq, isNotNull } from "drizzle-orm";
+import { and, count, countDistinct, desc, eq, isNotNull } from "drizzle-orm";
 import { AppError } from "~/lib/errors/app-error";
 import db from "..";
 import { colleges, participants, teams } from "../schema";
@@ -36,6 +36,13 @@ export async function getDashboardStats() {
       .where(eq(teams.isCompleted, true));
     const confirmedTeams = confirmedTeamsResult?.count ?? 0;
 
+    const [confirmedParticipantsResult] = await db
+      .select({ count: count() })
+      .from(participants)
+      .innerJoin(teams, eq(participants.teamId, teams.id))
+      .where(and(isNotNull(participants.teamId), eq(teams.isCompleted, true)));
+    const confirmedParticipants = confirmedParticipantsResult?.count ?? 0;
+
     const [ideaSubmissionsResult] = await db
       .select({ count: count() })
       .from(ideaSubmission);
@@ -47,6 +54,7 @@ export async function getDashboardStats() {
       uniqueColleges,
       uniqueStates,
       confirmedTeams,
+      confirmedParticipants,
       ideaSubmissions,
     };
   } catch (error) {
@@ -60,7 +68,7 @@ export async function getStatesStats() {
     const statesStatsResult = await db
       .select({
         state: colleges.state,
-        totalTeams: count(teams.id),
+        totalTeams: countDistinct(teams.id),
         totalParticipants: count(participants.id),
       })
       .from(colleges)
@@ -68,7 +76,7 @@ export async function getStatesStats() {
       .innerJoin(teams, eq(participants.teamId, teams.id))
       .where(eq(teams.isCompleted, true))
       .groupBy(colleges.state)
-      .orderBy(desc(count(teams.id)));
+      .orderBy(desc(countDistinct(teams.id)));
 
     return statesStatsResult;
   } catch (error) {
@@ -82,7 +90,7 @@ export async function getCollegeRankingsBySelections() {
     const collegeRankingsResult = await db
       .select({
         college: colleges.name,
-        totalTeams: count(teams.id),
+        totalTeams: countDistinct(teams.id),
         totalParticipants: count(participants.id),
       })
       .from(colleges)
