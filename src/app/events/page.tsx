@@ -1,11 +1,14 @@
-import { auth } from "~/auth/event-config";
-import Events from "~/components/events/eventLayout";
+import { Suspense } from "react";
+import Events from "~/components/events/layout";
 
-export default async function EventsPage() {
-  const session = await auth();
+export default async function EventsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   return (
-    <section>
-      <Events session={session} />
-    </section>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Events searchParams={searchParams} />
+    </Suspense>
   );
 }

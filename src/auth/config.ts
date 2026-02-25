@@ -17,6 +17,10 @@ declare module "next-auth" {
       id: string;
       isRegistrationComplete: boolean;
     } & DefaultSession["user"];
+    eventUser?: DefaultSession["user"] & {
+      id: string;
+      collegeId: string | null;
+    };
   }
 }
 

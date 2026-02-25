@@ -212,6 +212,7 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
     });
 
     localStorage.removeItem("hackfest_register_progress");
+    window.scrollTo(0, 0);
     router.push("/teams");
     router.refresh();
   }

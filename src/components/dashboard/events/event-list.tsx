@@ -1,6 +1,7 @@
 "use client";
-import { Edit2, MoreVertical, Trash2 } from "lucide-react";
+import { Edit2, Flag, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import type { Session } from "next-auth";
 import { useEffect, useState } from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -28,6 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { hasPermission } from "~/lib/auth/permissions";
 import {
   deleteEvent,
   type EventData,
@@ -38,17 +40,22 @@ import {
 async function getData(
   setLoading: (loading: boolean) => void,
   setEvents: (events: EventData[]) => void,
+  assigned: boolean,
 ) {
   setLoading(true);
-  const data = await fetchAllEvents();
+  const data = await fetchAllEvents(assigned);
   setEvents(data);
   setLoading(false);
 }
 
 export default function EventListTab({
   setTab,
+  assigned = true,
+  session,
 }: {
   setTab: (tab: string) => void;
+  assigned: boolean;
+  session: Session;
 }) {
   const [events, setEvents] = useState<EventData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,8 +68,8 @@ export default function EventListTab({
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
   useEffect(() => {
-    getData(setLoading, setEvents);
-  }, []);
+    getData(setLoading, setEvents, assigned);
+  }, [assigned]);
 
   useEffect(() => {
     if (!deleteDialogOpen) {
@@ -74,6 +81,19 @@ export default function EventListTab({
   const handleEdit = (event: EventData) => {
     router.push(`/dashboard?id=${event.id}`);
     setTab("updateEvent");
+  };
+
+  const handleStatusEdit = (event: EventData) => {
+    if (!hasPermission(session.dashboardUser, "event:update")) {
+      return;
+    }
+    setSelectedEvent(event);
+    setNewStatus(event.status);
+    setStatusDialogOpen(true);
+  };
+  const handleAttendance = (event: EventData) => {
+    router.push(`/dashboard?id=${event.id}`);
+    setTab("attendance");
   };
 
   const handleDeleteEvent = async () => {
@@ -196,12 +216,13 @@ export default function EventListTab({
                     </TableCell>
                     <TableCell>
                       <Button
-                        onClick={() => {
-                          setSelectedEvent(event);
-                          setNewStatus(event.status);
-                          setStatusDialogOpen(true);
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleStatusEdit(event);
                         }}
                         variant={"ghost"}
+                        asChild
                       >
                         <Badge
                           variant={getStatusBadgeVariant(event.status)}
@@ -224,27 +245,37 @@ export default function EventListTab({
                       {event.minTeamSize}-{event.maxTeamSize}
                     </TableCell>
                     <TableCell className="text-sm">{event.maxTeams}</TableCell>
+                    {/* Actions */}
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant={"ghost"}
+                          size="icon-sm"
+                          onClick={() => handleAttendance(event)}
+                          title="Mark attendace"
+                          hidden={
+                            !hasPermission(
+                              session.dashboardUser,
+                              "event:attendance",
+                            ) ||
+                            !["Ongoing", "Published"].includes(event.status)
+                          }
+                        >
+                          <Flag />
+                        </Button>
                         <Button
                           variant="ghost"
                           size="icon-sm"
                           onClick={() => handleEdit(event)}
                           title="Edit event"
+                          disabled={
+                            !hasPermission(
+                              session.dashboardUser,
+                              "event:update",
+                            )
+                          }
                         >
                           <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          onClick={() => {
-                            setSelectedEvent(event);
-                            setNewStatus(event.status);
-                            setStatusDialogOpen(true);
-                          }}
-                          title="Change status"
-                        >
-                          <MoreVertical className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -255,6 +286,12 @@ export default function EventListTab({
                             setDeleteDialogOpen(true);
                           }}
                           title="Delete event"
+                          disabled={
+                            !hasPermission(
+                              session.dashboardUser,
+                              "event:delete",
+                            )
+                          }
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -270,9 +307,9 @@ export default function EventListTab({
 
       {/* Status update dialog */}
       <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
-        <DialogContent>
+        <DialogContent className="font-sans">
           <DialogHeader>
-            <DialogTitle>Change Event Status</DialogTitle>
+            <DialogTitle className="font-sans">Change Event Status</DialogTitle>
           </DialogHeader>
           {selectedEvent && (
             <div className="space-y-4">
@@ -292,7 +329,7 @@ export default function EventListTab({
                   <SelectTrigger>
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="font-sans">
                     <SelectItem value="Draft">Draft</SelectItem>
                     <SelectItem value="Published">Published</SelectItem>
                     <SelectItem value="Ongoing">Ongoing</SelectItem>
@@ -316,9 +353,9 @@ export default function EventListTab({
 
       {/* Delete confirmation dialog */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
+        <DialogContent className="font-sans">
           <DialogHeader>
-            <DialogTitle>Delete Event</DialogTitle>
+            <DialogTitle className="font-sans">Delete Event</DialogTitle>
           </DialogHeader>
           {eventToDelete && (
             <div className="space-y-4">

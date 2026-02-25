@@ -84,6 +84,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
+        console.log("credentials", credentials);
+
         const user = await dashboardUserData.findByUsername(
           credentials.username as string,
         );
@@ -96,6 +98,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           credentials.password as string,
           user.passwordHash,
         );
+
+        console.log("isValid", isValid);
 
         if (!isValid) {
           return null;
@@ -141,6 +145,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               };
             }),
           };
+
+          console.log("token", token);
         }
       }
       return token;
@@ -162,6 +168,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         };
         session.dashboardUser = dashboardUser;
         if (process.env.NODE_ENV === "production") {
+          console.log("Entry to prod");
           mixpanel.people.set(dashboardUser.id, {
             $name: dashboardUser.name,
             username: dashboardUser.username,
@@ -179,6 +186,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.id) {
         session.user.id = token.id as string;
       }
+      console.log("session", session);
       return session;
     },
   },
