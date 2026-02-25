@@ -1,6 +1,7 @@
 "use client";
 import { format } from "date-fns";
 import { AlertCircle, CalendarIcon, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -173,13 +174,18 @@ export default function UpdateEventTab({
   if (!eventId) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center py-12">
-          <Alert variant="destructive">
+        <CardContent className="flex flex-col items-center justify-center py-12 gap-4">
+          <Alert className="mx-auto w-fit">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Event ID is required to update an event.
+              Please select an event to update from the event list.
             </AlertDescription>
           </Alert>
+          <div className="flex gap-2">
+            <Button onClick={() => setTab("assigned")} variant="default">
+              View Assigned Events
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
@@ -258,8 +264,7 @@ export default function UpdateEventTab({
               />
               {formData.image && (
                 <div className="relative mt-2 flex justify-center rounded-md border overflow-hidden">
-                  {/* biome-ignore lint/performance/noImgElement: External user-provided image */}
-                  <img
+                  <Image
                     src={formData.image}
                     alt="Event preview"
                     className="w-auto h-48 object-cover"

@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import { genderEnum, stateEnum } from "../enum";
 import { colleges } from "./participant";
 
 export const eventUsers = pgTable("event_user", {
@@ -16,6 +17,8 @@ export const eventUsers = pgTable("event_user", {
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  state: stateEnum("state"),
+  gender: genderEnum("gender"),
   collegeId: text("college_id").references(() => colleges.id, {
     onDelete: "set null",
   }),
