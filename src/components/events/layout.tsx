@@ -1,11 +1,13 @@
 "use client";
 
 import { TriangleAlert } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { use, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { apiFetch } from "~/lib/fetcher";
+import { useDayNight } from "../providers/useDayNight";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 import EventDetails from "./details";
@@ -60,6 +62,7 @@ const Events = ({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) => {
+  const { isNight } = useDayNight();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [registration, setRegistration] = useState(false);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
@@ -122,6 +125,20 @@ const Events = ({
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
+      <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+        <Image
+          src={
+            isNight
+              ? "/images/shipwreck/shipwreckNight.webp"
+              : "/images/shipwreck/shipwreckDay.webp"
+          }
+          alt="Shipwreck background"
+          fill
+          className="object-cover object-bottom"
+          priority
+        />
+      </div>
+
       {session?.eventUser && !session.eventUser.collegeId && (
         <UserDetailsForm sessionUpdate={update} />
       )}
