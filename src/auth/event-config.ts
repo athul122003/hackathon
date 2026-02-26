@@ -44,6 +44,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  trustHost: true,
   events: {
     async signIn({ user }) {
       const eventUser = await query.eventUsers.findOne({

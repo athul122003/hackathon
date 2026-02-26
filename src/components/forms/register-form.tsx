@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { JourneyModal } from "~/components/forms/JourneyModal";
 // import { toast } from "sonner";
 import { CollegeStep } from "~/components/forms/register-steps/CollegeStep";
 import { CourseStep } from "~/components/forms/register-steps/CourseStep";
@@ -45,6 +46,9 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
   const [step, setStep] = useState(0);
   const [furthestStep, setFurthestStep] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showJourney, setShowJourney] = useState(false);
+  const [isJourneySubmitting, setIsJourneySubmitting] = useState(false);
+  const pendingDataRef = useRef<RegisterParticipantInput | null>(null);
 
   useEffect(() => {
     if (step > furthestStep) {
@@ -200,21 +204,31 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
     if (data.alias?.trim() === "") {
       form.setValue("alias", data.name.trim());
     }
-    await apiFetch("/api/users/register", {
-      method: "POST",
-      body: JSON.stringify({
-        ...data,
-        name: data.name.trim(),
-        alias: data.alias?.trim() || undefined,
-        phone: data.phone.trim(),
-        github: data.github?.trim() || undefined,
-      }),
-    });
+    pendingDataRef.current = {
+      ...data,
+      name: data.name.trim(),
+      alias: data.alias?.trim() || undefined,
+      phone: data.phone.trim(),
+      github: data.github?.trim() || undefined,
+    };
+    setShowJourney(true);
+  }
 
-    localStorage.removeItem("hackfest_register_progress");
-    window.scrollTo(0, 0);
-    router.push("/teams");
-    router.refresh();
+  async function handleJourneyComplete(): Promise<void> {
+    if (!pendingDataRef.current) return;
+    setIsJourneySubmitting(true);
+    try {
+      await apiFetch("/api/users/register", {
+        method: "POST",
+        body: JSON.stringify(pendingDataRef.current),
+      });
+      localStorage.removeItem("hackfest_register_progress");
+      window.scrollTo(0, 0);
+      router.push("/teams");
+      router.refresh();
+    } finally {
+      setIsJourneySubmitting(false);
+    }
   }
 
   return (
@@ -415,6 +429,13 @@ export function RegisterForm({ initialGithubUsername }: RegisterFormProps) {
             </Button>
           </div>
         </div>
+
+        <JourneyModal
+          open={showJourney}
+          onClose={() => setShowJourney(false)}
+          onProceed={handleJourneyComplete}
+          isSubmitting={isJourneySubmitting}
+        />
       </form>
     </Form>
   );
