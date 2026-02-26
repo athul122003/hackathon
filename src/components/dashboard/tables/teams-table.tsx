@@ -9,6 +9,7 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { UserPermissions } from "~/app/dashboard/teams/page";
+import { TeamDetailDialog } from "~/components/dashboard/other/team-detail-dialog";
 import { Badge } from "~/components/ui/badge";
 import {
   Table,
@@ -18,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { TeamDetailDialog } from "./team-detail-dialog";
 
 type Team = {
   id: string;

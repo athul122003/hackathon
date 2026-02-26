@@ -51,6 +51,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
   ],
+  trustHost: true,
   events: {
     async signIn({ user, account, profile }) {
       try {

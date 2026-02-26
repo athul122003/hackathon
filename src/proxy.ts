@@ -16,9 +16,8 @@ export async function proxy(request: NextRequest) {
 
   if (normalizedPath.startsWith("/dashboard")) {
     const sessionCookie =
-      request.cookies.get("authjs.session-token") ||
-      request.cookies.get("__Secure-authjs.session-token");
-
+      request.cookies.get("dashboard.session-token") ||
+      request.cookies.get("__Secure-dashboard.session-token");
     if (!sessionCookie) {
       return NextResponse.redirect(new URL("/dashboard/login", request.url));
     }

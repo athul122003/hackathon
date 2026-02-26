@@ -128,7 +128,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               userId,
             )) as DashboardUserRoleWithRelations[];
 
-          token.dashboardUser = {
+          const dashboardUser = {
             id: userId,
             username: dbUser.username,
             name: dbUser.name,
@@ -146,7 +146,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }),
           };
 
-          console.log("token", token);
+          token.dashboardUser = dashboardUser;
+
+          if (process.env.NODE_ENV === "production") {
+            try {
+              mixpanel.people.set(dashboardUser.id, {
+                $name: dashboardUser.name,
+                username: dashboardUser.username,
+                roles: dashboardUser.roles.map((role) => role.name),
+                permissions: dashboardUser.roles
+                  .flatMap((role) => role.permissions)
+                  .map((perm) => perm.key),
+              });
+              mixpanel.track("Dashboard User Login", {
+                distinct_id: dashboardUser.id,
+                time: new Date(),
+              });
+            } catch (e) {
+              console.error("Mixpanel tracking error:", e);
+            }
+          }
         }
       }
       return token;
@@ -167,26 +186,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }>;
         };
         session.dashboardUser = dashboardUser;
-        if (process.env.NODE_ENV === "production") {
-          console.log("Entry to prod");
-          mixpanel.people.set(dashboardUser.id, {
-            $name: dashboardUser.name,
-            username: dashboardUser.username,
-            roles: dashboardUser.roles.map((role) => role.name),
-            permissions: dashboardUser.roles
-              .flatMap((role) => role.permissions)
-              .map((perm) => perm.key),
-          });
-          mixpanel.track("Dashboard User Login", {
-            distinct_id: dashboardUser.id,
-            time: new Date(),
-          });
-        }
       }
       if (token.id) {
         session.user.id = token.id as string;
       }
-      console.log("session", session);
       return session;
     },
   },
