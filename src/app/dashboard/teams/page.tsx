@@ -1,5 +1,5 @@
-import type { Session } from "next-auth";
 import { redirect } from "next/navigation";
+import type { Session } from "next-auth";
 import { auth } from "~/auth/dashboard-config";
 import { TeamsTable } from "~/components/dashboard/tables/teams-table";
 import { hasPermission, isAdmin } from "~/lib/auth/check-access";

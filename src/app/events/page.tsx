@@ -6,8 +6,7 @@ import { Navbar } from "~/components/landing/Navbar";
 
 export const metadata: Metadata = {
   title: "Events",
-  description:
-    "Explore all events at Hackfest'26.",
+  description: "Explore all events at Hackfest'26.",
   alternates: {
     canonical: "https://hackfest.dev/events",
   },

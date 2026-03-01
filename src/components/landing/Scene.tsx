@@ -101,7 +101,7 @@ function Background({
       // Use damped progress for smoother transition
       const transitionProgress = Math.max(
         0,
-        Math.min(1, (progress - 0.05) / 0.10),
+        Math.min(1, (progress - 0.05) / 0.1),
       );
       materialRef.current.uTransitionProgress = transitionProgress;
       materialRef.current.uHoverProgress = state.pointer.x * 0.5 + 0.5;

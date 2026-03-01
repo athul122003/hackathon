@@ -66,11 +66,7 @@ type TeamsTableProps = {
 
 const columnHelper = createColumnHelper<Team>();
 
-function buildUrl(
-  search: string,
-  filters: Filters,
-  cursor?: string,
-): string {
+function buildUrl(search: string, filters: Filters, cursor?: string): string {
   const params = new URLSearchParams();
   if (cursor) params.set("cursor", cursor);
   if (search.trim()) params.set("search", search.trim());
@@ -154,15 +150,11 @@ export function TeamsTable({ permissions }: TeamsTableProps) {
     () => [
       columnHelper.accessor("name", {
         header: "Team Name",
-        cell: (info) => (
-          <span className="font-medium">{info.getValue()}</span>
-        ),
+        cell: (info) => <span className="font-medium">{info.getValue()}</span>,
       }),
       columnHelper.accessor("memberCount", {
         header: "Members",
-        cell: (info) => (
-          <Badge variant="secondary">{info.getValue()}</Badge>
-        ),
+        cell: (info) => <Badge variant="secondary">{info.getValue()}</Badge>,
       }),
       columnHelper.accessor("isCompleted", {
         header: "Status",
@@ -177,8 +169,7 @@ export function TeamsTable({ permissions }: TeamsTableProps) {
         header: "Payment",
         cell: (info) => {
           const status = info.getValue();
-          if (status === "Paid")
-            return <Badge variant="success">Paid</Badge>;
+          if (status === "Paid") return <Badge variant="success">Paid</Badge>;
           if (status === "Pending")
             return <Badge variant="warning">Pending</Badge>;
           if (status === "Refunded")
@@ -389,9 +380,9 @@ export function TeamsTable({ permissions }: TeamsTableProps) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -399,24 +390,28 @@ export function TeamsTable({ permissions }: TeamsTableProps) {
           </TableHeader>
           <TableBody>
             {isLoading && data.length === 0 ? (
-              <>
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <TableRow key={`skeleton-${i}`}>
-                    {columns.map((_, j) => (
-                      <TableCell key={`skeleton-${i}-${j}`}>
-                        <div className="h-4 w-20 animate-pulse rounded bg-muted" />
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </>
+              Array.from({ length: 8 }).map((_, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: its fine
+                <TableRow key={`skeleton-${i}`}>
+                  {columns.map((_, j) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: skeleton cells so fine
+                    <TableCell key={`skeleton-${i}-${j}`}>
+                      <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
             ) : virtualRows.length > 0 ? (
               <>
                 {virtualRows.length > 0 && (
                   <tr>
                     <td
                       colSpan={columns.length}
-                      style={{ height: virtualRows[0]?.start ?? 0, padding: 0, border: 0 }}
+                      style={{
+                        height: virtualRows[0]?.start ?? 0,
+                        padding: 0,
+                        border: 0,
+                      }}
                     />
                   </tr>
                 )}

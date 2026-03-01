@@ -24,8 +24,8 @@ export default async function Home() {
           India. Theme: Codequest - The Grand Voyage.
         </p>
         <p>
-          Dates: April 17-19, 2026. Prize Pool: ₹4,00,000+. Open to all
-          college students across India.
+          Dates: April 17-19, 2026. Prize Pool: ₹4,00,000+. Open to all college
+          students across India.
         </p>
         <h2>Hackathon Tracks</h2>
         <ul>
@@ -49,4 +49,3 @@ export default async function Home() {
     </main>
   );
 }
-

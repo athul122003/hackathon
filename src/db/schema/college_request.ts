@@ -1,6 +1,5 @@
-import { pgTable, text, timestamp, index } from "drizzle-orm/pg-core";
+import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { collegeRequestStatusEnum, stateEnum } from "../enum";
-import { sql } from "drizzle-orm";
 
 export const collegeRequests = pgTable(
   "college_request",

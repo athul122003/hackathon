@@ -4,11 +4,11 @@ import {
   count,
   eq,
   gt,
-  ilike,
   type InferSelectModel,
+  ilike,
   isNotNull,
-  sql,
   type SQL,
+  sql,
 } from "drizzle-orm";
 import db from "~/db";
 import * as userData from "~/db/data/participant";
@@ -270,7 +270,12 @@ export async function fetchTeams({
     paymentStatus?: string;
     attended?: string;
   };
-}): Promise<{ teams: TeamWithMemberCount[]; nextCursor: string | null; totalCount: number; confirmedCount: number }> {
+}): Promise<{
+  teams: TeamWithMemberCount[];
+  nextCursor: string | null;
+  totalCount: number;
+  confirmedCount: number;
+}> {
   const conditions: SQL[] = [];
 
   if (cursor) {
@@ -285,7 +290,7 @@ export async function fetchTeams({
     }
   }
 
-  if (search && search.trim()) {
+  if (search?.trim()) {
     conditions.push(ilike(teams.name, `%${search.trim()}%`));
   }
 
@@ -314,8 +319,7 @@ export async function fetchTeams({
     .groupBy(participants.teamId)
     .as("member_counts");
 
-  const whereClause =
-    conditions.length > 0 ? and(...conditions) : undefined;
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
   const result = await db
     .select({
@@ -340,13 +344,16 @@ export async function fetchTeams({
   const hasMore = result.length > limit;
   const paginatedTeams = hasMore ? result.slice(0, limit) : result;
   const nextCursor = hasMore
-    ? paginatedTeams[paginatedTeams.length - 1]?.id ?? null
+    ? (paginatedTeams[paginatedTeams.length - 1]?.id ?? null)
     : null;
 
   // Get total and confirmed counts (unfiltered, for display)
   const [[totalResult], [confirmedResult]] = await Promise.all([
     db.select({ count: count() }).from(teams),
-    db.select({ count: count() }).from(teams).where(eq(teams.isCompleted, true)),
+    db
+      .select({ count: count() })
+      .from(teams)
+      .where(eq(teams.isCompleted, true)),
   ]);
 
   return {

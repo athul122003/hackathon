@@ -108,7 +108,6 @@ export default function RootLayout({
             {children}
             <ThemeToggle />
             <ToasterWrapper />
-
           </DayNightProvider>
         </SessionProvider>
         <JsonLd />
